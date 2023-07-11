@@ -13,7 +13,7 @@ describe('Vendor entity unit tests', () => {
     })
     it('should throw if categoryId is empty', () => {
         expect(() => {
-            const vendor = new Vendor('1', '', '');
+            const vendor = new Vendor('1', 'John Doe', '');
         }).toThrowError('CategoryId is required');
     })
 
