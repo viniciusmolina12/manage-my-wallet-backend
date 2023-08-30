@@ -1,3 +1,4 @@
+import EntityError from "../../@shared/error/entity.error";
 import Category from "./category.entity";
 
 describe('Category entity tests', () => {
@@ -10,12 +11,12 @@ describe('Category entity tests', () => {
     it('Should throw an error if id is missing', () => {
         expect(() => {
             const category = new Category('', 'Category', 'Description');
-        }).toThrow('Id is required')
+        }).toThrow(new EntityError('category: Id is required, '))
     })
     it('Should throw an error if name is missing', () => {
         expect(() => {
             const category = new Category('123', '', 'Description');
-        }).toThrow('Name is required')
+        }).toThrow(new EntityError('category: Name is required, '))
     })
 
 })

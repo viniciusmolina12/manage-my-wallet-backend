@@ -1,3 +1,4 @@
+import EntityError from "../../@shared/error/entity.error";
 import Vendor from "./vendor.entity";
 
 describe('Vendor entity unit tests', () => {
@@ -9,7 +10,7 @@ describe('Vendor entity unit tests', () => {
     it('should throw if name is empty', () => {
         expect(() => {
             const vendor = new Vendor('1', '');
-        }).toThrowError('Name is required');
+        }).toThrowError(new EntityError('vendor: Name is required, '));
     })
 
     it('should change name', () => {
@@ -23,7 +24,7 @@ describe('Vendor entity unit tests', () => {
         const vendor = new Vendor('1', 'Vendor');
         expect(() => {
             vendor.changeName('');
-        }).toThrowError('Name is required')
+        }).toThrowError(new EntityError('vendor: Name is required, '))
     })
 
   

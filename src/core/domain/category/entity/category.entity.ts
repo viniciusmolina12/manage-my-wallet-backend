@@ -1,9 +1,13 @@
-export default class Category {
+import Entity from "../../@shared/entity.interface";
+import EntityError from "../../@shared/error/entity.error";
+
+export default class Category extends Entity{
     private _id: string;
     private _name: string;
     private _description: string;
 
     constructor(id: string, name: string, description: string) {
+        super();
         this._id = id;
         this._name = name;
         this._description = description;
@@ -13,10 +17,13 @@ export default class Category {
 
     validate() {
         if(!this._id) {
-            throw new Error('Id is required')
+            this.notification.add({ message: 'Id is required', source: 'category' })
         }
         if(!this._name) {
-            throw new Error('Name is required')
+            this.notification.add({ message: 'Name is required', source: 'category' })
+        }
+        if(this.notification.hasErrors()) {
+            throw new EntityError(this.notification.getNotifications())
         }
     }
 

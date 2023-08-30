@@ -13,11 +13,7 @@ export default class Item extends Entity {
         this._name = name;
         this._categoryId = categoryId;
         this._description = description;
-        this.validate();
-        if(this.notification.hasErrors()){
-            throw new EntityError(this.notification.getNotifications())
-        }
-        
+        this.validate(); 
     }
 
     validate() {
@@ -29,6 +25,9 @@ export default class Item extends Entity {
         }
         if(!this._categoryId) {
             this.notification.add({ source: 'Item', message: 'Category is required' })
+        }
+        if(this.notification.hasErrors()){
+            throw new EntityError(this.notification.getNotifications())
         }
     }
 

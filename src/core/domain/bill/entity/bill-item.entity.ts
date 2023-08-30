@@ -1,10 +1,14 @@
-export default class BillItem {
-    private _id: string;
+import Entity from "../../@shared/entity.interface";
+import EntityError from "../../@shared/error/entity.error";
+
+export default class BillItem extends Entity {
+    private _id: string; 
     private _itemId: string;
     private _price: number;
     private _quantity: number;
     
     constructor(id: string, itemId: string, price: number, quantity: number) {
+        super();
         this._id = id;
         this._itemId = itemId;
         this._price = price;
@@ -14,16 +18,20 @@ export default class BillItem {
 
     validate(): void {
         if(this._id.length === 0) {
-            throw new Error('Id is required');
+            this.notification.add({ message: 'Id is required', source: 'billItem' })
         }
         if(this._itemId.length === 0) {
-            throw new Error('ItemId is required');
+            this.notification.add({ message: 'ItemId is required', source: 'billItem' })
         }
         if(this._price <= 0){
-            throw new Error('Price must be greater than 0');
+            this.notification.add({ message: 'Price must be greater than 0', source: 'billItem' })
         }
         if(this._quantity <= 0){
-            throw new Error('Quantity must be greater than 0');
+            this.notification.add({ message: 'Quantity must be greater than 0', source: 'billItem' })
+        }
+
+        if(this.notification.hasErrors()) {
+            throw new EntityError(this.notification.getNotifications());
         }
     }
     get id(): string {

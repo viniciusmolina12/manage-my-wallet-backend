@@ -1,3 +1,4 @@
+import EntityError from "../../@shared/error/entity.error";
 import BillItem from "./bill-item.entity";
 import Bill from "./bill.entity";
 
@@ -9,20 +10,20 @@ describe('Bill entity unit tests', () => {
     it('should throw a error if id is empty ', () => {
         expect(() => {
             const bill = new Bill('', 'Bill 1', [makeBillItem()]);
-        }).toThrowError('Id is required');
+        }).toThrowError(new EntityError('bill: Id is required, '));
     })
 
     it('should throw a error if name is empty ', () => {
         const item = new BillItem('1', '1', 100, 2);
         expect(() => {
             const bill = new Bill('1', '', [makeBillItem()]);
-        }).toThrowError('Name is required');
+        }).toThrowError(new EntityError('bill: Name is required, '));
     })
 
     it('should throw a error if items is empty ', () => {
         expect(() => {
             const bill = new Bill('1', 'Bill 1', []);
-        }).toThrowError('Items is required');
+        }).toThrowError(new EntityError('bill: Items is required, '));
     })
 
     it('should change name', () => {

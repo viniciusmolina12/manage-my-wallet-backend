@@ -1,28 +1,29 @@
+import EntityError from "../../@shared/error/entity.error";
 import BillItem from "./bill-item.entity"
 
 describe('BillItem entity unit tests', () => {
     it('should throw a error if id is empty', () => {
         expect(() => {
             const billItem = new BillItem('', 'itemId', 1, 1);
-        }).toThrowError('Id is required');
+        }).toThrowError(new EntityError('billItem: Id is required, '));
     })
 
     it('should throw a error if itemId is empty', () => {
         expect(() => {
             const billItem = new BillItem('1', '', 1, 1);
-        }).toThrowError('ItemId is required');
+        }).toThrowError(new EntityError('billItem: ItemId is required, '));
     })
 
     it('should throw a error if price is less or equal 0', () => {
         expect(() => {
             const billItem = new BillItem('1', 'itemId', -1, 1);
-        }).toThrowError('Price must be greater than 0');
+        }).toThrowError(new EntityError('billItem: Price must be greater than 0, '));
     })
 
     it('should throw a error if quantity is less or equal 0', () => {
         expect(() => {
             const billItem = new BillItem('1', 'itemId', 1, -1);
-        }).toThrowError('Quantity must be greater than 0');
+        }).toThrowError(new EntityError('billItem: Quantity must be greater than 0, '));
     })
 
     it('should change price', () => {
