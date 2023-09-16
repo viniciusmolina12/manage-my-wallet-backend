@@ -1,3 +1,4 @@
+import EntityError from "../../../domain/@shared/error/entity.error";
 import UpdateItemUseCase from "./update.usecase";
 
 const mockRepository = {
@@ -28,5 +29,10 @@ describe('Item update usecase test', () => {
         await expect(sut.execute(input)).rejects.toThrow('Item not found')
     })
 
+    it('should throw an error if required properties is not provided', async () => { 
+        const sut = new UpdateItemUseCase(mockRepository);
+        mockRepository.find = jest.fn().mockReturnValue( { id: 'any_id', name: 'Item 2', description: 'other_description', categoryId: 'other_category_id_hash'})
+        await expect(sut.execute({ ...input, name: ''} )).rejects.toThrow(new EntityError('Item: Name is required, '));
+    }) 
 
 })
