@@ -18,6 +18,7 @@ describe('Vendor entity unit tests', () => {
         expect(vendor.name).toBe('Vendor');
         vendor.changeName('Vendor 2');
         expect(vendor.name).toBe('Vendor 2')
+        expect(vendor.id).toBe('1')
     })
 
     it('should throw a error if new name is empty', () => {

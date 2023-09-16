@@ -4,10 +4,10 @@ import EntityError from "../../@shared/error/entity.error";
 export default class Item extends Entity { 
     private _id: string;
     private _name: string;
-    private _description: string;
+    private _description?: string;
     private _categoryId: string;
 
-    constructor(id: string, name: string, categoryId: string, description: string) {
+    constructor(id: string, name: string, categoryId: string, description?: string) {
         super();
         this._id = id;
         this._name = name;
@@ -39,8 +39,8 @@ export default class Item extends Entity {
     get name (): string {
         return this._name;
     }
-    get description (): string {
-        return this._description;
+    get description (): string | undefined {
+        return this?._description;
     }
     get categoryId (): string {
         return this._categoryId;

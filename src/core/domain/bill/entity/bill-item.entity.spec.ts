@@ -36,6 +36,7 @@ describe('BillItem entity unit tests', () => {
     it('should change quantity', () => {
         const billItem = new BillItem('1', 'itemId', 100, 2);
         expect(billItem.quantity).toBe(2);
+        expect(billItem.id).toBe('1');
         billItem.changeQuantity(5);
         expect(billItem.quantity).toBe(5);
     })

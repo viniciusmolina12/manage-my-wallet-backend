@@ -10,13 +10,12 @@ export default class ListItemUsecase {
     
     async execute(): Promise<OutputListItemDto> {
         const items = await this.itemRepository.findAll();
-        const output = items.map((item: any) => ({
+        const output = items?.map((item: any) => ({
             id: item.id,
             name: item.name,
             categoryId: item.categoryId,
             description: item.description
         }));
-
         return { items: output }
     }
 }
