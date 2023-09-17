@@ -5,7 +5,6 @@ import BillItem from "./bill-item.entity";
 export default class Bill extends Entity {
     private _id: string;
     private _name: string;
-    private _total: number = 0;
     private _items: BillItem[];
     private _description?: string;
 

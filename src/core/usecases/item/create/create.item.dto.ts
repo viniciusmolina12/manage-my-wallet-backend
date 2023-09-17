@@ -1,6 +1,6 @@
 export interface InputCreateItemDto {
     name: string
-    description: string
+    description?: string
     categoryId: string
 }
 

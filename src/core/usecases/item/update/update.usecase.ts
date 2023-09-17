@@ -15,7 +15,7 @@ export default class UpdateItemUseCase {
         await this.itemRepository.update(updatedItem)
         return {
             categoryId: updatedItem.categoryId,
-            description: updatedItem.description,
+            description: updatedItem?.description,
             name: updatedItem.name
         };
     }
