@@ -1,6 +1,6 @@
 
 import EntityError from "../../../domain/@shared/error/entity.error"
-import { CreateItemUseCase } from "./create.usecase"
+import CreateItemUseCase  from "./create.usecase"
 const mockRepository = {
     create: jest.fn(),
     update: jest.fn(),

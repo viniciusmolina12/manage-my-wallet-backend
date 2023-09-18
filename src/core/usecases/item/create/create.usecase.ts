@@ -2,7 +2,7 @@ import Item from "../../../domain/item/entity/item.entity";
 import { ItemRepository } from "../../../domain/item/repository/item.repository";
 import { InputCreateItemDto, OutputCreateItemDto } from "./create.item.dto";
 import { v4 as uuid } from 'uuid';
-export class CreateItemUseCase {
+export default class CreateItemUseCase {
     private readonly itemRepository: ItemRepository;
     constructor(itemRepository: ItemRepository) {
         this.itemRepository = itemRepository;

@@ -2,7 +2,7 @@ export interface InputUpdateItemDto {
     id: string;
     name: string;
     categoryId: string;
-    description: string;
+    description?: string;
 }
 
 export interface OutputUpdateItemDto {

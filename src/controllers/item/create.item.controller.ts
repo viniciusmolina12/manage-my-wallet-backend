@@ -1,6 +1,7 @@
 import EntityError from "../../core/domain/@shared/error/entity.error";
-import { CreateItemUseCase } from "../../core/usecases/item/create/create.usecase";
+import CreateItemUseCase  from "../../core/usecases/item/create/create.usecase";
 import { OutputControllerDto, InputControllerDto } from "../interfaces/controller.dto";
+import { response } from "../interfaces/response";
 
 interface InputCreateItemControllerDto {
     name: string;
@@ -24,23 +25,11 @@ export default class CreateItemController {
         try {
             const { name, description, categoryId } = input.data;
             const output = await this.createItemUseCase.execute({ name, description, categoryId });
-            return {
-                data: output,
-                code: 201,
-                message: "Item created successfully"
-            }
+            return response<OutputCreateItemControllerDto>(201, 'Item created successfully', output);
+
         } catch (e: any) {
-            if(e instanceof EntityError) {
-                return {
-                    code: 400,
-                    message: e.message
-                }
-            }
-            return {
-                code: 400,
-                message: e.message
-            }
-            
+            if(e instanceof EntityError) return response(400, e.message);
+            return response(400, e.message);
         }
     }
 
