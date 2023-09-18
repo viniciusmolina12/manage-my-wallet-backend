@@ -1,5 +1,5 @@
-import Item from "../../../domain/item/entity/item.entity";
-import { ItemRepository } from "../../../domain/item/repository/item.repository";
+import Item from "@core/domain/item/entity/item.entity";
+import { ItemRepository } from "@core/domain/item/repository/item.repository";
 import { InputCreateItemDto, OutputCreateItemDto } from "./create.item.dto";
 import { v4 as uuid } from 'uuid';
 export default class CreateItemUseCase {

@@ -1,4 +1,4 @@
-import EntityError from "../../../domain/@shared/error/entity.error";
+import EntityError from "@core/domain/@shared/error/entity.error";
 import { InputDeleteItemDto, OutputDeleteItemDto } from "./delete.item.dto";
 
 export default class DeleteItemUseCase {

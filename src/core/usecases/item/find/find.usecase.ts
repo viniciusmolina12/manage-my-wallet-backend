@@ -1,5 +1,4 @@
-import Item from "../../../domain/item/entity/item.entity";
-import { ItemRepository } from "../../../domain/item/repository/item.repository";
+import { ItemRepository } from "@core/domain/item/repository/item.repository";
 import { InputFindItemDto, OutputFindItemDto } from "./find.item.dto";
 
 export default class FindItemUseCase {

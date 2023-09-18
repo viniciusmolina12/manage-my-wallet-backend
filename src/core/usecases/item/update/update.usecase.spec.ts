@@ -1,4 +1,4 @@
-import EntityError from "../../../domain/@shared/error/entity.error";
+import EntityError from "@core/domain/@shared/error/entity.error";
 import UpdateItemUseCase from "./update.usecase";
 
 const mockRepository = {

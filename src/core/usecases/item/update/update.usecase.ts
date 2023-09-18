@@ -1,6 +1,6 @@
-import EntityError from "../../../domain/@shared/error/entity.error";
-import Item from "../../../domain/item/entity/item.entity";
-import { ItemRepository } from "../../../domain/item/repository/item.repository";
+import EntityError from "@core/domain/@shared/error/entity.error";
+import Item from "@core/domain/item/entity/item.entity";
+import { ItemRepository } from "@core/domain/item/repository/item.repository";
 import { InputUpdateItemDto, OutputUpdateItemDto } from "./update.item.dto";
 
 export default class UpdateItemUseCase {

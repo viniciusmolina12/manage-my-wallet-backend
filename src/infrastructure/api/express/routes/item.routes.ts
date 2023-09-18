@@ -1,17 +1,17 @@
 import { Router, Request, Response } from 'express';
-import MongoDbItemRepository from '../../../db/mongodb/repositories/item/item.repository';
+import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/item.repository';
 
-import CreateItemController from '../../../../controllers/item/create.item.controller';
-import FindItemController from '../../../../controllers/item/find.item.controller';
-import UpdateItemController from '../../../../controllers/item/update.item.controller';
-import DeleteItemController from '../../../../controllers/item/delete.item.controller';
-import ListItemController from '../../../../controllers/item/list.item.controller';
+import CreateItemController from '@controllers/item/create.item.controller';
+import FindItemController from '@controllers/item/find.item.controller';
+import UpdateItemController from '@controllers/item/update.item.controller';
+import DeleteItemController from '@controllers/item/delete.item.controller';
+import ListItemController from '@controllers/item/list.item.controller';
 
-import CreateItemUseCase  from '../../../../core/usecases/item/create/create.usecase';
-import FindItemUseCase from '../../../../core/usecases/item/find/find.usecase';
-import UpdateItemUseCase from '../../../../core/usecases/item/update/update.usecase';
-import DeleteItemUseCase from '../../../../core/usecases/item/delete/delete.usecase';
-import ListItemUsecase from '../../../../core/usecases/item/list/list.usecase';
+import CreateItemUseCase  from '@core/usecases/item/create/create.usecase';
+import FindItemUseCase from '@core/usecases/item/find/find.usecase';
+import UpdateItemUseCase from '@core/usecases/item/update/update.usecase';
+import DeleteItemUseCase from '@core/usecases/item/delete/delete.usecase';
+import ListItemUsecase from '@core/usecases/item/list/list.usecase';
 
 
 const route = Router();

@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app';
-import mockDb from '../../../db/mongodb/repositories/__mocks__/mockDb';
-import ItemModel from '../../../db/mongodb/model/item.model';
+import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
+import ItemModel from '@infrastructure/db/mongodb/model/item.model';
 
 beforeAll(async () => {
     await mockDb.connect();
