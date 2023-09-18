@@ -32,6 +32,14 @@ describe('Item e2e tests', () => {
         expect(response.body.data).toHaveProperty('categoryId', 'any_category_id'); 
     })
 
+    it('should return an error when creating an item with invalid data', async () => {
+        const response = await request(app)
+            .post('/api/item')
+            .send({})
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('message', 'Item: Name is required, Item: Category is required, ');
+    })
+
     it('should update an item', async () => {
         const item = await ItemModel.create({ _id: 'any_hash_id', name: 'Item 1', description: 'Description 1', categoryId: 'Category 1' });
         const response = await request(app)
@@ -47,6 +55,15 @@ describe('Item e2e tests', () => {
         expect(response.body.data).toHaveProperty('name', 'any_item_name');
         expect(response.body.data).toHaveProperty('description', 'any_item_description');
         expect(response.body.data).toHaveProperty('categoryId', 'any_category_id'); 
+    })
+
+    it('should return an error when try update a non-existent item', async () => {
+        const response = await request(app)
+            .put('/api/item/any_hash_id')
+            .send({})
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('message', 'Item not found');
+        expect(response.body).not.toHaveProperty('data');
     })
 
     it('should get an item', async () => {
