@@ -1,3 +1,4 @@
+import EntityError from "../../../domain/@shared/error/entity.error";
 import { InputDeleteItemDto, OutputDeleteItemDto } from "./delete.item.dto";
 
 export default class DeleteItemUseCase {
@@ -9,7 +10,7 @@ export default class DeleteItemUseCase {
 
     async execute(input: InputDeleteItemDto): Promise<OutputDeleteItemDto> {
         const item = await this.itemRepository.find(input);
-        if(!item) throw new Error('Item not found');
+        if(!item) throw new EntityError('Item not found');
         await this.itemRepository.delete(input);
     }
 

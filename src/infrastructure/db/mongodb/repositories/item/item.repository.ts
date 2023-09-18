@@ -22,7 +22,6 @@ export default class MongoDbItemRepository implements ItemRepository {
     }
 
     async delete(id: string): Promise<void> {
-        const result = await ItemModel.findByIdAndDelete({ _id: id });
-        
+        await ItemModel.findByIdAndDelete({ _id: id });
     }
 }

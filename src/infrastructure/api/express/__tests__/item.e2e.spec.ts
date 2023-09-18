@@ -31,6 +31,7 @@ describe('Item e2e tests', () => {
         expect(response.body.data).toHaveProperty('description', 'any_item_description');
         expect(response.body.data).toHaveProperty('categoryId', 'any_category_id'); 
     })
+    
 
     it('should return an error when creating an item with invalid data', async () => {
         const response = await request(app)
@@ -82,7 +83,7 @@ describe('Item e2e tests', () => {
             .get(`/api/item/${item._id}`)
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('data');
-        expect(response.body).toHaveProperty('message', 'Item found succesfully');
+        expect(response.body).toHaveProperty('message', 'Item founded succesfully');
         expect(response.body.data).toHaveProperty('id', item._id);
         expect(response.body.data).toHaveProperty('name', 'Item 1');
         expect(response.body.data).toHaveProperty('description', 'Description 1');
@@ -127,6 +128,7 @@ describe('Item e2e tests', () => {
         expect(response.body).toHaveProperty('message', 'Item not found');
         expect(response.body).not.toHaveProperty('data');
     })
+
 
     
 })

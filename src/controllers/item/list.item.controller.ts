@@ -26,7 +26,7 @@ export default class ListItemController {
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);
-            return response(400, e.message);
+            return response(500, e.message);
         }
     }
 
