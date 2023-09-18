@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "build": "tsc",
     "test:coverage": "jest --coverage",
-    "start": "ts-node-dev --respawn --transpile-only src/infrastructure/api/express/server.ts"
+    "start:dev": "ts-node-dev --respawn --transpile-only src/infrastructure/api/express/server.ts",
+    "start": "node ./dist/infrastructure/api/express/server.js"
+
   },
   "_moduleAliases": {
-    "@core": "src/core",
-    "@infrastructure": "src/infrastructure",
-    "@controllers": "src/controllers"
+    "@core": "dist/core",
+    "@infrastructure": "dist/infrastructure",
+    "@controllers": "dist/controllers"
   },
   "author": "",
   "license": "ISC",
