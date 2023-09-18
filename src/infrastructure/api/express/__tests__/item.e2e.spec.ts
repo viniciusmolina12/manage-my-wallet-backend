@@ -118,6 +118,16 @@ describe('Item e2e tests', () => {
         const itemFound = await ItemModel.findOne({_id: item._id});
         expect(itemFound).toBeFalsy();
     })
+
+
+    it('should return an error when try delete a non-existent item', async () => {
+        const response = await request(app)
+            .delete(`/api/item/non-existent-id`)
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('message', 'Item not found');
+        expect(response.body).not.toHaveProperty('data');
+    })
+
     
 })
     
