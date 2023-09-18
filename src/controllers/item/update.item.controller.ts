@@ -27,7 +27,7 @@ export default class UpdateItemController {
         try {
             const { id, name, categoryId, description } = input.data;
             const output = await this.updateItemUseCase.execute({ id, name, categoryId, description });
-            return response<OutputUpdateItemControllerDto>(201, 'Item updated succesfully', output);
+            return response<OutputUpdateItemControllerDto>(200, 'Item updated succesfully', output);
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);
