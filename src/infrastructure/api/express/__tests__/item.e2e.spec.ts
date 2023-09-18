@@ -80,7 +80,17 @@ describe('Item e2e tests', () => {
         expect(response.body.data.items[1]).toHaveProperty('description', item2.description);
         expect(response.body.data.items[1]).toHaveProperty('categoryId', item2.categoryId);
     })
+
+    it('should delete an item', async () => {
+        const item = await ItemModel.create({ _id: 'any_hash_id', name: 'Item 1', description: 'Description 1', categoryId: 'Category 1' });
+        const response = await request(app)
+            .delete(`/api/item/${item._id}`)
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('message', 'Item deleted succesfully');
+        const itemFound = await ItemModel.findOne({_id: item._id});
+        expect(itemFound).toBeFalsy();
+    })
+    
 })
-        
     
     
