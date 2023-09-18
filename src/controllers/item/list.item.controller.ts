@@ -22,7 +22,7 @@ export default class ListItemController {
     public async handle(input: InputControllerDto<InputListItemControllerDto>): Promise<OutputControllerDto<OutputListItemControllerDto>> {
         try {
             const output = await this.listItemUseCase.execute();
-            return response<OutputListItemControllerDto>(201, 'Items listed succesfully', output);
+            return response<OutputListItemControllerDto>(200, 'Items listed succesfully', output);
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);

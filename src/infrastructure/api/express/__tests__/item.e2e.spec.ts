@@ -48,4 +48,18 @@ describe('Item e2e tests', () => {
         expect(response.body.data).toHaveProperty('description', 'any_item_description');
         expect(response.body.data).toHaveProperty('categoryId', 'any_category_id'); 
     })
+
+    it('should get an item', async () => {
+        const item = await ItemModel.create({ _id: 'any_hash_id', name: 'Item 1', description: 'Description 1', categoryId: 'Category 1' });
+        const response = await request(app)
+            .get(`/api/item/${item._id}`)
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('data');
+        expect(response.body).toHaveProperty('message', 'Item found succesfully');
+        expect(response.body.data).toHaveProperty('id', item._id);
+        expect(response.body.data).toHaveProperty('name', 'Item 1');
+        expect(response.body.data).toHaveProperty('description', 'Description 1');
+        expect(response.body.data).toHaveProperty('categoryId', 'Category 1'); 
+    })
+    
 })

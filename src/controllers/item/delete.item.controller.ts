@@ -18,7 +18,7 @@ export default class DeleteItemController {
         try {
             const { id } = input.data;
             await this.deleteItemUseCase.execute(id);
-            return response<OutputDeleteItemControllerDto>(201, 'Item deleted succesfully');
+            return response<OutputDeleteItemControllerDto>(200, 'Item deleted succesfully');
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);

@@ -24,7 +24,7 @@ export default class FindItemController {
             const { id } = input.data;
             console.log('id porra', id)
             const output = await this.findItemUseCase.execute( { id });
-            return response<OutputFindItemControllerDto>(201, 'Item founded succesfully', output);
+            return response<OutputFindItemControllerDto>(200, 'Item founded succesfully', output);
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);
