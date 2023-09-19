@@ -9,7 +9,6 @@
     "test:coverage": "jest --coverage",
     "start:dev": "ts-node-dev --respawn --transpile-only src/infrastructure/api/express/server.ts",
     "start": "node ./dist/infrastructure/api/express/server.js"
-
   },
   "_moduleAliases": {
     "@core": "dist/core",
