@@ -31,7 +31,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should update an item', async () => {
         const sut = new MongoDbItemRepository()
         const oldItem = new Item('any_hash_id', 'Item 1', 'Category 1', 'Description 1');
-        ItemModel.create({_id: oldItem.id, name: oldItem.name, description: oldItem.description, categoryId: oldItem.categoryId});
+        await ItemModel.create({_id: oldItem.id, name: oldItem.name, description: oldItem.description, categoryId: oldItem.categoryId});
         
         const itemCreated = await ItemModel.findOne({_id: oldItem.id});
         expect(itemCreated).toBeTruthy();
@@ -52,7 +52,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should find an item', async () => {
         const sut = new MongoDbItemRepository()
         const item = new Item('any_hash_id', 'Item 1', 'Category 1', 'Description 1');
-        ItemModel.create({_id: item.id, name: item.name, description: item.description, categoryId: item.categoryId});
+        await ItemModel.create({_id: item.id, name: item.name, description: item.description, categoryId: item.categoryId});
         const itemFound = await sut.find(item.id);
         expect(itemFound?.id).toBe(item.id);
         expect(itemFound?.name).toBe(item.name);
@@ -63,9 +63,9 @@ describe('MongoDB Item Repository tests', () => {
     it('should find all items', async () => {
         const sut = new MongoDbItemRepository()
         const item1 = new Item('any_hash_id', 'Item 1', 'Category 1', 'Description 1');
-        ItemModel.create({_id: item1.id, name: item1.name, description: item1.description, categoryId: item1.categoryId});
+        await ItemModel.create({_id: item1.id, name: item1.name, description: item1.description, categoryId: item1.categoryId});
         const item2 = new Item('any_hash_id_2', 'Item 2', 'Category 2', 'Description 2');
-        ItemModel.create({_id: item2.id, name: item2.name, description: item2.description, categoryId: item2.categoryId});
+        await ItemModel.create({_id: item2.id, name: item2.name, description: item2.description, categoryId: item2.categoryId});
         const itemsFound = await sut.findAll();
         expect(itemsFound).toHaveLength(2);
         expect(itemsFound[0].id).toBe(item1.id);
@@ -81,7 +81,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should delete an item', async () => {
         const sut = new MongoDbItemRepository()
         const item = new Item('any_hash_id', 'Item 1', 'Category 1', 'Description 1');
-        ItemModel.create({_id: item.id, name: item.name, description: item.description, categoryId: item.categoryId});
+        await ItemModel.create({_id: item.id, name: item.name, description: item.description, categoryId: item.categoryId});
         await sut.delete(item.id);
         const itemFound = await ItemModel.findOne({_id: item.id});
         expect(itemFound).toBeFalsy();

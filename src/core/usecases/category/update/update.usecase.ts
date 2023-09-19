@@ -14,6 +14,12 @@ export default class UpdateCategoryUseCase {
         if (categoryAlreadyExists) {
             throw new Error('Category already exists');
         }
+
+        const categoryFound = await this.categoryRepository.find(input.id);
+        if(!categoryFound) {
+            throw new Error('Category not found');
+        }
+        
         const category = new Category(input.id, input.name, input?.description);
         await this.categoryRepository.update(category);
         return {

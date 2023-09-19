@@ -28,7 +28,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should update a category', async () => {
         const sut = new MongoDbCategoryRepository()
         const oldCategory = new Category('any_hash_id', 'Category 1', 'Description 1');
-        CategoryModel.create({_id: oldCategory.id, name: oldCategory.name, description: oldCategory.description});
+        await CategoryModel.create({_id: oldCategory.id, name: oldCategory.name, description: oldCategory.description});
         
         const categoryCreated = await CategoryModel.findOne({_id: oldCategory.id});
         expect(categoryCreated).toBeTruthy();
@@ -47,7 +47,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should find a category', async () => {
         const sut = new MongoDbCategoryRepository()
         const category = new Category('any_hash_id', 'Category 1', 'Description 1');
-        CategoryModel.create({_id: category.id, name: category.name, description: category.description});
+        await CategoryModel.create({_id: category.id, name: category.name, description: category.description});
         const categoryFound = await sut.find(category.id);
         expect(categoryFound?.id).toBe(category.id);
         expect(categoryFound?.name).toBe(category.name);
@@ -57,9 +57,9 @@ describe('MongoDB Item Repository tests', () => {
     it('should find all categories', async () => {
         const sut = new MongoDbCategoryRepository()
         const category1 = new Category('any_hash_id', 'Category 1', 'Description 1');
-        CategoryModel.create({_id: category1.id, name: category1.name, description: category1.description});
+        await CategoryModel.create({_id: category1.id, name: category1.name, description: category1.description});
         const category2 = new Category('any_hash_id_2', 'Category 2', 'Description 2');
-        CategoryModel.create({_id: category2.id, name: category2.name, description: category2.description});
+        await CategoryModel.create({_id: category2.id, name: category2.name, description: category2.description});
         const categoriesFound = await sut.findAll();
         expect(categoriesFound).toHaveLength(2);
         expect(categoriesFound[0].id).toBe(category1.id);
@@ -73,7 +73,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should delete a category', async () => {
         const sut = new MongoDbCategoryRepository()
         const category = new Category('any_hash_id', 'Category 1', 'Description 1');
-        CategoryModel.create({_id: category.id, name: category.name, description: category.description});
+        await CategoryModel.create({_id: category.id, name: category.name, description: category.description});
         await sut.delete(category.id);
         const itemFound = await CategoryModel.findOne({_id: category.id});
         expect(itemFound).toBeFalsy();
@@ -82,7 +82,7 @@ describe('MongoDB Item Repository tests', () => {
     it('should find a category by name', async () => {
         const sut = new MongoDbCategoryRepository()
         const category = new Category('any_hash_id', 'Category 1', 'Description 1');
-        CategoryModel.create({_id: category.id, name: category.name, description: category.description});
+        await CategoryModel.create({_id: category.id, name: category.name, description: category.description});
         const categoryFound = await sut.findCategoryByName(category.name);
         expect(categoryFound?.id).toBe(category.id);
         expect(categoryFound?.name).toBe(category.name);

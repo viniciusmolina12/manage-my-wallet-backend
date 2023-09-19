@@ -21,7 +21,7 @@ export default class ListCategoryController {
     public async handle(input: InputControllerDto<InputListCategoryControllerDto>): Promise<OutputControllerDto<OutputListCategoryControllerDto>> {
         try {
             const output = await this.listCategoryUseCase.execute();
-            return response<OutputListCategoryControllerDto>(200, 'Categorys listed succesfully', output);
+            return response<OutputListCategoryControllerDto>(200, 'Categories listed succesfully', output);
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);
