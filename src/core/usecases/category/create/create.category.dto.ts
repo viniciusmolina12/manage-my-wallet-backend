@@ -5,6 +5,6 @@ export interface InputCreateCategoryDto {
 
 export interface OutputCreateCategoryDto {
     id: string
-    name?: string;
+    name: string;
     description?: string;
 }

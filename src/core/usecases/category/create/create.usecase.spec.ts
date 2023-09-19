@@ -1,4 +1,4 @@
-import { CreateCategoryUseCase } from "./create.usecase";
+import CreateCategoryUseCase  from "./create.usecase";
 
 const mockRepository = {
     create: jest.fn(),

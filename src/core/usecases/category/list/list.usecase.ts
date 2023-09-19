@@ -8,6 +8,10 @@ export default class ListCategoryUseCase {
 
     async execute(): Promise<OutputListCategoryDto> {
         const categories = await this.categoryRepository.findAll();
-        return { categories };
+        return { categories: categories.map(category => ({
+            id: category.id,
+            name: category.name,
+            description: category?.description,
+        })) };
     }
 }

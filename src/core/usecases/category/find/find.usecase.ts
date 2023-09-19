@@ -11,6 +11,10 @@ export default class FindCategoryUseCase {
         if(!category) {
             throw new Error('Category not found');
         }
-        return category;
+        return {
+            id: category.id,
+            name: category.name,
+            description: category?.description,
+        };
     }
 }

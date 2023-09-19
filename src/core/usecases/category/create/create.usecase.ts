@@ -3,7 +3,7 @@ import { CategoryRepository } from "@core/domain/category/repository/category.re
 import { InputCreateCategoryDto, OutputCreateCategoryDto } from "./create.category.dto";
 import Category from "@core/domain/category/entity/category.entity";
 
-export class CreateCategoryUseCase {
+export default class CreateCategoryUseCase {
     constructor(private categoryRepository: CategoryRepository) { 
         this.categoryRepository = categoryRepository;
     }
@@ -15,6 +15,10 @@ export class CreateCategoryUseCase {
         const category = new Category(uuid(), input.name, input?.description);
         
         await this.categoryRepository.create(category);
-        return category;
+        return {
+            id: category.id,
+            name: category.name,
+            description: category?.description,        
+        };
     }
 }

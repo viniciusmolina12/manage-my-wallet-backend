@@ -16,6 +16,9 @@ export default class UpdateCategoryUseCase {
         }
         const category = new Category(input.id, input.name, input?.description);
         await this.categoryRepository.update(category);
-        return category;
+        return {
+            name: category.name,
+            description: category.description
+        };
     }
 }

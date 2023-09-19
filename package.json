@@ -11,9 +11,9 @@
     "start": "node ./dist/infrastructure/api/express/server.js"
   },
   "_moduleAliases": {
-    "@core": "dist/core",
-    "@infrastructure": "dist/infrastructure",
-    "@controllers": "dist/controllers"
+    "@core": "src/core",
+    "@infrastructure": "src/infrastructure",
+    "@controllers": "src/controllers"
   },
   "author": "",
   "license": "ISC",
