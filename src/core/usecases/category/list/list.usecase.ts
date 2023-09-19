@@ -1,12 +1,12 @@
 import { CategoryRepository } from "@core/domain/category/repository/category.repository";
-import { InputListCategoryUseCase, OutputListCategoryUseCase } from "./list.category.dto";
+import { OutputListCategoryDto } from "./list.category.dto";
 
 export default class ListCategoryUseCase {
     constructor(private categoryRepository: CategoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
-    async execute(): Promise<OutputListCategoryUseCase> {
+    async execute(): Promise<OutputListCategoryDto> {
         const categories = await this.categoryRepository.findAll();
         return { categories };
     }

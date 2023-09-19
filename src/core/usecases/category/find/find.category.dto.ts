@@ -1,5 +1,5 @@
-export type InputFindCategoryUseCase = string
-export interface OutputFindCategoryUseCase {
+export type InputFindCategoryDto = string
+export interface OutputFindCategoryDto {
     id: string;
     name: string;
     description?: string;

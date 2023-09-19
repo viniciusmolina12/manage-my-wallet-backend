@@ -1,6 +1,4 @@
-export interface InputListCategoryUseCase { }
-
-export interface OutputListCategoryUseCase {
+export interface OutputListCategoryDto {
     categories: 
         {
             id: string;
