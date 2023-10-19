@@ -48,6 +48,10 @@ export default class BillItem extends Entity {
         return this._price * this._quantity;
     }
 
+    get itemId(): string {
+        return this._itemId;
+    }
+
     changePrice(price: number): void {
         this._price = price;
         this.validate();

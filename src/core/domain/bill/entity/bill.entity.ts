@@ -7,13 +7,15 @@ export default class Bill extends Entity {
     private _name: string;
     private _items: BillItem[];
     private _description?: string;
+    private _createdDate: Date;
 
-    constructor(id: string, name: string, items: BillItem[], description?: string) {
+    constructor(id: string, name: string, items: BillItem[], createdDate: Date, description?: string) {
         super();
         this._id = id;
         this._name = name;
         this._items = items;
         this._description = description;
+        this._createdDate = createdDate;
         this.validate();
     }
 
@@ -26,6 +28,9 @@ export default class Bill extends Entity {
         }
         if(this._items.length === 0){
             this.notification.add({ message: 'Items is required', source: 'bill'})
+        }
+        if(!this._createdDate){
+            this.notification.add({ message: 'Created Date is required', source: 'bill'})
         }
         if(this.notification.hasErrors()) {
             throw new EntityError(this.notification.getNotifications());
@@ -42,6 +47,19 @@ export default class Bill extends Entity {
 
     get description(): string | undefined {
         return this._description;
+    }
+
+    get createdDate(): Date { 
+        return this._createdDate
+    }
+
+    get id(): string {
+        return this._id;
+    }
+    
+
+    get items(): Array<BillItem> {
+        return this._items;
     }
 
     changeName(name: string): void {
