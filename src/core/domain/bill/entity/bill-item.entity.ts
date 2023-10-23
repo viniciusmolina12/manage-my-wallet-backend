@@ -3,16 +3,16 @@ import EntityError from "../../@shared/error/entity.error";
 
 export default class BillItem extends Entity {
     private _id: string; 
-    private _itemId: string;
-    private _price: number;
-    private _quantity: number;
+    private itemId: string;
+    private price: number;
+    private quantity: number;
     
     constructor(id: string, itemId: string, price: number, quantity: number) {
         super();
         this._id = id;
-        this._itemId = itemId;
-        this._price = price;
-        this._quantity = quantity;
+        this.itemId = itemId;
+        this.price = price;
+        this.quantity = quantity;
         this.validate();
     }
 
@@ -20,13 +20,13 @@ export default class BillItem extends Entity {
         if(this._id.length === 0) {
             this.notification.add({ message: 'Id is required', source: 'billItem' })
         }
-        if(this._itemId.length === 0) {
+        if(this.itemId.length === 0) {
             this.notification.add({ message: 'ItemId is required', source: 'billItem' })
         }
-        if(this._price <= 0){
+        if(this.price <= 0){
             this.notification.add({ message: 'Price must be greater than 0', source: 'billItem' })
         }
-        if(this._quantity <= 0){
+        if(this.quantity <= 0){
             this.notification.add({ message: 'Quantity must be greater than 0', source: 'billItem' })
         }
 
@@ -37,28 +37,20 @@ export default class BillItem extends Entity {
     get id(): string {
         return this._id;
     }
-    get price(): number {
-        return this._price;
-    }
-    get quantity(): number {
-        return this._quantity;
-    }
+
 
     get total(): number {
-        return this._price * this._quantity;
+        return this.price * this.quantity;
     }
 
-    get itemId(): string {
-        return this._itemId;
-    }
 
     changePrice(price: number): void {
-        this._price = price;
+        this.price = price;
         this.validate();
     }
 
     changeQuantity(quantity: number): void {
-        this._quantity = quantity;
+        this.quantity = quantity;
         this.validate();
     }
 }
