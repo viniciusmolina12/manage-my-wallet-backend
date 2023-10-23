@@ -3,7 +3,9 @@ import mockDb from "../__mocks__/mockDb"
 import Bill from "@core/domain/bill/entity/bill.entity"
 import BillItem from "@core/domain/bill/entity/bill-item.entity"
 import BillModel from "../../model/bill.model"
+import ItemModel from "../../model/item.model"
 import MongoDbBillRepository from "./bill.repository"
+import Item from "@core/domain/item/entity/item.entity"
 
 beforeAll(async () => {
     await mockDb.connect();
@@ -55,8 +57,14 @@ describe('MongoDB Item Repository tests', () => {
        
     it('should find a bill', async () => {
         const sut = new MongoDbBillRepository()
+
+        const oldItem = new Item('any_hash_id', 'Item 1', 'Category 1', 'Description 1');
+        const item = await ItemModel.create({_id: oldItem.id, name: oldItem.name, description: oldItem.description, categoryId: oldItem.categoryId});
+
         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
         const bill = new Bill('any_id', 'any_name', [billItem], new Date(), 'any_description' )
+        billItem.itemId = item.id;
+        console.log(item.id)
         await BillModel.create({_id: bill.id, name: bill.name, description: bill.description, createdDate: new Date(), items: [billItem]});
         const billFound = await sut.find(bill.id);
         expect(billFound?.id).toBe(bill.id);

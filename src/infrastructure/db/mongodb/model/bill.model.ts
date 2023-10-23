@@ -14,7 +14,14 @@ const BillSchema = new Schema({
     _id: String,
     name: { type: String, required: true },
     description: { type: String, required: false },
-    items: [BillItemSchema],
+    items: [
+        {
+            _id: { type: String, required: true }, 
+            itemId: { type: String, ref: 'Item', required: true},
+            quantity: { type: Number, required: true },
+            price: { type: Number, required: true }
+        }
+    ],
     createdDate: { type: Date, required: true },
 })
 
