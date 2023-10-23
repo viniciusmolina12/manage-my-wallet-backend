@@ -14,7 +14,7 @@ export default class CreateBillUseCase {
 
     async execute(input: InputCreateBillDto): Promise<OutputCreateBillDto> {
         const billItems: BillItem[] = []
-        input.items.map((item) => {
+        input?.items?.map((item) => {
             const billItem = new BillItem(uuid(), item.itemId, item.price, item.quantity);
             billItems.push(billItem)
         })

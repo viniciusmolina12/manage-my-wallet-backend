@@ -3,9 +3,9 @@ import EntityError from "../../@shared/error/entity.error";
 
 export default class BillItem extends Entity {
     private _id: string; 
-    private itemId: string;
-    private price: number;
-    private quantity: number;
+    public itemId: string;
+    public price: number;
+    public quantity: number;
     
     constructor(id: string, itemId: string, price: number, quantity: number) {
         super();
@@ -17,10 +17,10 @@ export default class BillItem extends Entity {
     }
 
     validate(): void {
-        if(this._id.length === 0) {
+        if(!this._id) {
             this.notification.add({ message: 'Id is required', source: 'billItem' })
         }
-        if(this.itemId.length === 0) {
+        if(!this.itemId) {
             this.notification.add({ message: 'ItemId is required', source: 'billItem' })
         }
         if(this.price <= 0){
