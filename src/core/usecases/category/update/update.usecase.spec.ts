@@ -12,6 +12,7 @@ const mockRepository = {
 describe('Update category usecase', () => {
     it('should be able to update a new category', async () => {
         const sut = new UpdateCategoryUseCase(mockRepository);
+        mockRepository.find.mockReturnValueOnce({ id: 'any_id', name: 'any_name', description: 'any_description' })
         const input = { id: 'any_id', name: 'any_name', description: 'any_description' };
         const category = await sut.execute(input);
         expect(category).toBeTruthy();
@@ -28,6 +29,7 @@ describe('Update category usecase', () => {
 
     it('should throw an error if name is not provided', async () => {
         const sut = new UpdateCategoryUseCase(mockRepository);
+        mockRepository.find.mockReturnValueOnce({ id: 'any_id', name: 'any_name', description: 'any_description' })
         const input = { id: 'any_id', name: '', description: 'any_description' };
         expect(sut.execute(input)).rejects.toThrow('category: Name is required');
     })

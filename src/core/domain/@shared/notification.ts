@@ -20,7 +20,6 @@ export default class Notification {
     }
 
     hasErrors(): boolean {
-        console.log('CAIU AQUIA')
         return this.notifications.length > 0;
     }
 
