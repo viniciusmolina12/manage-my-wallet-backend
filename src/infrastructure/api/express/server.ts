@@ -1,4 +1,5 @@
 require('module-alias/register')
+import 'dotenv/config'
 import { app } from './app'
 import { connect } from '@infrastructure/db/mongodb';
 connect()
