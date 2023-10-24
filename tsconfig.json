@@ -32,7 +32,10 @@
       ],
       "@infrastructure/*": [
           "./src/infrastructure/*"
-      ]
+      ],
+      "@config/*": [
+        "./src/config/*"
+    ]
   },
     /* Modules */
     "module": "commonjs",                                /* Specify what module code is generated. */

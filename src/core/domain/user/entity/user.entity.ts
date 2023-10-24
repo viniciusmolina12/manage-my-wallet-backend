@@ -1,36 +1,40 @@
 import Entity from "@core/domain/@shared/entity.interface";
 import EntityError from "@core/domain/@shared/error/entity.error";
+import { EmailValidate } from "@core/domain/@shared/validate/email.validate";
 
 export default class User extends Entity {
-    private id: string;
-    private name: string;
-    private email: string;
-    private userName: string;
-    private password: string;
+    private _id: string;
+    private _name: string;
+    private _email: string;
+    private _userName: string;
+    private _password: string;
     constructor(id: string, name: string, email: string, userName: string, password: string) {
         super();
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.userName = userName;
-        this.password = password;
+        this._id = id;
+        this._name = name;
+        this._email = email;
+        this._userName = userName;
+        this._password = password;
         this.validate();
     }
 
     validate() {
-        if(!this.id) {
+        if(!this._id) {
             this.notification.add({ message: 'Id is required', source: 'user'})
         }
-        if(!this.name) {
+        if(!this._name) {
             this.notification.add({ message: 'Name is required', source: 'user'})
         }
-        if(!this.email){
+        if(!this._email){
             this.notification.add({ message: 'Email is required', source: 'user'})
         }
-        if(!this.userName){
+        if(!EmailValidate.validate(this._email)) {
+            this.notification.add({ message: 'Email is invalid', source: 'user'})
+        }
+        if(!this._userName){
             this.notification.add({ message: 'Username is required', source: 'user'})
         }
-        if(!this.password){
+        if(!this._password){
             this.notification.add({ message: 'Password is required', source: 'user'})
         }
         if(this.notification.hasErrors()) {
@@ -38,23 +42,43 @@ export default class User extends Entity {
         }
     }
 
-   set changeName(name: string) {
-    this.name = name;
+    changeName(name: string) {
+    this._name = name;
     this.validate();
    }
 
-   set changeEmail(email: string) {
-    this.email = email;
+    changeEmail(email: string) {
+    this._email = email;
     this.validate();
    }
 
-   set changeUsername(userName: string) {
-    this.userName = userName;
+   changeUsername(userName: string) {
+    this._userName = userName;
     this.validate();
    }
 
-   set changePassword(password: string) {
-    this.password = password;
+    changePassword(password: string) {
+    this._password = password;
     this.validate();
+   }
+
+   get id(): string { 
+    return this._id
+   }
+
+   get email(): string { 
+    return this._email
+   }
+
+   get userName(): string { 
+    return this._userName
+   }
+
+   get password(): string { 
+    return this._password
+   }
+
+   get name(): string {
+    return this._name
    }
 }   

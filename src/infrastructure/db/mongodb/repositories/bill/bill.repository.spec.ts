@@ -22,13 +22,13 @@ describe('MongoDB Item Repository tests', () => {
     it('should create a bill', async () => {
         const sut = new MongoDbBillRepository()
         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
-        const bill = new Bill('any_id', 'any_name', [billItem], new Date(), 'any_description' )
+        const bill = new Bill('any_id', 'any_name', [billItem], new Date())
         await sut.create(bill);
         const billCreated = await BillModel.findOne({_id: bill.id});
         expect(billCreated).toBeTruthy();
         expect(billCreated?._id).toBe(bill.id);
         expect(billCreated?.name).toBe(bill.name);
-        expect(billCreated?.description).toBe(bill.description);
+        expect(billCreated?.description).toBeUndefined()
         expect(billCreated?.items).toHaveLength(1);
     })
     it('should update a bill', async () => {
@@ -45,7 +45,7 @@ describe('MongoDB Item Repository tests', () => {
         expect(billCreated?.items).toHaveLength(1);
         
         const updateBillItem = new BillItem('any_id', 'any_item_id', 10, 2);
-        const updateBill = new Bill('any_id', 'any_name_2', [updateBillItem, updateBillItem], new Date(), 'any_description_2' );
+        const updateBill = new Bill('any_id', 'any_name_2', [updateBillItem, updateBillItem], new Date(), 'any_other_description' );
         await sut.update(updateBill);
         const billUpdated = await BillModel.findOne({_id: oldBill.id});
         expect(billUpdated?._id).toBe(updateBill.id);
@@ -64,7 +64,6 @@ describe('MongoDB Item Repository tests', () => {
         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
         const bill = new Bill('any_id', 'any_name', [billItem], new Date(), 'any_description' )
         billItem.itemId = item.id;
-        console.log(item.id)
         await BillModel.create({_id: bill.id, name: bill.name, description: bill.description, createdDate: new Date(), items: [billItem]});
         const billFound = await sut.find(bill.id);
         expect(billFound?.id).toBe(bill.id);
