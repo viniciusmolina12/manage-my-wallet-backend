@@ -1,3 +1,3 @@
 export default interface JwtGenerator {
-    generateJWT(payload: any): Promise<string>
+    generateJWT(payload: any, options?: any): Promise<string>
 }
