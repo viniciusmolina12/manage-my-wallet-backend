@@ -6,14 +6,12 @@ export default class User extends Entity {
     private _id: string;
     private _name: string;
     private _email: string;
-    private _userName: string;
     private _password: string;
-    constructor(id: string, name: string, email: string, userName: string, password: string) {
+    constructor(id: string, name: string, email: string, password: string) {
         super();
         this._id = id;
         this._name = name;
         this._email = email;
-        this._userName = userName;
         this._password = password;
         this.validate();
     }
@@ -30,9 +28,6 @@ export default class User extends Entity {
         }
         if(!EmailValidate.validate(this._email)) {
             this.notification.add({ message: 'Email is invalid', source: 'user'})
-        }
-        if(!this._userName){
-            this.notification.add({ message: 'Username is required', source: 'user'})
         }
         if(!this._password){
             this.notification.add({ message: 'Password is required', source: 'user'})
@@ -51,12 +46,6 @@ export default class User extends Entity {
     this._email = email;
     this.validate();
    }
-
-   changeUsername(userName: string) {
-    this._userName = userName;
-    this.validate();
-   }
-
     changePassword(password: string) {
     this._password = password;
     this.validate();
@@ -68,10 +57,6 @@ export default class User extends Entity {
 
    get email(): string { 
     return this._email
-   }
-
-   get userName(): string { 
-    return this._userName
    }
 
    get password(): string { 

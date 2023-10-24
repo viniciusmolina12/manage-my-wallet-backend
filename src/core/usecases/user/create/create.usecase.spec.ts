@@ -9,7 +9,7 @@ const mockRepository = {
     find: jest.fn(),
     findAll: jest.fn(),
     delete: jest.fn(),
-    search: jest.fn(),
+    search: jest.fn(async (): Promise<Array<any>> => []),
 }
 
 class EncryptStub implements Encrypt {
@@ -43,8 +43,7 @@ const makeSut = (): SutTypes => {
 const input = {
     name: 'any_name',
     email: 'any_email@mail.com',
-    password: 'any_password',
-    userName: 'any_username'
+    password: 'any_password'
 }
 
 describe('Create user usecase tests', () => {
@@ -63,13 +62,13 @@ describe('Create user usecase tests', () => {
         const { sut }  = makeSut();
         const spy = jest.spyOn(mockRepository, 'create');
         const user = await sut.execute(input);
-        const userCompare = new User(user.id, user.name, user.email, 'any_username', 'encrypted_password');
+        const userCompare = new User(user.id, user.name, user.email, 'encrypted_password');
         expect(spy).toHaveBeenCalledWith(userCompare)
     })
 
     it('should throw if user exists', async () => {  
         const { sut }  = makeSut();
-        mockRepository.search.mockReturnValueOnce({id: 'any_id', name: 'any_name', email: 'any_email@mail.com', userName: 'any_username', password: 'encrypted_password'})
+        mockRepository.search.mockReturnValueOnce(Promise.resolve([{id: 'any_id', name: 'any_name', email: 'any_email@mail.com', userName: 'any_username', password: 'encrypted_password'}]))
         await expect(sut.execute(input)).rejects.toThrow('User already exists');
     })
 })

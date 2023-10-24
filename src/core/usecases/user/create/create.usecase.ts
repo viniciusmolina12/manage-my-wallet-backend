@@ -14,10 +14,10 @@ export default class CreateUserUseCase {
         this.jwtGenerator = jwtGenerator;
     }
     async execute(input: InputCreateUserDto): Promise<OutputCreateUserDto> {
-        const userExists = await this.userRepository.search({ email: input.email, userName: input.userName });
-        if (userExists) throw new EntityError('User already exists');
-        const user = new User(uuid(), input.name, input.email, input.userName, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND));
-        const token = await this.jwtGenerator.generateJWT({ id: user.id, name: user.userName, email: user.email });
+        const userExists = await this.userRepository.search({ email: input.email });
+        if (userExists.length > 0) throw new EntityError('User already exists');
+        const user = new User(uuid(), input.name, input.email, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND));
+        const token = await this.jwtGenerator.generateJWT({ id: user.id, name: user.name, email: user.email });
         await this.userRepository.create(user);
         return {
             id: user.id,

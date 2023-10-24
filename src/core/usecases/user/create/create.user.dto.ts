@@ -2,7 +2,6 @@ export interface InputCreateUserDto {
     name: string;
     email: string;
     password: string;
-    userName: string;
 }
 
 export interface OutputCreateUserDto {
