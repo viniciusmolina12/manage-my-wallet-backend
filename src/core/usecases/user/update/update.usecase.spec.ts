@@ -1,15 +1,6 @@
 import User from "@core/domain/user/entity/user.entity";
 import UpdateUserUseCase from "./update.usecase";
-
-const mockRepository = {
-    create: jest.fn(),
-    update: jest.fn(),
-    find: jest.fn(),
-    findAll: jest.fn(),
-    delete: jest.fn(),
-    search: jest.fn(async (): Promise<Array<any>> => []),
-}
-
+import mockRepository from "../__mocks__/repository.mock";
 const input = { 
     id: 'any_id',
     name: 'any_other_name',
@@ -39,23 +30,23 @@ describe('Update user usecase tests', () => {
 
     it('should throw an error if name is empty', async () => {
         const sut = new UpdateUserUseCase(mockRepository)
-        input.name = '';
+        const wrongInput = { ...input, name: '' };
         mockRepository.find.mockReturnValueOnce(new User('any_id', 'any_name', 'any_email@mail.com', 'any_password'));
-        await expect(sut.execute(input)).rejects.toThrow('user: Name is required, ');
+        await expect(sut.execute(wrongInput)).rejects.toThrow('user: Name is required, ');
     })
 
     it('should throw an error if email is empty', async () => {
         const sut = new UpdateUserUseCase(mockRepository)
-        input.email = '';
+        const wrongInput = { ...input, email: '' };
         mockRepository.find.mockReturnValueOnce(new User('any_id', 'any_name', 'any_email@mail.com', 'any_password'));
-        await expect(sut.execute(input)).rejects.toThrow('user: Email is required, ');
+        await expect(sut.execute(wrongInput)).rejects.toThrow('user: Email is required, ');
     })
 
     it('should throw an error if email is invalid', async () => {
         const sut = new UpdateUserUseCase(mockRepository)
-        input.email = 'invalid_email';
+        const wrongInput = { ...input, email: 'invalid_email' };
         mockRepository.find.mockReturnValueOnce(new User('any_id', 'any_name', 'any_email@mail.com', 'any_password'));
-        await expect(sut.execute(input)).rejects.toThrow('user: Email is invalid, ');
+        await expect(sut.execute(wrongInput)).rejects.toThrow('user: Email is invalid, ');
     })
 
 

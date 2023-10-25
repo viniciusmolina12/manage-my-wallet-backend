@@ -3,28 +3,8 @@ import JwtGenerator from "@core/domain/interfaces/jwtGenerator.interface";
 import LoginUserUseCase from "./login.usecase";
 import User from "@core/domain/user/entity/user.entity";
 import EntityError from "@core/domain/@shared/error/entity.error";
-
-const mockRepository = {
-    create: jest.fn(),
-    update: jest.fn(),
-    find: jest.fn(),
-    findAll: jest.fn(),
-    delete: jest.fn(),
-    search: jest.fn(async (): Promise<Array<any>> => []),
-}
-
-class EncryptStub implements Encrypt {
-    encrypt(password: string): string {
-        return 'encrypted_password'
-    }
-}
-
-class JwtGeneratorStub implements JwtGenerator {
-    generateJWT(id: string): Promise<string> {
-        return Promise.resolve('any_token');
-    }
-}
-
+import { EncryptStub, JwtGeneratorStub } from "../__mocks__/stubs.mock";
+import mockRepository from "../__mocks__/repository.mock";
 interface SutTypes {
     encryptStub: Encrypt;
     jwtGeneratorStub: JwtGenerator;
@@ -40,12 +20,11 @@ const makeSut = (): SutTypes => {
         jwtGeneratorStub
     }
 }
-
 describe('Login usecase tests', () => {
     it('should login succesfully', async () => {
         const { sut } = makeSut();
         mockRepository.search.mockReturnValueOnce(Promise.resolve([new User('any_id', 'any_name', 'any_email@mail.com', 'encrypted_password')]));
-        const result = await sut.execute({email: 'any_email@mail.com', password: 'encrypted_password'})
+        const result = await sut.execute({ email: 'any_email@mail.com', password: 'encrypted_password' })
         expect(result.token).toBe('any_token');
         expect(result.user.id).toBe('any_id');
         expect(result.user.name).toBe('any_name');
@@ -54,12 +33,12 @@ describe('Login usecase tests', () => {
 
     it('should throw an error if user does not exist', async () => {
         const { sut } = makeSut();
-        await expect(sut.execute({email: 'any_email@mail.com', password: 'encrypted_password'})).rejects.toThrow(new EntityError('Email or password is invalid'))
+        await expect(sut.execute({ email: 'any_email@mail.com', password: 'encrypted_password' })).rejects.toThrow(new EntityError('Email or password is invalid'))
     })
 
     it('should throw an error if password is invalid', async () => {
         const { sut } = makeSut();
         mockRepository.search.mockReturnValueOnce(Promise.resolve([new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')]));
-        await expect(sut.execute({email: 'any_email@mail.com', password: 'any_other_password'})).rejects.toThrow(new EntityError('Email or password is invalid'))
+        await expect(sut.execute({ email: 'any_email@mail.com', password: 'any_other_password' })).rejects.toThrow(new EntityError('Email or password is invalid'))
     })
 })

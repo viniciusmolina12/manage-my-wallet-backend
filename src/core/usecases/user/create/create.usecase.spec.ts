@@ -2,28 +2,8 @@ import Encrypt from "@core/domain/interfaces/encrypt.interface";
 import CreateUserUseCase from "./create.usecase";
 import JwtGenerator from "@core/domain/interfaces/jwtGenerator.interface";
 import User from "@core/domain/user/entity/user.entity";
-
-const mockRepository = {
-    create: jest.fn(),
-    update: jest.fn(),
-    find: jest.fn(),
-    findAll: jest.fn(),
-    delete: jest.fn(),
-    search: jest.fn(async (): Promise<Array<any>> => []),
-}
-
-class EncryptStub implements Encrypt {
-    encrypt(password: string): string {
-        return 'encrypted_password'
-    }
-}
-
-class JwtGeneratorStub implements JwtGenerator {
-    generateJWT(id: string): Promise<string> {
-        return Promise.resolve('any_token');
-    }
-}
-
+import mockRepository from "../__mocks__/repository.mock";
+import { EncryptStub, JwtGeneratorStub } from "../__mocks__/stubs.mock";
 interface SutTypes {
     encryptStub: Encrypt;
     jwtGeneratorStub: JwtGenerator;
@@ -39,13 +19,11 @@ const makeSut = (): SutTypes => {
         jwtGeneratorStub
     }
 }
-
 const input = {
     name: 'any_name',
     email: 'any_email@mail.com',
     password: 'any_password'
 }
-
 describe('Create user usecase tests', () => {
     it('should create an user', async () => {  
         const { sut }  = makeSut();
