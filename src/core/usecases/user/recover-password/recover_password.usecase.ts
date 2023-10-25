@@ -3,6 +3,7 @@ import { InputRecoverPasswordUserDto, OutputRecoverPasswordUserDto } from "./rec
 import EntityError from "@core/domain/@shared/error/entity.error";
 import Encrypt from "@core/domain/interfaces/encrypt.interface";
 import Mailer from "@core/domain/interfaces/mailer.interface";
+import ENV from "@config/env";
 
 export default class RecoverPasswordUserUseCase {
     constructor(private readonly userRepository: UserRepository, private readonly mailer: Mailer, private readonly encrypt: Encrypt) {
@@ -22,9 +23,9 @@ export default class RecoverPasswordUserUseCase {
         await this.userRepository.createRecoveryData(user.email, token, expiresIn);
         await this.mailer.sendMail({
             to: user.email,
-            from: "XXXXXXXXXXXXXXXXXXX",
+            from: ENV.FROM_EMAIL,
             subject: "Password recovery",
-            content: `<p>Hello ${user.name},</p><p><a href="http://localhost:3000/reset-password?token=${token}">Click here to reset your password</a></p>`,
+            content: `<p>Hello ${user.name},</p><p><a href="${ENV.RESET_PASSWORD_URL}?token=${token}">Click here to reset your password</a></p>`,
         });
         const censoredEmail = user.email.replace(/^(.)(.*)(?=@)/, (match, firstChar, hiddenPart) => firstChar + '*'.repeat(hiddenPart.length));
         return { censoredEmail };
