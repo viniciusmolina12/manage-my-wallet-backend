@@ -7,5 +7,7 @@ export default  {
     search: jest.fn(async (): Promise<Array<any>> => []),
     getRecoveryPasswordToken: jest.fn(),
     getRecoveryData: jest.fn(),
-    createRecoveryData: jest.fn()
+    createRecoveryData: jest.fn(),
+    findUserByResetPasswordToken: jest.fn(),
+    updateResetPasswordToken: jest.fn()
 }

@@ -27,6 +27,7 @@ export default class RecoverPasswordUserUseCase {
             subject: "Password recovery",
             content: `<p>Hello ${user.name},</p><p><a href="${ENV.RESET_PASSWORD_URL}?token=${token}">Click here to reset your password</a></p>`,
         });
+        await this.userRepository.updateResetPasswordToken(user, token, expiresIn);
         const censoredEmail = user.email.replace(/^(.)(.*)(?=@)/, (match, firstChar, hiddenPart) => firstChar + '*'.repeat(hiddenPart.length));
         return { censoredEmail };
     }
