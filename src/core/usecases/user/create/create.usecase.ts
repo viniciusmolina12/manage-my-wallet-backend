@@ -6,6 +6,7 @@ import { UserRepository } from "@core/domain/user/repository/user.repository";
 import { InputCreateUserDto, OutputCreateUserDto } from "./create.user.dto";
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
+import ENV from '@config/env';
 
 export default class CreateUserUseCase {
     constructor(private readonly userRepository: UserRepository, private readonly encrypt: Encrypt, private readonly jwtGenerator: JwtGenerator) {
@@ -17,7 +18,8 @@ export default class CreateUserUseCase {
         const userExists = await this.userRepository.search({ email: input.email });
         if (userExists.length > 0) throw new EntityError('User already exists');
         const user = new User(uuid(), input.name, input.email, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND));
-        const token = await this.jwtGenerator.generateJWT({ id: user.id, name: user.name, email: user.email });
+        const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
+        const token = this.jwtGenerator.generateJwt({ id: user.id, name: user.name, email: user.email }, ENV.SECRET_KEY, expiresIn);
         await this.userRepository.create(user);
         return {
             id: user.id,

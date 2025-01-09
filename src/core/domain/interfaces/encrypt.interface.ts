@@ -1,4 +1,4 @@
 export default interface Encrypt {
     encrypt(value: string, salts: number): string;
-    generatePasswordRecoverToken(expiresIn?: Date): string;
+    generateJwt(data: any, secret: string, expiresIn?: Date): string;
 }

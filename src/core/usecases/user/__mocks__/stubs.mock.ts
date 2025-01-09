@@ -6,14 +6,14 @@ export class EncryptStub implements Encrypt {
     encrypt(password: string): string {
         return 'encrypted_password'
     }
-    generatePasswordRecoverToken(expiresIn?: Date): string {
+    generateJwt(data: any, secret: string, expiresIn?: Date): string {
         return 'token'
     }
 }
 
 export class JwtGeneratorStub implements JwtGenerator {
-    generateJWT(id: string): Promise<string> {
-        return Promise.resolve('any_token');
+    generateJwt(data: any, secret: string, expiresIn?: Date): string {
+        return 'any_token';
     }
 }
 

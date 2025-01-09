@@ -1,15 +1,15 @@
 import { UserRepository } from "@core/domain/user/repository/user.repository";
 import { InputRecoverPasswordUserDto, OutputRecoverPasswordUserDto } from "./recover_password.user.dto";
 import EntityError from "@core/domain/@shared/error/entity.error";
-import Encrypt from "@core/domain/interfaces/encrypt.interface";
 import Mailer from "@core/domain/interfaces/mailer.interface";
 import ENV from "@config/env";
+import JwtGenerator from "@core/domain/interfaces/jwtGenerator.interface";
 
 export default class RecoverPasswordUserUseCase {
-    constructor(private readonly userRepository: UserRepository, private readonly mailer: Mailer, private readonly encrypt: Encrypt) {
+    constructor(private readonly userRepository: UserRepository, private readonly mailer: Mailer, private readonly jwtGenerator: JwtGenerator) {
         this.userRepository = userRepository;
         this.mailer = mailer;
-        this.encrypt = encrypt;
+        this.jwtGenerator = jwtGenerator;
     }
 
     async execute(input: InputRecoverPasswordUserDto): Promise<OutputRecoverPasswordUserDto> {
@@ -19,7 +19,7 @@ export default class RecoverPasswordUserUseCase {
         }
         const user = users[0];
         const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
-        const token = this.encrypt.generatePasswordRecoverToken(expiresIn);
+        const token = this.jwtGenerator.generateJwt({ name: user.name, email: user.email }, ENV.SECRET_KEY, expiresIn);
         await this.userRepository.createRecoveryData(user.email, token, expiresIn);
         await this.mailer.sendMail({
             to: user.email,
