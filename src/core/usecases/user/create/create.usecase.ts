@@ -18,8 +18,7 @@ export default class CreateUserUseCase {
         const userExists = await this.userRepository.search({ email: input.email });
         if (userExists.length > 0) throw new EntityError('User already exists');
         const user = new User(uuid(), input.name, input.email, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND));
-        const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
-        const token = this.jwtGenerator.generateJwt({ id: user.id, name: user.name, email: user.email }, ENV.SECRET_KEY, expiresIn);
+        const token = this.jwtGenerator.generateJwt({ id: user.id, name: user.name, email: user.email }, ENV.SECRET_KEY, '1h');
         await this.userRepository.create(user);
         return {
             id: user.id,

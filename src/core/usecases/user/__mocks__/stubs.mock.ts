@@ -12,7 +12,7 @@ export class EncryptStub implements Encrypt {
 }
 
 export class JwtGeneratorStub implements JwtGenerator {
-    generateJwt(data: any, secret: string, expiresIn?: Date): string {
+    generateJwt(data: any, secret: string, expiresIn?: string): string {
         return 'any_token';
     }
 }

@@ -19,7 +19,7 @@ export default class RecoverPasswordUserUseCase {
         }
         const user = users[0];
         const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
-        const token = this.jwtGenerator.generateJwt({ name: user.name, email: user.email }, ENV.SECRET_KEY, expiresIn);
+        const token = this.jwtGenerator.generateJwt({ name: user.name, email: user.email, type: 'recover-password' }, ENV.SECRET_KEY, '1h');
         await this.userRepository.createRecoveryData(user.email, token, expiresIn);
         await this.mailer.sendMail({
             to: user.email,

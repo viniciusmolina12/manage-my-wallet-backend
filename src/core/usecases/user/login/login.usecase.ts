@@ -18,8 +18,7 @@ export default class LoginUserUseCase {
         const user = userExists[0];
         const encryptPassword = this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND);
         if(encryptPassword !== user.password) throw new EntityError('Email or password is invalid');
-        const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
-        const token = this.jwtGenerator.generateJwt({ id: user.id, email: user.email, name: user.name }, ENV.SECRET_KEY, expiresIn);
+        const token = this.jwtGenerator.generateJwt({ id: user.id, email: user.email, name: user.name }, ENV.SECRET_KEY, '1h');
         return {
             user: {
                 id: user.id,
