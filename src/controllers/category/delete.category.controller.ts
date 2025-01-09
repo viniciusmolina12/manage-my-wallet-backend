@@ -1,7 +1,7 @@
 import DeleteCategoryUseCase from "@core/usecases/category/delete/delete.usecase";
-import EntityError from "../../core/domain/@shared/error/entity.error";
-import { OutputControllerDto, InputControllerDto } from "../interfaces/controller.dto";
-import { response } from "../interfaces/response";
+import EntityError from "@core/domain/@shared/error/entity.error";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 
 interface InputDeleteCategoryControllerDto {
     id: string;

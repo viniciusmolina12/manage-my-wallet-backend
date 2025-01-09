@@ -1,7 +1,7 @@
-import EntityError from "../../core/domain/@shared/error/entity.error";
-import ListItemUsecase from "../../core/usecases/item/list/list.usecase";
-import { OutputControllerDto, InputControllerDto } from "../interfaces/controller.dto";
-import { response } from "../interfaces/response";
+import EntityError from "@core/domain/@shared/error/entity.error";
+import ListItemUsecase from "@core/usecases/item/list/list.usecase";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 
 interface InputListItemControllerDto {}
 

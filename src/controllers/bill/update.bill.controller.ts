@@ -1,6 +1,6 @@
 import EntityError from "@core/domain/@shared/error/entity.error";
-import { OutputControllerDto, InputControllerDto } from "@controllers/interfaces/controller.dto";
-import { response } from "@controllers/interfaces/response";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 import UpdateBillUseCase from "@core/usecases/bill/update/update.usecase";
 
 interface InputUpdateBillControllerDto {

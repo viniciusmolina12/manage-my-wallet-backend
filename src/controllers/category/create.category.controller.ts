@@ -1,6 +1,6 @@
 import EntityError from "@core/domain/@shared/error/entity.error";
-import { OutputControllerDto, InputControllerDto } from "@controllers/interfaces/controller.dto";
-import { response } from "@controllers/interfaces/response";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 import CreateCategoryUseCase from "@core/usecases/category/create/create.usecase";
 
 interface InputCreateCategoryControllerDto {

@@ -1,10 +1,7 @@
-import EntityError from "../../core/domain/@shared/error/entity.error";
-import FindItemUseCase from "../../core/usecases/item/find/find.usecase";
-import ListItemUsecase from "../../core/usecases/item/list/list.usecase";
-import UpdateItemUseCase from "../../core/usecases/item/update/update.usecase";
-import { OutputControllerDto, InputControllerDto } from "../interfaces/controller.dto";
-import { response } from "../interfaces/response";
-
+import EntityError from "@core/domain/@shared/error/entity.error";
+import UpdateItemUseCase from "@core/usecases/item/update/update.usecase";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 interface InputUpdateItemControllerDto {
     id: string;
     name: string;

@@ -1,7 +1,7 @@
-import EntityError from "../../core/domain/@shared/error/entity.error";
-import DeleteItemUseCase from "../../core/usecases/item/delete/delete.usecase";
-import { OutputControllerDto, InputControllerDto } from "../interfaces/controller.dto";
-import { response } from "../interfaces/response";
+import EntityError from "@core/domain/@shared/error/entity.error";
+import DeleteItemUseCase from "@core/usecases/item/delete/delete.usecase";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 
 interface InputDeleteItemControllerDto {
     id: string;

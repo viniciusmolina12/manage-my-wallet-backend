@@ -16,7 +16,7 @@ export default class ResetPasswordUserUseCase {
             throw new EntityError("User not found");
         }
         const now = new Date();
-        if(now > user.expiresIn) {
+        if(!user.expiresIn || now >= user.expiresIn) {
             throw new EntityError('Token expired');
         }
         if(user.resetPasswordToken !== input.token) {

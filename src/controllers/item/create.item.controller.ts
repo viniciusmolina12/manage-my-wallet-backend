@@ -1,7 +1,7 @@
 import EntityError from "@core/domain/@shared/error/entity.error";
-import CreateItemUseCase  from "@core/usecases/item/create/create.usecase";
-import { OutputControllerDto, InputControllerDto } from "@controllers/interfaces/controller.dto";
-import { response } from "@controllers/interfaces/response";
+import CreateItemUseCase from "@core/usecases/item/create/create.usecase";
+import { OutputControllerDto, InputControllerDto } from "@controllers/@shared/interfaces/controller.dto";
+import { response } from "@controllers/@shared/protocols";
 
 interface InputCreateItemControllerDto {
     name: string;
