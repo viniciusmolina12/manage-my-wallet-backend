@@ -1,9 +1,11 @@
 import { Router, Request, Response } from "express";
+import { JsonWebTokenJwtGenerator } from "@infrastructure/jwt"
 import CreateUserController from "@controllers/user/create.user.controller";
 import CreateUserUseCase from "@core/usecases/user/create/create.usecase";
 import MongoDbUserRepository from "@infrastructure/db/mongodb/repositories/user/user.repository";
 import BcryptEncrypt from "@infrastructure/encrypt";
-import { JsonWebTokenJwtGenerator } from "@infrastructure/jwt";
+import UpdateUserController from "@controllers/user/update.user.controller";
+import UpdateUserUseCase from "@core/usecases/user/update/update.usecase";
 
 
 const route = Router();
@@ -18,5 +20,14 @@ route.post('/api/user', async (req: Request, res: Response) => {
     res.status(response.code);
     res.send({ data: response.data, message: response.message})
 });
+
+route.patch('/api/user/:id', async (req: Request, res: Response) => {
+    const mongoDbUserRepository = new MongoDbUserRepository();
+    const updateUserUseCase = new UpdateUserUseCase(mongoDbUserRepository);
+    const controller = new UpdateUserController(updateUserUseCase);
+    const response = await controller.handle({ data: { ...req.body, id: req.params.id }})
+    res.status(response.code);
+    res.send({ data: response.data, message: response.message})
+})
 
 export default route;

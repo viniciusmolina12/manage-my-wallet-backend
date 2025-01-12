@@ -11,8 +11,8 @@ export default class UpdateUserUseCase {
         const user = await this.userRepository.find(input.id);
         if (!user) throw new EntityError('User not found');
         
-        const hasUserWithNewEmail = await this.userRepository.search({ email: input.email });
-        if(hasUserWithNewEmail?.length > 0 && user.email !== input.email) throw new EntityError('Email already exists');
+        const hasUserWithProvidedEmail = await this.userRepository.search({ email: input.email });
+        if(hasUserWithProvidedEmail?.length > 0 && user.email !== input.email) throw new EntityError('Email already exists');
 
         user.changeName(input.name);
         user.changeEmail(input.email)
