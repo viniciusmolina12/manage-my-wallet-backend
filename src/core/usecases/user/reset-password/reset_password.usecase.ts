@@ -22,7 +22,7 @@ export default class ResetPasswordUserUseCase {
         if(user.resetPasswordToken !== input.token) {
             throw new EntityError('Token invalid');
         }
-        const encryptPassword = this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND); 
+        const encryptPassword = this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND) as string; 
         user.changePassword(encryptPassword);
         await this.userRepository.update(user);
     }

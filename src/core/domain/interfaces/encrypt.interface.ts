@@ -1,3 +1,3 @@
 export default interface Encrypt {
-    encrypt(value: string, salts: number): string;
+    encrypt(value: string, salts: number): string | null;
 }

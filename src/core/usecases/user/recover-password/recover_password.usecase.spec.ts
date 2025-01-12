@@ -38,7 +38,7 @@ describe('Recover user password usecase tests', () => {
         mockRepository.search.mockReturnValueOnce(Promise.resolve([new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')]));
         const generatePasswordRecoverTokenSpy = jest.spyOn(jwtStub, 'generateJwt');
         await sut.execute({ email: 'any_email@mail.com' });
-        expect(generatePasswordRecoverTokenSpy).toHaveBeenCalledWith({email: 'any_email@mail.com', name: 'any_name' }, undefined, expect.any(Date));
+        expect(generatePasswordRecoverTokenSpy).toHaveBeenCalledWith({email: 'any_email@mail.com', name: 'any_name', type: 'recover-password' }, ENV.SECRET_KEY, '1h');
     })
 
     it('should call createRecoveryData method with correct values', async () => {

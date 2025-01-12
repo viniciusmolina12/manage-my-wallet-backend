@@ -7,5 +7,6 @@ module.exports = {
     "@infrastructure/(.*)": "<rootDir>/src/infrastructure/$1",
     "@core/(.*)": "<rootDir>/src/core/$1",
     "@config/(.*)": "<rootDir>/src/config/$1",
-  }
+  },
+  setupFiles: ["dotenv/config"],
 };

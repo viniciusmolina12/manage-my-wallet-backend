@@ -15,9 +15,9 @@ export default class CreateUserUseCase {
         this.jwtGenerator = jwtGenerator;
     }
     async execute(input: InputCreateUserDto): Promise<OutputCreateUserDto> {
+        const user = new User(uuid(), input.name, input.email, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND) as string);
         const userExists = await this.userRepository.search({ email: input.email });
         if (userExists.length > 0) throw new EntityError('User already exists');
-        const user = new User(uuid(), input.name, input.email, this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND));
         const token = this.jwtGenerator.generateJwt({ id: user.id, name: user.name, email: user.email }, ENV.SECRET_KEY, '1h');
         await this.userRepository.create(user);
         return {

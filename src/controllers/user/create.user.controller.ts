@@ -8,7 +8,7 @@ export default class CreateUserController {
     public async handle(input: InputControllerDto<InputCreateUserDto>): Promise<OutputControllerDto<OutputCreateUserDto>> {
         try {
             const output = await this.createUserUseCase.execute(input.data);
-            return response<OutputCreateUserDto>(200, 'Categories listed succesfully', output);
+            return response<OutputCreateUserDto>(201, 'User created successfully', output);
 
         } catch (e: any) {
             if(e instanceof EntityError) return response(400, e.message);
