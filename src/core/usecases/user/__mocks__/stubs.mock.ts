@@ -15,6 +15,10 @@ export class JwtGeneratorStub implements JwtGenerator {
     generateJwt(data: any, secret: string, expiresIn?: string): string {
         return 'any_token';
     }
+
+    verify(token: string, secret: string) {
+        return true;
+    }
 }
 
 

@@ -3,6 +3,7 @@ import mockRepository from "../__mocks__/repository.mock"
 import { JwtGeneratorStub, MailerStub } from "../__mocks__/stubs.mock"
 import RecoverPasswordUserUseCase from "./recover_password.usecase"
 import EntityError from "@core/domain/@shared/error/entity.error"
+import ENV from "@config/env"
 
 
 interface SutTypes { 
@@ -46,6 +47,14 @@ describe('Recover user password usecase tests', () => {
         const createRecoveryDataSpy = jest.spyOn(mockRepository, 'createRecoveryData');
         await sut.execute({ email: 'any_email@mail.com' });
         expect(createRecoveryDataSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_token', expect.any(Date));
+    })
+
+    it('should call jwt generator with correct values', async () => {
+        const { sut, jwtStub } = makeSut();
+        mockRepository.search.mockReturnValueOnce(Promise.resolve([new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')]));
+        const spy = jest.spyOn(jwtStub, 'generateJwt');
+        await sut.execute({ email: 'any_email@mail.com' });
+        expect(spy).toHaveBeenCalledWith({ email: 'any_email@mail.com', name: 'any_name', type: 'recover-password'} , ENV.SECRET_KEY, '1h');
     })
     
 })
