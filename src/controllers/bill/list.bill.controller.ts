@@ -7,6 +7,7 @@ interface InputListBillControllerDto {}
 
 interface OutputListBillControllerDto {
     bills: {
+        id: string;
         name: string;
         description?: string;
         total: number;
@@ -28,6 +29,7 @@ export default class ListBillController {
             const bills = await this.listBillUseCase.execute(input.data);
             const output = {
                 bills: bills.bills.map(bill => ({
+                    id: bill.id,
                     name: bill.name,
                     description: bill.description,
                     total: bill.total,

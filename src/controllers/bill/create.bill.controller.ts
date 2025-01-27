@@ -14,6 +14,7 @@ interface InputCreateBillControllerDto {
 }
 
 interface OutputCreateBillControllerDto {
+    id: string;
     name: string;
     description?: string;
     total: number;
@@ -33,6 +34,7 @@ export default class CreateBillController {
         try {
             const bill = await this.createBillUseCase.execute(input.data);
             const output = {
+                id: bill.id,
                 name: bill.name,
                 description: bill.description,
                 total: bill.total,

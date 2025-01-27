@@ -8,6 +8,7 @@ interface InputFindBillControllerDto {
 }
 
 interface OutputFindBillControllerDto {
+    id: string;
     name: string;
     description?: string;
     total: number;
@@ -27,6 +28,7 @@ export default class FindBillController {
         try {
             const bill = await this.findBillUseCase.execute(input.data);
             const output = {
+                id: bill.id,
                 name: bill.name,
                 description: bill.description,
                 total: bill.total,

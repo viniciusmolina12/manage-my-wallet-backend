@@ -15,7 +15,7 @@ afterAll(async () => {
     await mockDb.disconnect();
 } )
 describe('Bill e2e tests', () => {
-    it('should create an bill', async () => {
+    it('should create a bill', async () => {
         const response = await request(app)
             .post('/api/bill')
             .send({
