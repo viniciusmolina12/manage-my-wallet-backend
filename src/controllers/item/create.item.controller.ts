@@ -24,7 +24,13 @@ export default class CreateItemController {
     public async handle(input: InputControllerDto<InputCreateItemControllerDto>): Promise<OutputControllerDto<OutputCreateItemControllerDto>> {
         try {
             const { name, description, categoryId } = input.data;
-            const output = await this.createItemUseCase.execute({ name, description, categoryId });
+            const item = await this.createItemUseCase.execute({ name, description, categoryId });
+            const output = {
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                categoryId: item.categoryId
+            }
             return response<OutputCreateItemControllerDto>(201, 'Item created successfully', output);
 
         } catch (e: any) {

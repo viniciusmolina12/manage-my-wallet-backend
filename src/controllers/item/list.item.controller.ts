@@ -21,7 +21,15 @@ export default class ListItemController {
     }
     public async handle(input: InputControllerDto<InputListItemControllerDto>): Promise<OutputControllerDto<OutputListItemControllerDto>> {
         try {
-            const output = await this.listItemUseCase.execute();
+            const items = await this.listItemUseCase.execute();
+            const output = {
+                items: items.items.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    categoryId: item.categoryId
+                }))
+            }
             return response<OutputListItemControllerDto>(200, 'Items listed succesfully', output);
 
         } catch (e: any) {

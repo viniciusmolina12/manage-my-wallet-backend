@@ -22,7 +22,13 @@ export default class FindItemController {
     public async handle(input: InputControllerDto<InputFindItemControllerDto>): Promise<OutputControllerDto<OutputFindItemControllerDto>> {
         try {
             const { id } = input.data;
-            const output = await this.findItemUseCase.execute( { id });
+            const item = await this.findItemUseCase.execute( { id });
+            const output = {
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                categoryId: item.categoryId
+            }
             return response<OutputFindItemControllerDto>(200, 'Item founded succesfully', output);
 
         } catch (e: any) {

@@ -23,7 +23,12 @@ export default class UpdateItemController {
     public async handle(input: InputControllerDto<InputUpdateItemControllerDto>): Promise<OutputControllerDto<OutputUpdateItemControllerDto>> {
         try {
             const { id, name, categoryId, description } = input.data;
-            const output = await this.updateItemUseCase.execute({ id, name, categoryId, description });
+            const item = await this.updateItemUseCase.execute({ id, name, categoryId, description });
+            const output = {
+                name: item.name,
+                categoryId: item.categoryId,
+                description: item.description
+            }
             return response<OutputUpdateItemControllerDto>(200, 'Item updated succesfully', output);
 
         } catch (e: any) {
