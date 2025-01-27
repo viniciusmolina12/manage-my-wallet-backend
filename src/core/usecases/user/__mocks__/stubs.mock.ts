@@ -6,8 +6,8 @@ export class EncryptStub implements Encrypt {
     encrypt(password: string): string {
         return 'encrypted_password'
     }
-    generateJwt(data: any, secret: string, expiresIn?: Date): string {
-        return 'token'
+    compare(value: string, hash: string): boolean {
+        return true;
     }
 }
 

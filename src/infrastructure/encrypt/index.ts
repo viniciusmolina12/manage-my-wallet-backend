@@ -5,4 +5,11 @@ export default class BcryptEncrypt implements Encrypt {
         if(!value || !salts) return null;
         return bcrypt.hashSync(value, salts);
     }
+
+    compare(value: string, hash: string): boolean {
+        if(!value || !hash) return false
+        return bcrypt.compareSync(value, hash);
+    }
+
+    
 }

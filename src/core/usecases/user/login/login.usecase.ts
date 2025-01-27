@@ -16,8 +16,9 @@ export default class LoginUserUseCase {
         const userExists = await this.userRepository.search( { email: input.email });
         if (!userExists?.length) throw new EntityError('Email or password is invalid');
         const user = userExists[0];
-        const encryptPassword = this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND);
-        if(encryptPassword !== user.password) throw new EntityError('Email or password is invalid');
+        const isValidPassword = this.encrypt.compare(input.password, user.password);
+        if(!isValidPassword) throw new EntityError('Email or password is invalid');
+        
         const token = this.jwtGenerator.generateJwt({ id: user.id, email: user.email, name: user.name }, ENV.SECRET_KEY, '1h');
         return {
             user: {
