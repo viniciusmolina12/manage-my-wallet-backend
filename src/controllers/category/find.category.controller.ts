@@ -21,7 +21,12 @@ export default class FindCategoryController {
     public async handle(input: InputControllerDto<InputFindCategoryControllerDto>): Promise<OutputControllerDto<OutputFindCategoryControllerDto>> {
         try {
             const { id } = input.data;
-            const output = await this.findCategoryUseCase.execute(id);
+            const category = await this.findCategoryUseCase.execute(id);
+            const output = {
+                id: category.id,
+                name: category.name,
+                description: category.description
+            }
             return response<OutputFindCategoryControllerDto>(200, 'Category founded succesfully', output);
 
         } catch (e: any) {

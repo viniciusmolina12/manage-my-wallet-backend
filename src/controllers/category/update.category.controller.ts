@@ -22,7 +22,11 @@ export default class UpdateCategoryController {
     public async handle(input: InputControllerDto<InputUpdateCategoryControllerDto>): Promise<OutputControllerDto<OutputUpdateCategoryControllerDto>> {
         try {
             const { id, name, description } = input.data;
-            const output = await this.updateCategoryUseCase.execute({ id, name, description });
+            const category = await this.updateCategoryUseCase.execute({ id, name, description });
+            const output = {
+                name: category.name,
+                description: category.description
+            }
             return response<OutputUpdateCategoryControllerDto>(200, 'Category updated succesfully', output);
 
         } catch (e: any) {

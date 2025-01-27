@@ -23,7 +23,12 @@ export default class CreateCategoryController {
     public async handle(input: InputControllerDto<InputCreateCategoryControllerDto>): Promise<OutputControllerDto<OutputCreateCategoryControllerDto>> {
         try {
             const { name, description } = input.data;
-            const output = await this.createCategoryUseCase.execute({ name, description });
+            const category = await this.createCategoryUseCase.execute({ name, description });
+            const output = {
+                id: category.id,
+                name: category.name,
+                description: category.description
+            }
             return response<OutputCreateCategoryControllerDto>(201, 'Category created successfully', output);
 
         } catch (e: any) {

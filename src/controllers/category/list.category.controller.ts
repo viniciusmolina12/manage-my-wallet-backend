@@ -20,7 +20,14 @@ export default class ListCategoryController {
     }
     public async handle(input: InputControllerDto<InputListCategoryControllerDto>): Promise<OutputControllerDto<OutputListCategoryControllerDto>> {
         try {
-            const output = await this.listCategoryUseCase.execute();
+            const categories = await this.listCategoryUseCase.execute();
+            const output = {
+                categories: categories.categories.map(category => ({
+                    id: category.id,
+                    name: category.name,
+                    description: category.description
+                }))
+            }
             return response<OutputListCategoryControllerDto>(200, 'Categories listed succesfully', output);
 
         } catch (e: any) {
