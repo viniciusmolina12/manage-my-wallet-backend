@@ -33,7 +33,17 @@ export default class UpdateBillController {
     }
     public async handle(input: InputControllerDto<InputUpdateBillControllerDto>): Promise<OutputControllerDto<OutputUpdateBillControllerDto>> {
         try {
-            const output = await this.updateBillUseCase.execute(input.data);
+            const bill = await this.updateBillUseCase.execute(input.data);
+            const output = {
+                name: bill.name,
+                description: bill.description,
+                total: bill.total,
+                items: bill.items.map(item => ({
+                    quantity: item.quantity,
+                    price: item.price,
+                    itemId: item.itemId
+                }))
+            }
             return response<OutputUpdateBillControllerDto>(200, 'Bill updated successfully', output);
 
         } catch (e: any) {

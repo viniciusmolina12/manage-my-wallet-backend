@@ -16,7 +16,7 @@ export default class DeleteBillController {
     }
     public async handle(input: InputControllerDto<InputDeleteBillControllerDto>): Promise<OutputControllerDto<OutputDeleteBillControllerDto>> {
         try {
-            const output = await this.deleteBillUseCase.execute(input.data.id);
+            await this.deleteBillUseCase.execute(input.data.id);
             return response<OutputDeleteBillControllerDto>(200, 'Bill deleted successfully');
 
         } catch (e: any) {

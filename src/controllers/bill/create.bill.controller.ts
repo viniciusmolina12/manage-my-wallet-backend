@@ -31,7 +31,17 @@ export default class CreateBillController {
     }
     public async handle(input: InputControllerDto<InputCreateBillControllerDto>): Promise<OutputControllerDto<OutputCreateBillControllerDto>> {
         try {
-            const output = await this.createBillUseCase.execute(input.data);
+            const bill = await this.createBillUseCase.execute(input.data);
+            const output = {
+                name: bill.name,
+                description: bill.description,
+                total: bill.total,
+                items: bill.items.map(item => ({
+                    quantity: item.quantity,
+                    price: item.price,
+                    itemId: item.itemId
+                }))
+            }
             return response<OutputCreateBillControllerDto>(201, 'Bill created successfully', output);
 
         } catch (e: any) {

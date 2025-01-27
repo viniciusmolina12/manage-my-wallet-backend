@@ -25,7 +25,17 @@ export default class FindBillController {
     }
     public async handle(input: InputControllerDto<InputFindBillControllerDto>): Promise<OutputControllerDto<OutputFindBillControllerDto>> {
         try {
-            const output = await this.findBillUseCase.execute(input.data);
+            const bill = await this.findBillUseCase.execute(input.data);
+            const output = {
+                name: bill.name,
+                description: bill.description,
+                total: bill.total,
+                items: bill.items.map(item => ({
+                    quantity: item.quantity,
+                    price: item.price,
+                    itemId: item.itemId
+                }))
+            }
             return response<OutputFindBillControllerDto>(200, 'Bill founded successfully', output);
 
         } catch (e: any) {
