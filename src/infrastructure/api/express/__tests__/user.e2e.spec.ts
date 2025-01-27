@@ -3,6 +3,7 @@ import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import UserModel from '@infrastructure/db/mongodb/model/user.model';
 import User from '@core/domain/user/entity/user.entity';
+import BcryptEncrypt from '@infrastructure/encrypt';
 
 beforeAll(async () => {
     await mockDb.connect();
@@ -136,6 +137,75 @@ describe('User e2e tests', () => {
             expect(response.body).not.toHaveProperty('data');
             expect(response.body).toHaveProperty('message', 'user: Email is required, user: Email is invalid, ');
         })
+    })
+
+    describe('Login', () => {
+        it('should login succesfully', async () => {
+            await UserModel.create({ _id: 'any_id', email: 'any_mail@mail.com', name: 'any_name', password: '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2' });
+            const response = await request(app)
+                .post(`/api/login`)
+                .send({ email: 'any_mail@mail.com', password: 'any_password' })
+
+            console.log(response.body)
+            expect(response.status).toBe(200);
+            expect(response.body).toMatchObject({
+                data:{
+                    token: expect.any(String),
+                    user: {
+                        id: 'any_id',
+                        name: 'any_name',
+                        email: 'any_mail@mail.com'
+                    }
+                }
+            })
+        })
+
+        it('should throw an error if email is invalid', async () => {
+            await UserModel.create({ _id: 'any_id', email: 'any_mail@mail.com', name: 'any_name', password: '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2' });
+            const response = await request(app)
+                .post(`/api/login`)
+                .send({ email: 'any_other_email@mail.com', password: 'any_password' })
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Email or password is invalid');
+            expect(response.body).not.toHaveProperty('data');
+        })
+
+        it('should throw an error if password is invalid', async () => {
+            await UserModel.create({ _id: 'any_id', email: 'any_mail@mail.com', name: 'any_name', password: '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2' });
+            const response = await request(app)
+                .post(`/api/login`)
+                .send({ email: 'any_mail@mail.com', password: 'wrong_password' })
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Email or password is invalid');
+            expect(response.body).not.toHaveProperty('data');
+        })
+
+
+        it('should throw an error if email is not provided', async () => {
+            await UserModel.create({ _id: 'any_id', email: 'any_mail@mail.com', name: 'any_name', password: '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2' });
+            const response = await request(app)
+                .post(`/api/login`)
+                .send({ password: 'any_password' })
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Email or password is invalid');
+            expect(response.body).not.toHaveProperty('data');
+        })
+
+
+        it('should throw an error if password is not provided', async () => {
+            await UserModel.create({ _id: 'any_id', email: 'any_mail@mail.com', name: 'any_name', password: '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2' });
+            const response = await request(app)
+                .post(`/api/login`)
+                .send({ email: 'any_mail@mail.com' })
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Email or password is invalid');
+            expect(response.body).not.toHaveProperty('data');
+        })
+        
     })
 })
 
