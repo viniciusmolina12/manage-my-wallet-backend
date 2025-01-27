@@ -6,6 +6,8 @@ import MongoDbUserRepository from "@infrastructure/db/mongodb/repositories/user/
 import BcryptEncrypt from "@infrastructure/encrypt";
 import UpdateUserController from "@controllers/user/update.user.controller";
 import UpdateUserUseCase from "@core/usecases/user/update/update.usecase";
+import LoginUserController from "@controllers/user/login.user.controller";
+import LoginUserUseCase from "@core/usecases/user/login/login.usecase";
 
 
 const route = Router();
@@ -30,4 +32,15 @@ route.patch('/api/user/:id', async (req: Request, res: Response) => {
     res.send({ data: response.data, message: response.message})
 })
 
+
+route.post('/api/login', async (req: Request, res: Response) => {
+    const mongoDbUserRepository = new MongoDbUserRepository();
+    const bcryptEncrypt = new BcryptEncrypt();
+    const jsonWebTokenJwtGenerator = new JsonWebTokenJwtGenerator();
+    const loginUserUseCase = new LoginUserUseCase(mongoDbUserRepository, bcryptEncrypt, jsonWebTokenJwtGenerator);
+    const controller = new LoginUserController(loginUserUseCase)
+    const response = await controller.handle({ data: { ...req.body }})
+    res.status(response.code);
+    res.send({ data: response.data, message: response.message})
+})
 export default route;

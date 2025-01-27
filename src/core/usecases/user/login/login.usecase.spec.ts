@@ -37,7 +37,8 @@ describe('Login usecase tests', () => {
     })
 
     it('should throw an error if password is invalid', async () => {
-        const { sut } = makeSut();
+        const { sut, encryptStub } = makeSut();
+        encryptStub.compare = jest.fn().mockReturnValueOnce(false);
         mockRepository.search.mockReturnValueOnce(Promise.resolve([new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')]));
         await expect(sut.execute({ email: 'any_email@mail.com', password: 'any_other_password' })).rejects.toThrow(new EntityError('Email or password is invalid'))
     })
