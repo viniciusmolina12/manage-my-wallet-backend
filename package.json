@@ -11,10 +11,10 @@
     "start": "node ./dist/infrastructure/api/express/server.js"
   },
   "_moduleAliases": {
-    "@core": "src/core",
-    "@infrastructure": "src/infrastructure",
-    "@controllers": "src/controllers",
-    "@config": "src/config"
+    "@core": "dist/core",
+    "@infrastructure": "dist/infrastructure",
+    "@controllers": "dist/controllers",
+    "@config": "dist/config"
   },
   "author": "",
   "license": "ISC",
