@@ -3,7 +3,7 @@ import EntityError from "@core/domain/@shared/error/entity.error";
 import { EmailValidate } from "@core/domain/@shared/validate/email.validate";
 
 export default class User extends Entity {
-    private _id: string;
+    public _id: string;
     private _name: string;
     private _email: string;
     private _password: string;
