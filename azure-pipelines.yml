@@ -72,6 +72,8 @@ stages:
     jobs:
       - deployment: deploy_prod
         displayName: 'Deploy na EC2 de produção'
+        pool:
+          name: my-personal-computer
         environment: producao 
         strategy:
           runOnce:
