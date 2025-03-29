@@ -1,0 +1,60 @@
+trigger:
+  - main
+
+pool: my-personal-computer
+
+variables:
+  APP_DIR: '~/var/app'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '22.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install && npm run build
+    displayName: 'Install and build application'
+
+  - task: CopyFiles@2
+    inputs:
+      contents: |
+        dist/**
+        package.json
+        ecosystem.config.js
+        package-lock.json
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy files to artifact staging'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'app'
+    displayName: 'Publish artifacts'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'app'
+      downloadPath: '$(System.ArtifactsDirectory)'
+    displayName: 'Download build artifacts'
+
+  - task: CopyFilesOverSSH@0
+    inputs:
+      sshEndpoint: 'EC2'
+      sourceFolder: '$(System.ArtifactsDirectory)/app'
+      contents: '**'
+      targetFolder: '$(APP_DIR)'
+      cleanTargetFolder: true
+    displayName: 'Copy files to EC2'
+
+  - task: SSH@0
+    inputs:
+      sshEndpoint: 'EC2'
+      runOptions: 'inline'
+      inline: |
+        cd $(APP_DIR)
+        npm ci --omit=dev
+        pm2 startOrRestart ecosystem.config.js
+    displayName: 'Start app on EC2'
