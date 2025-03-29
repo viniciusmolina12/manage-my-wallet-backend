@@ -40,9 +40,7 @@ describe('Create user usecase tests', () => {
         const { sut }  = makeSut();
         const spy = jest.spyOn(mockRepository, 'create');
         const user = await sut.execute(input);
-        const userCompare = new User(user.id, user.name, user.email, 'encrypted_password');
-        userCompare.createdAt = user.createdAt;
-        userCompare.updatedAt = user.updatedAt;
+        const userCompare = new User(user.id, user.name, user.email, 'encrypted_password', user.createdAt, user.updatedAt);
         expect(spy).toHaveBeenCalledWith(userCompare)
     })
 
