@@ -55,20 +55,4 @@ describe('Reset password user usecase tests', () => {
          sut.execute({ token: 'any_token', password: 'any_other_password' })
       ).rejects.toThrow(new EntityError('Token expired'));
    });
-
-   it('should throw if token invalid', async () => {
-      user.resetPasswordToken = 'any_token';
-      user.expiresIn = new Date(new Date().getTime() + 3 * 60 * 60 * 1000);
-      mockRepository.findUserByResetPasswordToken.mockReturnValueOnce(user);
-      const sut = new ResetPasswordUserUseCase(
-         mockRepository,
-         new EncryptStub()
-      );
-      await expect(
-         sut.execute({
-            token: 'invalid_token',
-            password: 'any_other_password',
-         })
-      ).rejects.toThrow(new EntityError('Token invalid'));
-   });
 });

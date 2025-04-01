@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, json } from 'express';
 import { JsonWebTokenJwtGenerator } from '@infrastructure/jwt';
 import CreateUserController from '@controllers/user/create.user.controller';
 import CreateUserUseCase from '@core/usecases/user/create/create.usecase';
@@ -8,8 +8,8 @@ import UpdateUserController from '@controllers/user/update.user.controller';
 import UpdateUserUseCase from '@core/usecases/user/update/update.usecase';
 import LoginUserController from '@controllers/user/login.user.controller';
 import LoginUserUseCase from '@core/usecases/user/login/login.usecase';
-import { NodeMailerMailer } from '@infrastructure/mailer/node-mailer';
-import ENV from '@config/env';
+import ResetPasswordUserUseCase from '@core/usecases/user/reset-password/reset_password.usecase';
+import ResetPasswordUserController from '@controllers/user/reset-password.controller';
 
 const route = Router();
 
@@ -23,20 +23,18 @@ route.post('/api/user', async (req: Request, res: Response) => {
       jsonWebTokenJwtGenerator
    );
    const controller = new CreateUserController(createItemUseCase);
-   const response = await controller.handle({ data: req.body });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: req.body });
+   res.status(code).send(data);
 });
 
 route.patch('/api/user/:id', async (req: Request, res: Response) => {
    const mongoDbUserRepository = new MongoDbUserRepository();
    const updateUserUseCase = new UpdateUserUseCase(mongoDbUserRepository);
    const controller = new UpdateUserController(updateUserUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { ...req.body, id: req.params.id },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 
 route.post('/api/login', async (req: Request, res: Response) => {
@@ -49,17 +47,19 @@ route.post('/api/login', async (req: Request, res: Response) => {
       jsonWebTokenJwtGenerator
    );
    const controller = new LoginUserController(loginUserUseCase);
-   const response = await controller.handle({ data: { ...req.body } });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: { ...req.body } });
+   res.status(code).send(data);
 });
 
 route.post('/api/reset-password', async (req: Request, res: Response) => {
    const mongoDbUserRepository = new MongoDbUserRepository();
-   const mailer = new NodeMailerMailer({
-      host: ENV.MAILER_HOST,
-      port: ENV.MAILER_PORT as unknown as number,
-      auth: { pass: ENV.MAILER_AUTH_PASSWORD, user: ENV.MAILER_AUTH_USER },
-   });
+   const bcryptEncrypt = new BcryptEncrypt();
+   const resetPasswordUserUseCase = new ResetPasswordUserUseCase(
+      mongoDbUserRepository,
+      bcryptEncrypt
+   );
+   const controller = new ResetPasswordUserController(resetPasswordUserUseCase);
+   const { code, ...data } = await controller.handle({ data: { ...req.body } });
+   res.status(code).send(data);
 });
 export default route;

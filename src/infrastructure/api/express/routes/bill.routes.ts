@@ -18,49 +18,44 @@ route.post('/api/bill', async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const createItemUseCase = new CreateBillUseCase(mongoDbBillRepository);
    const controller = new CreateBillController(createItemUseCase);
-   const response = await controller.handle({ data: req.body });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: req.body });
+   res.status(code).send(data);
 });
 
 route.get('/api/bill/:id', async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const findBillUseCase = new FindBillUseCase(mongoDbBillRepository);
    const controller = new FindBillController(findBillUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 
 route.put('/api/bill/:id', async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const updateBillUseCase = new UpdateBillUseCase(mongoDbBillRepository);
    const controller = new UpdateBillController(updateBillUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { ...req.body, id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 route.get('/api/bills', async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const listBillUseCase = new ListBillUseCase(mongoDbBillRepository);
    const controller = new ListBillController(listBillUseCase);
-   const response = await controller.handle({ data: {} });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: {} });
+   res.status(code).send(data);
 });
 
 route.delete('/api/bill/:id', async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const deleteBillUseCase = new DeleteBillUseCase(mongoDbBillRepository);
    const controller = new DeleteBillController(deleteBillUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 export default route;

@@ -2,8 +2,6 @@ import request from 'supertest';
 import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import UserModel from '@infrastructure/db/mongodb/model/user.model';
-import User from '@core/domain/user/entity/user.entity';
-import BcryptEncrypt from '@infrastructure/encrypt';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -197,7 +195,6 @@ describe('User e2e tests', () => {
             .post(`/api/login`)
             .send({ email: 'any_mail@mail.com', password: 'any_password' });
 
-         console.log(response.body);
          expect(response.status).toBe(200);
          expect(response.body).toMatchObject({
             data: {
@@ -279,6 +276,91 @@ describe('User e2e tests', () => {
          expect(response.status).toBe(400);
          expect(response.body.message).toBe('Email or password is invalid');
          expect(response.body).not.toHaveProperty('data');
+      });
+   });
+
+   describe('reset-password', () => {
+      it('should reset password succesfully', async () => {
+         const token = 'any_valid_token';
+         const oldPassword = 'old_pasword';
+         const newPassword = 'new_password';
+         await UserModel.create({
+            _id: 'any_id',
+            email: 'any_mail@mail.com',
+            name: 'any_name',
+            resetPassword: {
+               token,
+               expiresIn: new Date().setDate(new Date().getDate() + 1),
+            },
+            password: oldPassword,
+         });
+         const response = await request(app).post(`/api/reset-password`).send({
+            token,
+            password: newPassword,
+         });
+
+         const userAfterChangePassword = await UserModel.findOne({
+            _id: 'any_id',
+         });
+
+         expect(userAfterChangePassword?.password).not.toBe(oldPassword);
+         expect(response.status).toBe(200);
+         expect(response.body).toMatchObject({
+            message: 'Password changed successfully',
+         });
+      });
+
+      it('should throw an error if token does not exist', async () => {
+         const response = await request(app).post(`/api/reset-password`).send({
+            token: 'invalid_token',
+            password: 'any_password',
+         });
+         expect(response.status).toBe(400);
+         expect(response.body).toMatchObject({
+            message: 'User not found',
+         });
+      });
+
+      it('should throw an error if token is expired', async () => {
+         const expired = new Date().setDate(new Date().getDate() - 1);
+         await UserModel.create({
+            _id: 'any_id',
+            email: 'any_mail@mail.com',
+            name: 'any_name',
+            resetPassword: {
+               token: 'any_token',
+               expiresIn: expired,
+            },
+            password: 'any_password',
+         });
+         const response = await request(app).post(`/api/reset-password`).send({
+            token: 'any_token',
+            password: 'any_password',
+         });
+         expect(response.status).toBe(400);
+         expect(response.body).toMatchObject({
+            message: 'Token expired',
+         });
+      });
+
+      it('should throw an error if token is not provided', async () => {
+         const response = await request(app).post(`/api/reset-password`).send({
+            password: 'any_password',
+         });
+         expect(response.status).toBe(400);
+         expect(response.body).toMatchObject({
+            message: 'Missing properties: token or password',
+         });
+      });
+
+      it('should throw an error if password is not provided', async () => {
+         const response = await request(app).post(`/api/reset-password`).send({
+            token: 'any_token',
+         });
+         expect(response.status).toBe(400);
+         expect(response.body).toMatchObject({
+            message: 'Missing properties: token or password',
+         });
       });
    });
 });

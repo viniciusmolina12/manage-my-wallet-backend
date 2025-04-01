@@ -19,9 +19,12 @@ export default class ResetPasswordUserUseCase {
    async execute(
       input: InputResetPasswordUserDto
    ): Promise<OutputResetPasswordUserDto> {
-      const user = await this.userRepository.findUserByResetPasswordToken(
-         input.token
-      );
+      const { token, password } = input;
+      if (!token || !password)
+         throw new EntityError('Missing properties: token or password');
+      const user =
+         await this.userRepository.findUserByResetPasswordToken(token);
+
       if (!user) {
          throw new EntityError('User not found');
       }
@@ -29,14 +32,13 @@ export default class ResetPasswordUserUseCase {
       if (!user.expiresIn || now >= user.expiresIn) {
          throw new EntityError('Token expired');
       }
-      if (user.resetPasswordToken !== input.token) {
-         throw new EntityError('Token invalid');
-      }
+
       const encryptPassword = this.encrypt.encrypt(
-         input.password,
+         password,
          CONSTANTS.SALTS_ROUND
       ) as string;
       user.changePassword(encryptPassword);
+      console.log(encryptPassword);
       await this.userRepository.update(user);
    }
 }

@@ -21,7 +21,7 @@ export default class ResetPasswordUserController {
          const output = await this.resetPasswordUseCase.execute(input.data);
          return response<OutputResetPasswordUserDto>(
             200,
-            'User logged successfully',
+            'Password changed successfully',
             output
          );
       } catch (e: any) {

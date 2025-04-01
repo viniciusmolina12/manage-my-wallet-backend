@@ -20,9 +20,8 @@ route.post('/api/category', async (req: Request, res: Response) => {
       mongoDbCategoryRepository
    );
    const controller = new CreateCategoryController(createItemUseCase);
-   const response = await controller.handle({ data: req.body });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: req.body });
+   res.status(code).send(data);
 });
 
 route.get('/api/category/:id', async (req: Request, res: Response) => {
@@ -31,11 +30,10 @@ route.get('/api/category/:id', async (req: Request, res: Response) => {
       mongoDbCategoryRepository
    );
    const controller = new FindCategoryController(findCategoryUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 
 route.put('/api/category/:id', async (req: Request, res: Response) => {
@@ -44,11 +42,10 @@ route.put('/api/category/:id', async (req: Request, res: Response) => {
       mongoDbCategoryRepository
    );
    const controller = new UpdateCategoryController(updateCategoryUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { ...req.body, id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 route.get('/api/categories', async (req: Request, res: Response) => {
    const mongoDbCategoryRepository = new MongoDbCategoryRepository();
@@ -56,9 +53,8 @@ route.get('/api/categories', async (req: Request, res: Response) => {
       mongoDbCategoryRepository
    );
    const controller = new ListCategoryController(listCategoryUseCase);
-   const response = await controller.handle({ data: {} });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: {} });
+   res.status(code).send(data);
 });
 
 route.delete('/api/category/:id', async (req: Request, res: Response) => {
@@ -67,10 +63,9 @@ route.delete('/api/category/:id', async (req: Request, res: Response) => {
       mongoDbCategoryRepository
    );
    const controller = new DeleteCategoryController(deleteCategoryUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 export default route;

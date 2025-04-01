@@ -19,49 +19,44 @@ route.post('/api/item', async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const createItemUseCase = new CreateItemUseCase(mongoDbItemRepository);
    const controller = new CreateItemController(createItemUseCase);
-   const response = await controller.handle({ data: req.body });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: req.body });
+   res.status(code).send(data);
 });
 
 route.get('/api/item/:id', async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const findItemUseCase = new FindItemUseCase(mongoDbItemRepository);
    const controller = new FindItemController(findItemUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 
 route.put('/api/item/:id', async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const updateItemUseCase = new UpdateItemUseCase(mongoDbItemRepository);
    const controller = new UpdateItemController(updateItemUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { ...req.body, id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 route.get('/api/items', async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const listItemUseCase = new ListItemUsecase(mongoDbItemRepository);
    const controller = new ListItemController(listItemUseCase);
-   const response = await controller.handle({ data: {} });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   const { code, ...data } = await controller.handle({ data: {} });
+   res.status(code).send(data);
 });
 
 route.delete('/api/item/:id', async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const deleteItemUseCase = new DeleteItemUseCase(mongoDbItemRepository);
    const controller = new DeleteItemController(deleteItemUseCase);
-   const response = await controller.handle({
+   const { code, ...data } = await controller.handle({
       data: { id: req.params.id as string },
    });
-   res.status(response.code);
-   res.send({ data: response.data, message: response.message });
+   res.status(code).send(data);
 });
 export default route;

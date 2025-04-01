@@ -1,5 +1,8 @@
 import User from '@core/domain/user/entity/user.entity';
-import { UserRepository } from '@core/domain/user/repository/user.repository';
+import {
+   UserRepository,
+   UserWithResetToken,
+} from '@core/domain/user/repository/user.repository';
 import UserModel from '../../model/user.model';
 export default class MongoDbUserRepository implements UserRepository {
    async create(entity: User): Promise<void> {
@@ -12,7 +15,15 @@ export default class MongoDbUserRepository implements UserRepository {
    }
 
    async update(entity: User): Promise<void | User> {
-      await UserModel.findOneAndUpdate({ _id: entity.id }, entity);
+      console.log('NOREPOSITORY', entity);
+      const a = await UserModel.findOneAndUpdate(
+         { _id: entity.id },
+         {
+            email: entity.email,
+            password: entity.password,
+            name: entity.name,
+         }
+      );
    }
 
    async find(id: string): Promise<User | null> {
@@ -34,24 +45,20 @@ export default class MongoDbUserRepository implements UserRepository {
 
    async findUserByResetPasswordToken(
       resetPasswordToken: string
-   ): Promise<
-      (User & { resetPasswordToken: string; expiresIn?: Date }) | null
-   > {
+   ): Promise<UserWithResetToken | null> {
       const userFound = await UserModel.findOne({
          'resetPassword.token': resetPasswordToken,
       });
       if (!userFound) return null;
-      const user = new User(
+
+      return new UserWithResetToken(
+         resetPasswordToken,
+         userFound.resetPassword?.expiresIn as Date,
          userFound.id,
          userFound.name,
          userFound.email,
          userFound.password
       );
-      return {
-         ...user,
-         resetPasswordToken,
-         expiresIn: userFound.resetPassword?.expiresIn,
-      } as User & { resetPasswordToken: string; expiresIn?: Date };
    }
 
    async updateResetPasswordToken(
