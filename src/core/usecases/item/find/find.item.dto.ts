@@ -1,10 +1,10 @@
 export interface InputFindItemDto {
-    id: string;
+   id: string;
 }
 
-export interface OutputFindItemDto { 
-    id: string;
-    name: string;
-    categoryId: string;
-    description?: string;
+export interface OutputFindItemDto {
+   id: string;
+   name: string;
+   categoryId: string;
+   description?: string;
 }

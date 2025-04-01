@@ -1,1 +1,1 @@
-export { response } from './response'
+export { response } from './response';

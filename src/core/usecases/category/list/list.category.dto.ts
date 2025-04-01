@@ -1,9 +1,7 @@
 export interface OutputListCategoryDto {
-    categories: 
-        {
-            id: string;
-            name: string;
-            description?: string;
-        }[]
-    
+   categories: {
+      id: string;
+      name: string;
+      description?: string;
+   }[];
 }

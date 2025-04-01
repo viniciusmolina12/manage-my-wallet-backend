@@ -1,102 +1,102 @@
 trigger:
-  - main
+   - main
 
 variables:
-  APP_DIR: '~/var/app'
+   APP_DIR: '~/var/app'
 
 stages:
-  - stage: homolog
-    displayName: 'Deploy em Homologação'
-    jobs:
-      - job: deploy_homolog
-        displayName: 'Deploy na EC2 de homolog'
-        pool:
-          name: my-personal-computer
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '22.x'
-            displayName: 'Install Node.js'
+   - stage: homolog
+     displayName: 'Deploy em Homologação'
+     jobs:
+        - job: deploy_homolog
+          displayName: 'Deploy na EC2 de homolog'
+          pool:
+             name: my-personal-computer
+          steps:
+             - task: NodeTool@0
+               inputs:
+                  versionSpec: '22.x'
+               displayName: 'Install Node.js'
 
-          - script: |
-              npm install && npm run build
-            displayName: 'Build NestJS app'
+             - script: |
+                  npm install && npm run build
+               displayName: 'Build NestJS app'
 
-          - task: CopyFiles@2
-            inputs:
-              contents: |
-                dist/**
-                package.json
-                ecosystem.config.js
-                package-lock.json
-              targetFolder: '$(Build.ArtifactStagingDirectory)'
-            displayName: 'Copy files to artifact staging'
+             - task: CopyFiles@2
+               inputs:
+                  contents: |
+                     dist/**
+                     package.json
+                     ecosystem.config.js
+                     package-lock.json
+                  targetFolder: '$(Build.ArtifactStagingDirectory)'
+               displayName: 'Copy files to artifact staging'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathToPublish: '$(Build.ArtifactStagingDirectory)'
-              artifactName: 'nest-app'
-            displayName: 'Publish artifacts'
+             - task: PublishBuildArtifacts@1
+               inputs:
+                  pathToPublish: '$(Build.ArtifactStagingDirectory)'
+                  artifactName: 'nest-app'
+               displayName: 'Publish artifacts'
 
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'nest-app'
-              downloadPath: '$(System.ArtifactsDirectory)'
-            displayName: 'Download build artifacts (homolog)'
+             - task: DownloadBuildArtifacts@0
+               inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: 'nest-app'
+                  downloadPath: '$(System.ArtifactsDirectory)'
+               displayName: 'Download build artifacts (homolog)'
 
-          - task: CopyFilesOverSSH@0
-            inputs:
-              sshEndpoint: 'EC2'
-              sourceFolder: '$(System.ArtifactsDirectory)/nest-app'
-              contents: '**'
-              targetFolder: '$(APP_DIR)'
-              cleanTargetFolder: true
-            displayName: 'Copy files to EC2 (homolog)'
+             - task: CopyFilesOverSSH@0
+               inputs:
+                  sshEndpoint: 'EC2'
+                  sourceFolder: '$(System.ArtifactsDirectory)/nest-app'
+                  contents: '**'
+                  targetFolder: '$(APP_DIR)'
+                  cleanTargetFolder: true
+               displayName: 'Copy files to EC2 (homolog)'
 
-          - task: SSH@0
-            inputs:
-              sshEndpoint: 'EC2'
-              runOptions: 'inline'
-              inline: |
-                cd $(APP_DIR)
-                npm ci --omit=dev
-                pm2 startOrRestart ecosystem.config.js
-            displayName: 'Start app on EC2 (homolog)'
+             - task: SSH@0
+               inputs:
+                  sshEndpoint: 'EC2'
+                  runOptions: 'inline'
+                  inline: |
+                     cd $(APP_DIR)
+                     npm ci --omit=dev
+                     pm2 startOrRestart ecosystem.config.js
+               displayName: 'Start app on EC2 (homolog)'
 
-  - stage: prod
-    displayName: 'Deploy em Produção'
-    dependsOn: homolog
-    condition: succeeded()
-    jobs:
-      - deployment: deploy_prod
-        displayName: 'Deploy na EC2 de produção'
-        pool:
-          name: my-personal-computer
-        environment: producao 
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: nest-app
+   - stage: prod
+     displayName: 'Deploy em Produção'
+     dependsOn: homolog
+     condition: succeeded()
+     jobs:
+        - deployment: deploy_prod
+          displayName: 'Deploy na EC2 de produção'
+          pool:
+             name: my-personal-computer
+          environment: producao
+          strategy:
+             runOnce:
+                deploy:
+                   steps:
+                      - download: current
+                        artifact: nest-app
 
-                - task: CopyFilesOverSSH@0
-                  inputs:
-                    sshEndpoint: 'EC2'
-                    sourceFolder: '$(Pipeline.Workspace)/nest-app'
-                    contents: '**'
-                    targetFolder: '$(APP_DIR)'
-                    cleanTargetFolder: true
-                  displayName: 'Copy files to EC2 (prod)'
+                      - task: CopyFilesOverSSH@0
+                        inputs:
+                           sshEndpoint: 'EC2'
+                           sourceFolder: '$(Pipeline.Workspace)/nest-app'
+                           contents: '**'
+                           targetFolder: '$(APP_DIR)'
+                           cleanTargetFolder: true
+                        displayName: 'Copy files to EC2 (prod)'
 
-                - task: SSH@0
-                  inputs:
-                    sshEndpoint: 'EC2'
-                    runOptions: 'inline'
-                    inline: |
-                      cd $(APP_DIR)
-                      npm ci --omit=dev
-                      pm2 startOrRestart ecosystem.config.js
-                  displayName: 'Start app on EC2 (prod)'
+                      - task: SSH@0
+                        inputs:
+                           sshEndpoint: 'EC2'
+                           runOptions: 'inline'
+                           inline: |
+                              cd $(APP_DIR)
+                              npm ci --omit=dev
+                              pm2 startOrRestart ecosystem.config.js
+                        displayName: 'Start app on EC2 (prod)'

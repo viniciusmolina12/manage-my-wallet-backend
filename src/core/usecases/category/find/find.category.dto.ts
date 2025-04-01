@@ -1,6 +1,6 @@
-export type InputFindCategoryDto = string
+export type InputFindCategoryDto = string;
 export interface OutputFindCategoryDto {
-    id: string;
-    name: string;
-    description?: string;
+   id: string;
+   name: string;
+   description?: string;
 }
