@@ -8,7 +8,9 @@
       "build": "tsc",
       "test:coverage": "jest --coverage",
       "start:dev": "ts-node-dev --respawn --transpile-only src/infrastructure/api/express/server.ts",
-      "start": "node ./dist/infrastructure/api/express/server.js"
+      "start": "node ./dist/infrastructure/api/express/server.js",
+      "prepare": "husky",
+      "lint-staged": "prettier --write --ignore-unknown"
    },
    "_moduleAliases": {
       "@core": "dist/core",
@@ -26,6 +28,7 @@
       "@types/module-alias": "^2.0.2",
       "@types/mongodb-memory-server": "^2.3.0",
       "@types/supertest": "^2.0.12",
+      "husky": "^9.1.7",
       "jest": "^29.4.1",
       "mongodb-memory-server": "^8.15.1",
       "nodemailer-mock": "^2.0.8",

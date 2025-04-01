@@ -7,3 +7,5 @@ const ENV = {
    MAILER_AUTH_USER: process.env.MAILER_AUTH_USER as string,
    MAILER_AUTH_PASSWORD: process.env.MAILER_AUTH_PASSWORD as string,
 };
+
+export default ENV;

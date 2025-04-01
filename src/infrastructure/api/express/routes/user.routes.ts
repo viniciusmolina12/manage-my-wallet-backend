@@ -9,6 +9,7 @@ import UpdateUserUseCase from '@core/usecases/user/update/update.usecase';
 import LoginUserController from '@controllers/user/login.user.controller';
 import LoginUserUseCase from '@core/usecases/user/login/login.usecase';
 import { NodeMailerMailer } from '@infrastructure/mailer/node-mailer';
+import ENV from '@config/env';
 
 const route = Router();
 
