@@ -1,10 +1,8 @@
 
-import * as nodemailer from "nodemailer";
-import { NodemailerMock } from "nodemailer-mock";
+import * as nodemailer from 'nodemailer';
+import { NodemailerMock } from 'nodemailer-mock';
+import { NodeMailerMailer } from './node-mailer';
 const { mock } = nodemailer as unknown as NodemailerMock;
-
-import { NodeMailerMailer }  from './node-mailer';
-
 describe('NodeMailerMailer', () => {
     let mailer: NodeMailerMailer;
 
@@ -17,8 +15,6 @@ describe('NodeMailerMailer', () => {
                 pass: '80529bb2e09534'
             }
         });
-        // Substitui o transporter real pelo mock
-        // (mailer as any).transporter = nodemailer.createTransport();
     });
 
     it('should send an email with the correct parameters', async () => {
@@ -28,11 +24,10 @@ describe('NodeMailerMailer', () => {
             subject: 'Test Email',
             content: 'This is a test email.'
         };
-        console.log('PELO MENOS CHEGOU AQUI!')
 
         await expect(mailer.sendMail(mailData)).resolves.toBeUndefined();
 
-        const sentMail = mock.getSentMail()
+        const sentMail = mock.getSentMail();
         expect(sentMail.length).toBe(1);
         expect(sentMail[0]).toMatchObject({
             to: mailData.to,
