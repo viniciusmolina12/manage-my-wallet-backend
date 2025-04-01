@@ -3,5 +3,5 @@ export interface InputRecoverPasswordUserDto {
 }
 
 export interface OutputRecoverPasswordUserDto {
-   censoredEmail: string;
+   email: string;
 }

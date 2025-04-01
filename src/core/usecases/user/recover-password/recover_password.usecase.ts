@@ -54,6 +54,6 @@ export default class RecoverPasswordUserUseCase {
          (match, firstChar, hiddenPart) =>
             firstChar + '*'.repeat(hiddenPart.length)
       );
-      return { censoredEmail };
+      return { email: censoredEmail };
    }
 }

@@ -10,7 +10,7 @@ interface SutTypes {
    jwtStub: JwtGeneratorStub;
    sut: RecoverPasswordUserUseCase;
 }
-const makeSut = () => {
+const makeSut = (): SutTypes => {
    const mailerStub = new MailerStub();
    const jwtStub = new JwtGeneratorStub();
    const sut = new RecoverPasswordUserUseCase(
@@ -38,7 +38,7 @@ describe('Recover user password usecase tests', () => {
          ])
       );
       const result = await sut.execute({ email: 'any_email@mail.com' });
-      expect(result).toEqual({ censoredEmail: 'a********@mail.com' });
+      expect(result).toEqual({ email: 'a********@mail.com' });
    });
 
    it('should throw if user not found', async () => {

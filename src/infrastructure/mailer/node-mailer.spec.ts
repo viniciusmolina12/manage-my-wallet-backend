@@ -1,17 +1,20 @@
-import * as nodemailer from 'nodemailer';
-import { NodemailerMock } from 'nodemailer-mock';
+import nodemailer from 'nodemailer';
 import { NodeMailerMailer } from './node-mailer';
-const { mock } = nodemailer as unknown as NodemailerMock;
+
+jest.mock('nodemailer');
+
 describe('NodeMailerMailer', () => {
    let mailer: NodeMailerMailer;
 
    beforeEach(() => {
+      jest.clearAllMocks();
+
       mailer = new NodeMailerMailer({
          host: 'sandbox.smtp.mailtrap.io',
          port: 2525,
          auth: {
-            user: '41e0bfdfac4eaa',
-            pass: '80529bb2e09534',
+            user: 'user',
+            pass: 'pass',
          },
       });
    });
@@ -26,13 +29,18 @@ describe('NodeMailerMailer', () => {
 
       await expect(mailer.sendMail(mailData)).resolves.toBeUndefined();
 
-      const sentMail = mock.getSentMail();
-      expect(sentMail.length).toBe(1);
-      expect(sentMail[0]).toMatchObject({
-         to: mailData.to,
-         from: mailData.from,
-         subject: mailData.subject,
-         text: mailData.content,
-      });
+      const { sendMailMock } = nodemailer as unknown as {
+         sendMailMock: jest.Mock;
+      };
+
+      expect(sendMailMock).toHaveBeenCalledTimes(1);
+      expect(sendMailMock).toHaveBeenCalledWith(
+         expect.objectContaining({
+            to: mailData.to,
+            from: mailData.from,
+            subject: mailData.subject,
+            text: mailData.content,
+         })
+      );
    });
 });
