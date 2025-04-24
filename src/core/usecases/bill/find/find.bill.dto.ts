@@ -1,5 +1,6 @@
 export interface InputFindBillDto {
    id: string;
+   userId: string;
 }
 
 export interface OutputFindBillDto {

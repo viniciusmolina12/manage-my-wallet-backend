@@ -38,7 +38,6 @@ export default class ResetPasswordUserUseCase {
          CONSTANTS.SALTS_ROUND
       ) as string;
       user.changePassword(encryptPassword);
-      console.log(encryptPassword);
       await this.userRepository.update(user);
    }
 }

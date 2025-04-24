@@ -6,7 +6,9 @@ import {
 import { response } from '@controllers/@shared/protocols';
 import ListBillUseCase from '@core/usecases/bill/list/list.usecase';
 
-interface InputListBillControllerDto {}
+interface InputListBillControllerDto {
+   userId: string;
+}
 
 interface OutputListBillControllerDto {
    bills: {

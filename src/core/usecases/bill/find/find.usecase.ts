@@ -8,7 +8,8 @@ export default class FindBillUseCase {
       this.billRepository = billRepository;
    }
    async execute(input: InputFindBillDto): Promise<OutputFindBillDto> {
-      const bill = await this.billRepository.find(input.id);
+      const { id, userId } = input;
+      const bill = await this.billRepository.findByUser(id, userId);
       if (!bill) throw new Error('Bill not found');
       return {
          id: bill.id,

@@ -6,13 +6,17 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 describe('Find bill usecase', () => {
    it('should find a bill', async () => {
-      mockRepository.find.mockReturnValueOnce({
+      mockRepository.findByUser.mockReturnValueOnce({
          id: 'any_id',
          name: 'any_name_2',
          description: 'any_other_description',
+         userId: 'any_user_id',
          total: 56,
          createdDate: new Date('2020-02-10 10:20:30'),
          items: [
@@ -31,7 +35,7 @@ describe('Find bill usecase', () => {
          ],
       });
       const sut = new FindBillUseCase(mockRepository);
-      const bill = await sut.execute({ id: 'any_id' });
+      const bill = await sut.execute({ id: 'any_id', userId: 'any_user_id' });
       expect(bill.id).toBe('any_id');
       expect(bill.name).toBe('any_name_2');
       expect(bill.description).toBe('any_other_description');
@@ -39,10 +43,10 @@ describe('Find bill usecase', () => {
       expect(bill.items.length).toBe(2);
    });
 
-   it('should find a bill', async () => {
+   it('should throw an error if bill not found', async () => {
       const sut = new FindBillUseCase(mockRepository);
-      await expect(sut.execute({ id: 'any_id' })).rejects.toThrow(
-         new Error('Bill not found')
-      );
+      await expect(
+         sut.execute({ id: 'any_id', userId: 'any_user_id' })
+      ).rejects.toThrow(new Error('Bill not found'));
    });
 });

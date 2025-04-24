@@ -1,4 +1,6 @@
-export interface InputListBillDto {}
+export interface InputListBillDto {
+   userId: string;
+}
 
 export interface OutputListBillDto {
    bills: {

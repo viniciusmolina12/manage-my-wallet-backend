@@ -6,11 +6,14 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 describe('Delete bill usecase test', () => {
    it('should delete a bill', async () => {
       const sut = new DeleteBillUseCase(mockRepository);
-      mockRepository.find.mockReturnValue({
+      mockRepository.findByUser.mockReturnValue({
          description: 'any_description',
          name: 'any_name',
          items: [
@@ -22,13 +25,15 @@ describe('Delete bill usecase test', () => {
          ],
       });
       mockRepository.delete = jest.fn().mockReturnValue(true);
-      const result = await sut.execute('any_id');
+      const result = await sut.execute({ id: 'any_id', userId: 'any_user_id' });
       expect(result).toBeFalsy();
    });
 
    it('should throw an error if bill does not exist', async () => {
       const sut = new DeleteBillUseCase(mockRepository);
-      mockRepository.find.mockReturnValue(undefined);
-      await expect(sut.execute('any_id')).rejects.toThrow('Bill not found');
+      mockRepository.findByUser.mockReturnValue(undefined);
+      await expect(
+         sut.execute({ id: 'any_id', userId: 'any_user_id' })
+      ).rejects.toThrow('Bill not found');
    });
 });

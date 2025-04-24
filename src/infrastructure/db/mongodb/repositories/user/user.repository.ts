@@ -15,7 +15,6 @@ export default class MongoDbUserRepository implements UserRepository {
    }
 
    async update(entity: User): Promise<void | User> {
-      console.log('NOREPOSITORY', entity);
       const a = await UserModel.findOneAndUpdate(
          { _id: entity.id },
          {

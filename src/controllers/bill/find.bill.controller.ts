@@ -8,6 +8,7 @@ import FindBillUseCase from '@core/usecases/bill/find/find.usecase';
 
 interface InputFindBillControllerDto {
    id: string;
+   userId: string;
 }
 
 interface OutputFindBillControllerDto {
@@ -30,7 +31,8 @@ export default class FindBillController {
       input: InputControllerDto<InputFindBillControllerDto>
    ): Promise<OutputControllerDto<OutputFindBillControllerDto>> {
       try {
-         const bill = await this.findBillUseCase.execute(input.data);
+         const { id, userId } = input.data;
+         const bill = await this.findBillUseCase.execute({ id, userId });
          const output = {
             id: bill.id,
             name: bill.name,

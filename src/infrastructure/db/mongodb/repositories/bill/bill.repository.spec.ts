@@ -117,7 +117,8 @@ describe('MongoDB Item Repository tests', () => {
          createdDate: new Date(),
          items: [billItem],
       });
-      const billFound = await sut.find(bill.id);
+
+      const billFound = await sut.findByUser(bill.id, bill.userId);
       expect(billFound?.id).toBe(bill.id);
       expect(billFound?.name).toBe(bill.name);
       expect(billFound?.userId).toBe(bill.userId);
@@ -149,7 +150,7 @@ describe('MongoDB Item Repository tests', () => {
          createdDate: new Date(),
          items: [billItem, billItem],
       });
-      const billsFound = await sut.findAll();
+      const billsFound = await sut.findAllByUser('any_user_id');
       expect(billsFound).toHaveLength(2);
       expect(billsFound[0].id).toBe(bill1.id);
       expect(billsFound[0].name).toBe(bill1.name);
@@ -175,7 +176,7 @@ describe('MongoDB Item Repository tests', () => {
          createdDate: new Date(),
          items: [billItem],
       });
-      await sut.delete(bill.id);
+      await sut.deleteByUser(bill.id, 'any_user_id');
       const billFound = await BillModel.findOne({ _id: bill.id });
       expect(billFound).toBeFalsy();
    });

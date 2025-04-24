@@ -8,8 +8,10 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
-
 const input = {
    id: 'any_id',
    name: 'any_name_2',
@@ -32,7 +34,7 @@ const input = {
 };
 describe('Update bill usecase', () => {
    it('should update a bill', async () => {
-      mockRepository.find.mockReturnValueOnce({
+      mockRepository.findByUser.mockReturnValueOnce({
          id: 'any_id',
          name: 'any_name',
          description: 'any_description',
@@ -61,7 +63,7 @@ describe('Update bill usecase', () => {
    });
 
    it('should throw an error if name is empty', async () => {
-      mockRepository.find.mockReturnValueOnce({
+      mockRepository.findByUser.mockReturnValueOnce({
          id: 'any_id',
          name: 'any_name',
          description: 'any_description',

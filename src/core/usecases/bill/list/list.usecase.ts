@@ -8,7 +8,8 @@ export default class ListBillUseCase {
    }
 
    async execute(input: InputListBillDto): Promise<OutputListBillDto> {
-      const bills = await this.billRepository.findAll();
+      const { userId } = input;
+      const bills = await this.billRepository.findAllByUser(userId);
       return { bills };
    }
 }

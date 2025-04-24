@@ -88,6 +88,7 @@ describe('Bill e2e tests', () => {
       });
       const response = await request(app)
          .put(`/api/bill/${bill._id}`)
+         .set('Authorization', 'Bearer ' + token)
          .send({
             id: 'any_hash_id',
             name: 'any_bill_name',
@@ -117,6 +118,7 @@ describe('Bill e2e tests', () => {
    it('should return an error when try update a non-existent bill', async () => {
       const response = await request(app)
          .put('/api/bill/any_hash_id')
+         .set('Authorization', 'Bearer ' + token)
          .send({ name: 'other_hash_id' });
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('message', 'Bill not exists');
@@ -139,7 +141,10 @@ describe('Bill e2e tests', () => {
             },
          ],
       });
-      const response = await request(app).put(`/api/bill/${bill.id}`).send({});
+      const response = await request(app)
+         .put(`/api/bill/${bill.id}`)
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -164,7 +169,9 @@ describe('Bill e2e tests', () => {
             },
          ],
       });
-      const response = await request(app).get(`/api/bill/${bill._id}`);
+      const response = await request(app)
+         .get(`/api/bill/${bill._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -207,7 +214,9 @@ describe('Bill e2e tests', () => {
             },
          ],
       });
-      const response = await request(app).get('/api/bills');
+      const response = await request(app)
+         .get('/api/bills')
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -245,7 +254,9 @@ describe('Bill e2e tests', () => {
             },
          ],
       });
-      const response = await request(app).delete(`/api/bill/${bill._id}`);
+      const response = await request(app)
+         .delete(`/api/bill/${bill._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
          'message',
@@ -257,7 +268,9 @@ describe('Bill e2e tests', () => {
    });
 
    it('should return an error when try delete a non-existent bill', async () => {
-      const response = await request(app).delete(`/api/bill/non-existent-id`);
+      const response = await request(app)
+         .delete(`/api/bill/non-existent-id`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Bill not found');
       expect(response.body).not.toHaveProperty('data');

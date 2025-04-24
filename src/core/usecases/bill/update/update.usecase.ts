@@ -11,7 +11,8 @@ export default class UpdateBillUseCase {
    }
 
    async execute(input: InputUpdateBillDto): Promise<OutputUpdateBillDto> {
-      const billExists = await this.billRepository.find(input.id);
+      const { id, userId } = input;
+      const billExists = await this.billRepository.findByUser(id, userId);
       if (!billExists) {
          throw new Error('Bill not exists');
       }

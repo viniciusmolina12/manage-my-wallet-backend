@@ -6,16 +6,19 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
-
 describe('List bill usecase', () => {
    it('should list all bills', async () => {
-      mockRepository.findAll.mockReturnValueOnce([
+      mockRepository.findAllByUser.mockReturnValueOnce([
          {
             id: 'any_id',
             name: 'any_name',
             description: 'any_description',
             total: 56,
+            userId: 'any_user_id',
             createdDate: new Date('2020-02-10 10:20:30'),
             items: [
                {
@@ -37,6 +40,7 @@ describe('List bill usecase', () => {
             name: 'any_name_2',
             description: 'any_other_description',
             total: 20,
+            userId: 'any_user_id',
             createdDate: new Date('2020-02-10 10:20:30'),
             items: [
                {
@@ -49,7 +53,7 @@ describe('List bill usecase', () => {
          },
       ]);
       const sut = new ListBillUseCase(mockRepository);
-      const response = await sut.execute({});
+      const response = await sut.execute({ userId: 'any_user_id' });
       expect(response.bills.length).toBe(2);
       expect(response.bills[0].id).toBe('any_id');
       expect(response.bills[0].name).toBe('any_name');

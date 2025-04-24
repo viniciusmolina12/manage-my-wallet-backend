@@ -8,6 +8,7 @@ import DeleteBillUseCase from '@core/usecases/bill/delete/delete.usecase';
 
 interface InputDeleteBillControllerDto {
    id: string;
+   userId: string;
 }
 
 type OutputDeleteBillControllerDto = null;
@@ -20,7 +21,10 @@ export default class DeleteBillController {
       input: InputControllerDto<InputDeleteBillControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteBillControllerDto>> {
       try {
-         await this.deleteBillUseCase.execute(input.data.id);
+         await this.deleteBillUseCase.execute({
+            id: input.data.id,
+            userId: input.data.userId,
+         });
          return response<OutputDeleteBillControllerDto>(
             200,
             'Bill deleted successfully'

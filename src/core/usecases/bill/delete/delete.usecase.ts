@@ -10,8 +10,9 @@ export default class DeleteBillUseCase {
    }
 
    async execute(input: InputDeleteBillDto): Promise<OutputDeleteBillDto> {
-      const bill = await this.billRepository.find(input);
+      const { id, userId } = input;
+      const bill = await this.billRepository.findByUser(id, userId);
       if (!bill) throw new EntityError('Bill not found');
-      await this.billRepository.delete(input);
+      await this.billRepository.deleteByUser(id, userId);
    }
 }
