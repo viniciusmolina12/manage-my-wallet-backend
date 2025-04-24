@@ -21,6 +21,7 @@ const BillSchema = new Schema({
          price: { type: Number, required: true },
       },
    ],
+   userId: { type: String, ref: 'User', required: true },
    createdDate: { type: Date, required: true },
 });
 

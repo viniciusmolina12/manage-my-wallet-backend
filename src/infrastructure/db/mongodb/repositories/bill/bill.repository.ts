@@ -8,9 +8,11 @@ import BillItem from '@core/domain/bill/entity/bill-item.entity';
 
 export default class MongoDbBillRepository implements BillRepository {
    async create(entity: Bill): Promise<void> {
+      console.log('CRIACAODOBILL', entity);
       await BillModel.create({
          _id: entity.id,
          name: entity.name,
+         userId: entity.userId,
          items: entity.items,
          createdDate: entity.createdDate,
          description: entity.description,
@@ -40,6 +42,7 @@ export default class MongoDbBillRepository implements BillRepository {
          bill.name,
          billItems,
          bill.createdDate,
+         bill.userId,
          bill?.description
       );
    }
@@ -56,6 +59,7 @@ export default class MongoDbBillRepository implements BillRepository {
             bill.name,
             billItems,
             bill.createdDate,
+            bill.userId,
             bill?.description
          );
       });

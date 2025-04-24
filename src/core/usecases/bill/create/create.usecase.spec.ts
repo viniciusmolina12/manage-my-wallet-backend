@@ -14,6 +14,7 @@ describe('Create bill usecase', () => {
    it('should create a bill', async () => {
       const input: InputCreateBillDto = {
          description: 'any_description',
+         userId: 'any_user_id',
          name: 'any_name',
          items: [
             {
@@ -37,6 +38,7 @@ describe('Create bill usecase', () => {
    it('should throw an error if name is empty', async () => {
       const input: InputCreateBillDto = {
          description: 'any_description',
+         userId: 'any_user_id',
          name: '',
          items: [
             {

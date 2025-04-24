@@ -1,5 +1,6 @@
 export interface InputCreateBillDto {
    name: string;
+   userId: string;
    description?: string;
    items: {
       itemId: string;
@@ -10,6 +11,7 @@ export interface InputCreateBillDto {
 
 export interface OutputCreateBillDto {
    id: string;
+   userId: string;
    description?: string;
    name: string;
    createdDate: Date;

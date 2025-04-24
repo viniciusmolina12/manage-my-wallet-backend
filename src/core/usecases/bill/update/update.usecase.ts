@@ -32,6 +32,7 @@ export default class UpdateBillUseCase {
          input.name,
          billItems,
          new Date(),
+         input.userId,
          input.description
       );
       (await this.billRepository.update(bill)) as Bill;

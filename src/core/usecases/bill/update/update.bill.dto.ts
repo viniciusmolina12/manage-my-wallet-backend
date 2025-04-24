@@ -1,6 +1,7 @@
 export interface InputUpdateBillDto {
    id: string;
    name: string;
+   userId: string;
    description?: string;
    items: {
       id?: string;

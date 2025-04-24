@@ -13,6 +13,7 @@ const mockRepository = {
 const input = {
    id: 'any_id',
    name: 'any_name_2',
+   userId: 'any_user_id',
    description: 'any_other_description',
    items: [
       {
@@ -76,6 +77,7 @@ describe('Update bill usecase', () => {
       const input: InputUpdateBillDto = {
          id: 'any_id',
          name: '',
+         userId: 'any_user_id',
          description: 'any_other_description',
          items: [
             {
@@ -102,6 +104,7 @@ describe('Update bill usecase', () => {
       const input: InputUpdateBillDto = {
          id: 'any_id',
          name: '',
+         userId: 'any_user_id',
          description: 'any_other_description',
          items: [
             {

@@ -9,6 +9,7 @@ import UpdateBillUseCase from '@core/usecases/bill/update/update.usecase';
 interface InputUpdateBillControllerDto {
    id: string;
    name: string;
+   userId: string;
    description?: string;
    items: {
       id?: string;

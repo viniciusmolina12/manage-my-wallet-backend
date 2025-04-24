@@ -8,12 +8,14 @@ export default class Bill extends Entity {
    public items: BillItem[];
    public description?: string;
    public createdDate: Date;
+   public userId: string;
 
    constructor(
       id: string,
       name: string,
       items: BillItem[],
       createdDate: Date,
+      userId: string,
       description?: string
    ) {
       super();
@@ -22,6 +24,7 @@ export default class Bill extends Entity {
       this.items = items;
       this.description = description;
       this.createdDate = createdDate;
+      this.userId = userId;
       this.validate();
    }
 

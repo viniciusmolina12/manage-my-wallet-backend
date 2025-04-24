@@ -2,6 +2,19 @@ import request from 'supertest';
 import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import BillModel from '@infrastructure/db/mongodb/model/bill.model';
+import { JsonWebTokenJwtGenerator } from '@infrastructure/jwt';
+import ENV from '@config/env';
+
+const jsonWebTokenGenerator = new JsonWebTokenJwtGenerator();
+const token = jsonWebTokenGenerator.generateJwt(
+   {
+      userId: 'any_user_id',
+      email: 'any_email',
+      name: 'any_name',
+   },
+   ENV.SECRET_KEY,
+   '1h'
+);
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -18,6 +31,7 @@ describe('Bill e2e tests', () => {
    it('should create a bill', async () => {
       const response = await request(app)
          .post('/api/bill')
+         .set('Authorization', 'Bearer ' + token)
          .send({
             name: 'any_bill_name',
             description: 'any_bill_description',
@@ -45,7 +59,10 @@ describe('Bill e2e tests', () => {
    });
 
    it('should return an error when creating an bill with invalid data', async () => {
-      const response = await request(app).post('/api/bill').send({});
+      const response = await request(app)
+         .post('/api/bill')
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -57,6 +74,7 @@ describe('Bill e2e tests', () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          name: 'Bill 1',
+         userId: 'any_user_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -105,10 +123,11 @@ describe('Bill e2e tests', () => {
       expect(response.body).not.toHaveProperty('data');
    });
 
-   it('should return an error when updating an bill with invalid data', async () => {
+   it('should return an error when updating a bill with invalid data', async () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          name: 'Bill 1',
+         userId: 'any_user_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -133,6 +152,7 @@ describe('Bill e2e tests', () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          name: 'Bill 1',
+         userId: 'any_user_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -161,6 +181,7 @@ describe('Bill e2e tests', () => {
          _id: 'any_hash_id',
          createdDate: new Date(),
          name: 'Bill 1',
+         userId: 'any_user_id',
          description: 'Description 1',
          items: [
             {
@@ -175,6 +196,7 @@ describe('Bill e2e tests', () => {
          _id: 'any_hash_id_2',
          createdDate: new Date(),
          name: 'Bill 2',
+         userId: 'any_user_id',
          description: 'Description 2',
          items: [
             {
@@ -211,6 +233,7 @@ describe('Bill e2e tests', () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          createdDate: new Date(),
+         userId: 'any_user_id',
          name: 'Bill 1',
          description: 'Description 1',
          items: [

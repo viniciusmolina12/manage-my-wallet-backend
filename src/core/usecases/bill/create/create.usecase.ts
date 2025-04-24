@@ -27,12 +27,14 @@ export default class CreateBillUseCase {
          input.name,
          billItems,
          new Date(),
+         input.userId,
          input.description
       );
       await this.billRepository.create(bill);
       return {
          id: bill.id,
          createdDate: bill.createdDate,
+         userId: bill.userId,
          name: bill.name,
          description: bill.description,
          total: bill.total,

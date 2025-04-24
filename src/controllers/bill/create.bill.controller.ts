@@ -9,6 +9,7 @@ import { response } from '@controllers/@shared/protocols';
 interface InputCreateBillControllerDto {
    name: string;
    description?: string;
+   userId: string;
    items: {
       quantity: number;
       price: number;
