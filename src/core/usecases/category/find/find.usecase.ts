@@ -3,6 +3,7 @@ import {
    InputFindCategoryDto,
    OutputFindCategoryDto,
 } from './find.category.dto';
+import EntityError from '@core/domain/@shared/error/entity.error';
 
 export default class FindCategoryUseCase {
    constructor(private readonly categoryRepository: CategoryRepository) {
@@ -10,9 +11,12 @@ export default class FindCategoryUseCase {
    }
 
    async execute(input: InputFindCategoryDto): Promise<OutputFindCategoryDto> {
-      const category = await this.categoryRepository.find(input);
+      const category = await this.categoryRepository.findByUser(
+         input.id,
+         input.userId
+      );
       if (!category) {
-         throw new Error('Category not found');
+         throw new EntityError('Category not found');
       }
       return {
          id: category.id,

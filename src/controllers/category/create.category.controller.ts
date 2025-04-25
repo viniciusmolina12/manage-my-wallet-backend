@@ -9,6 +9,7 @@ import CreateCategoryUseCase from '@core/usecases/category/create/create.usecase
 interface InputCreateCategoryControllerDto {
    name: string;
    description?: string;
+   userId: string;
    categoryId: string;
 }
 
@@ -26,10 +27,11 @@ export default class CreateCategoryController {
       input: InputControllerDto<InputCreateCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputCreateCategoryControllerDto>> {
       try {
-         const { name, description } = input.data;
+         const { name, description, userId } = input.data;
          const category = await this.createCategoryUseCase.execute({
             name,
             description,
+            userId,
          });
          const output = {
             id: category.id,

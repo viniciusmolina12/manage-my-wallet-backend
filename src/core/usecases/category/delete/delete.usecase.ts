@@ -13,10 +13,11 @@ export default class DeleteCategoryUseCase {
    async execute(
       input: InputDeleteCategoryDto
    ): Promise<OutputDeleteCategoryDto> {
-      const category = await this.categoryRepository.find(input);
+      const { id, userId } = input;
+      const category = await this.categoryRepository.findByUser(id, userId);
       if (!category) {
          throw new EntityError('Category not found');
       }
-      await this.categoryRepository.delete(input);
+      await this.categoryRepository.deleteByUser(id, userId);
    }
 }

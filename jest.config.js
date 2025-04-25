@@ -9,4 +9,5 @@ module.exports = {
       '@config/(.*)': '<rootDir>/src/config/$1',
    },
    setupFiles: ['dotenv/config'],
+   testPathIgnorePatterns: ['/node_modules/', '/dist/', '\\.mock\\.ts$'],
 };

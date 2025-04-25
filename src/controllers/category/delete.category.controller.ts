@@ -8,6 +8,7 @@ import { response } from '@controllers/@shared/protocols';
 
 interface InputDeleteCategoryControllerDto {
    id: string;
+   userId: string;
 }
 
 interface OutputDeleteCategoryControllerDto {}
@@ -20,8 +21,8 @@ export default class DeleteCategoryController {
       input: InputControllerDto<InputDeleteCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteCategoryControllerDto>> {
       try {
-         const { id } = input.data;
-         await this.deleteCategoryUseCase.execute(id);
+         const { id, userId } = input.data;
+         await this.deleteCategoryUseCase.execute({ id, userId });
          return response<OutputDeleteCategoryControllerDto>(
             200,
             'Category deleted succesfully'

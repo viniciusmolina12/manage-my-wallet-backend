@@ -7,20 +7,25 @@ const mockRepository = {
    findAll: jest.fn(),
    delete: jest.fn(),
    findCategoryByName: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 
 describe('Update category usecase', () => {
    it('should be able to update a new category', async () => {
       const sut = new UpdateCategoryUseCase(mockRepository);
-      mockRepository.find.mockReturnValueOnce({
+      mockRepository.findByUser.mockReturnValueOnce({
          id: 'any_id',
          name: 'any_name',
+         userId: 'any_user_id',
          description: 'any_description',
       });
       const input = {
          id: 'any_id',
          name: 'any_name',
          description: 'any_description',
+         userId: 'any_user_id',
       };
       const category = await sut.execute(input);
       expect(category).toBeTruthy();
@@ -34,6 +39,7 @@ describe('Update category usecase', () => {
          id: 'any_id',
          name: 'any_name',
          description: 'any_description',
+         userId: 'any_user_id',
       };
       mockRepository.findCategoryByName.mockReturnValueOnce(
          Promise.resolve(true)
@@ -43,7 +49,7 @@ describe('Update category usecase', () => {
 
    it('should throw an error if name is not provided', async () => {
       const sut = new UpdateCategoryUseCase(mockRepository);
-      mockRepository.find.mockReturnValueOnce({
+      mockRepository.findByUser.mockReturnValueOnce({
          id: 'any_id',
          name: 'any_name',
          description: 'any_description',
@@ -52,6 +58,7 @@ describe('Update category usecase', () => {
          id: 'any_id',
          name: '',
          description: 'any_description',
+         userId: 'any_user_id',
       };
       expect(sut.execute(input)).rejects.toThrow('category: Name is required');
    });

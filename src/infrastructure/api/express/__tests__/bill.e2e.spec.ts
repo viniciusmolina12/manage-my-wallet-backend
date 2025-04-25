@@ -2,19 +2,7 @@ import request from 'supertest';
 import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import BillModel from '@infrastructure/db/mongodb/model/bill.model';
-import { JsonWebTokenJwtGenerator } from '@infrastructure/jwt';
-import ENV from '@config/env';
-
-const jsonWebTokenGenerator = new JsonWebTokenJwtGenerator();
-const token = jsonWebTokenGenerator.generateJwt(
-   {
-      userId: 'any_user_id',
-      email: 'any_email',
-      name: 'any_name',
-   },
-   ENV.SECRET_KEY,
-   '1h'
-);
+import token from './___mocks__/jsonwebtoken.mock';
 
 beforeAll(async () => {
    await mockDb.connect();

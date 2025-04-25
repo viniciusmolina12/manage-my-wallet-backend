@@ -6,7 +6,9 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 
-interface InputListCategoryControllerDto {}
+interface InputListCategoryControllerDto {
+   userId: string;
+}
 
 interface OutputListCategoryControllerDto {
    categories: {
@@ -24,7 +26,10 @@ export default class ListCategoryController {
       input: InputControllerDto<InputListCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputListCategoryControllerDto>> {
       try {
-         const categories = await this.listCategoryUseCase.execute();
+         const { userId } = input.data;
+         const categories = await this.listCategoryUseCase.execute({
+            userId,
+         });
          const output = {
             categories: categories.categories.map((category) => ({
                id: category.id,

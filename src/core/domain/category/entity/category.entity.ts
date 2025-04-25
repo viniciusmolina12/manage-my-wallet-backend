@@ -5,12 +5,14 @@ export default class Category extends Entity {
    private _id: string;
    private _name: string;
    private _description?: string;
+   private _userId: string;
 
-   constructor(id: string, name: string, description?: string) {
+   constructor(id: string, name: string, userId: string, description?: string) {
       super();
       this._id = id;
       this._name = name;
       this._description = description;
+      this._userId = userId;
       this.validate();
    }
 
@@ -27,6 +29,12 @@ export default class Category extends Entity {
             source: 'category',
          });
       }
+      if (!this._userId) {
+         this.notification.add({
+            message: 'User is required',
+            source: 'category',
+         });
+      }
       if (this.notification.hasErrors()) {
          throw new EntityError(this.notification.getNotifications());
       }
@@ -40,5 +48,8 @@ export default class Category extends Entity {
    }
    get description(): string | undefined {
       return this._description;
+   }
+   get userId(): string {
+      return this._userId;
    }
 }

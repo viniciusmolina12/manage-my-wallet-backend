@@ -7,24 +7,32 @@ const mockRepository = {
    findAll: jest.fn(),
    delete: jest.fn(),
    findCategoryByName: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 describe('Find category usecase test', () => {
    it('should throw an error if category does not exist', async () => {
       const sut = new FindCategoryUseCase(mockRepository);
-      mockRepository.find.mockReturnValueOnce(Promise.resolve(null));
-      await expect(sut.execute('any_id')).rejects.toThrow('Category not found');
+      mockRepository.findByUser.mockReturnValueOnce(Promise.resolve(null));
+      await expect(
+         sut.execute({ id: 'any_id', userId: 'any_user_id' })
+      ).rejects.toThrow('Category not found');
    });
 
    it('should return a category if category exists', async () => {
       const sut = new FindCategoryUseCase(mockRepository);
-      mockRepository.find.mockReturnValueOnce(
+      mockRepository.findByUser.mockReturnValueOnce(
          Promise.resolve({
             id: 'any_id',
             name: 'any_name',
             description: 'any_description',
          })
       );
-      const category = await sut.execute('any_id');
+      const category = await sut.execute({
+         id: 'any_id',
+         userId: 'any_user_id',
+      });
       expect(category).toEqual({
          id: 'any_id',
          name: 'any_name',

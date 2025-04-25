@@ -20,6 +20,7 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await sut.create(category);
@@ -36,12 +37,14 @@ describe('MongoDB Item Repository tests', () => {
       const oldCategory = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await CategoryModel.create({
          _id: oldCategory.id,
          name: oldCategory.name,
          description: oldCategory.description,
+         userId: oldCategory.userId,
       });
 
       const categoryCreated = await CategoryModel.findOne({
@@ -55,6 +58,7 @@ describe('MongoDB Item Repository tests', () => {
       const updateCategory = new Category(
          'any_hash_id',
          'Category 2',
+         'any_user_id',
          'Description 2'
       );
       await sut.update(updateCategory);
@@ -71,12 +75,14 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await CategoryModel.create({
          _id: category.id,
          name: category.name,
          description: category.description,
+         userId: category.userId,
       });
       const categoryFound = await sut.find(category.id);
       expect(categoryFound?.id).toBe(category.id);
@@ -89,22 +95,26 @@ describe('MongoDB Item Repository tests', () => {
       const category1 = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await CategoryModel.create({
          _id: category1.id,
          name: category1.name,
          description: category1.description,
+         userId: category1.userId,
       });
       const category2 = new Category(
          'any_hash_id_2',
          'Category 2',
+         'any_user_id',
          'Description 2'
       );
       await CategoryModel.create({
          _id: category2.id,
          name: category2.name,
          description: category2.description,
+         userId: category2.userId,
       });
       const categoriesFound = await sut.findAll();
       expect(categoriesFound).toHaveLength(2);
@@ -121,12 +131,14 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await CategoryModel.create({
          _id: category.id,
          name: category.name,
          description: category.description,
+         userId: category.userId,
       });
       await sut.delete(category.id);
       const itemFound = await CategoryModel.findOne({ _id: category.id });
@@ -138,14 +150,19 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          'any_hash_id',
          'Category 1',
+         'any_user_id',
          'Description 1'
       );
       await CategoryModel.create({
          _id: category.id,
          name: category.name,
          description: category.description,
+         userId: category.userId,
       });
-      const categoryFound = await sut.findCategoryByName(category.name);
+      const categoryFound = await sut.findCategoryByName(
+         category.name,
+         category.userId
+      );
       expect(categoryFound?.id).toBe(category.id);
       expect(categoryFound?.name).toBe(category.name);
       expect(categoryFound?.description).toBe(category.description);
@@ -153,7 +170,10 @@ describe('MongoDB Item Repository tests', () => {
 
    it('should return undefined if category name does not exist', async () => {
       const sut = new MongoDbCategoryRepository();
-      const categoryFound = await sut.findCategoryByName('any_name');
+      const categoryFound = await sut.findCategoryByName(
+         'any_name',
+         'any_user_id'
+      );
       expect(categoryFound).toBeUndefined();
    });
 });

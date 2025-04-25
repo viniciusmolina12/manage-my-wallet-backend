@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import CategoryModel from '@infrastructure/db/mongodb/model/category.model';
-
+import token from './___mocks__/jsonwebtoken.mock';
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -16,10 +16,13 @@ afterAll(async () => {
 });
 describe('Category e2e tests', () => {
    it('should create an category', async () => {
-      const response = await request(app).post('/api/category').send({
-         name: 'any_category_name',
-         description: 'any_category_description',
-      });
+      const response = await request(app)
+         .post('/api/category')
+         .set('Authorization', 'Bearer ' + token)
+         .send({
+            name: 'any_category_name',
+            description: 'any_category_description',
+         });
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -34,8 +37,11 @@ describe('Category e2e tests', () => {
       );
    });
 
-   it('should return an error when creating an category with invalid data', async () => {
-      const response = await request(app).post('/api/category').send({});
+   it('should return an error when creating a category with invalid data', async () => {
+      const response = await request(app)
+         .post('/api/category')
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -48,9 +54,11 @@ describe('Category e2e tests', () => {
          _id: 'any_hash_id',
          name: 'Category 1',
          description: 'Description 1',
+         userId: 'any_user_id',
       });
       const response = await request(app)
          .put(`/api/category/${category._id}`)
+         .set('Authorization', 'Bearer ' + token)
          .send({
             name: 'any_category_name',
             description: 'any_category_description',
@@ -71,6 +79,7 @@ describe('Category e2e tests', () => {
    it('should return an error when try update a non-existent category', async () => {
       const response = await request(app)
          .put('/api/category/any_hash_id')
+         .set('Authorization', 'Bearer ' + token)
          .send({ name: 'other_hash_id' });
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('message', 'Category not found');
@@ -81,10 +90,12 @@ describe('Category e2e tests', () => {
       const category = await CategoryModel.create({
          _id: 'any_hash_id',
          name: 'Category 1',
+         userId: 'any_user_id',
          description: 'Description 1',
       });
       const response = await request(app)
          .put(`/api/category/${category.id}`)
+         .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
@@ -99,8 +110,11 @@ describe('Category e2e tests', () => {
          _id: 'any_hash_id',
          name: 'Category 1',
          description: 'Description 1',
+         userId: 'any_user_id',
       });
-      const response = await request(app).get(`/api/category/${category._id}`);
+      const response = await request(app)
+         .get(`/api/category/${category._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -117,13 +131,17 @@ describe('Category e2e tests', () => {
          _id: 'any_hash_id',
          name: 'Category 1',
          description: 'Description 1',
+         userId: 'any_user_id',
       });
       const category2 = await CategoryModel.create({
          _id: 'any_hash_id_2',
          name: 'Category 2',
          description: 'Description 2',
+         userId: 'any_user_id',
       });
-      const response = await request(app).get('/api/categories');
+      const response = await request(app)
+         .get('/api/categories')
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -162,10 +180,11 @@ describe('Category e2e tests', () => {
          _id: 'any_hash_id',
          name: 'Category 1',
          description: 'Description 1',
+         userId: 'any_user_id',
       });
-      const response = await request(app).delete(
-         `/api/category/${category._id}`
-      );
+      const response = await request(app)
+         .delete(`/api/category/${category._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
          'message',
@@ -179,9 +198,9 @@ describe('Category e2e tests', () => {
    });
 
    it('should return an error when try delete a non-existent category', async () => {
-      const response = await request(app).delete(
-         `/api/category/non-existent-id`
-      );
+      const response = await request(app)
+         .delete(`/api/category/non-existent-id`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Category not found');
       expect(response.body).not.toHaveProperty('data');

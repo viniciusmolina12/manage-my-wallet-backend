@@ -7,11 +7,14 @@ const mockRepository = {
    findAll: jest.fn(),
    delete: jest.fn(),
    findCategoryByName: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 describe('List category usecase test', () => {
    it('should list all categories', async () => {
       const sut = new ListCategoryUseCase(mockRepository);
-      mockRepository.findAll.mockReturnValueOnce(
+      mockRepository.findAllByUser.mockReturnValueOnce(
          Promise.resolve([
             {
                id: 'category_id_1',
@@ -25,7 +28,9 @@ describe('List category usecase test', () => {
             },
          ])
       );
-      const { categories } = await sut.execute();
+      const { categories } = await sut.execute({
+         userId: 'any_user_id',
+      });
       expect(categories).toBeTruthy();
       expect(categories.length).toBe(2);
       expect(categories[0].id).toBe('category_id_1');

@@ -10,6 +10,7 @@ interface InputUpdateCategoryControllerDto {
    id: string;
    name: string;
    description?: string;
+   userId: string;
 }
 
 interface OutputUpdateCategoryControllerDto {
@@ -25,11 +26,12 @@ export default class UpdateCategoryController {
       input: InputControllerDto<InputUpdateCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputUpdateCategoryControllerDto>> {
       try {
-         const { id, name, description } = input.data;
+         const { id, name, description, userId } = input.data;
          const category = await this.updateCategoryUseCase.execute({
             id,
             name,
             description,
+            userId,
          });
          const output = {
             name: category.name,

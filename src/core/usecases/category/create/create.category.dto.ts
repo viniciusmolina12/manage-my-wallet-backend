@@ -1,6 +1,7 @@
 export interface InputCreateCategoryDto {
    name: string;
    description?: string;
+   userId: string;
 }
 
 export interface OutputCreateCategoryDto {

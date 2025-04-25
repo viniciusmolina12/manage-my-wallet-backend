@@ -14,11 +14,19 @@ export default class CreateCategoryUseCase {
       input: InputCreateCategoryDto
    ): Promise<OutputCreateCategoryDto> {
       const categoryAlreadyExists =
-         await this.categoryRepository.findCategoryByName(input.name);
+         await this.categoryRepository.findCategoryByName(
+            input.name,
+            input.userId
+         );
       if (categoryAlreadyExists) {
          throw new Error('Category already exists');
       }
-      const category = new Category(uuid(), input.name, input?.description);
+      const category = new Category(
+         uuid(),
+         input.name,
+         input.userId,
+         input?.description
+      );
 
       await this.categoryRepository.create(category);
       return {

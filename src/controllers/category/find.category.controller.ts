@@ -8,6 +8,7 @@ import FindCategoryUseCase from '@core/usecases/category/find/find.usecase';
 
 interface InputFindCategoryControllerDto {
    id: string;
+   userId: string;
 }
 
 interface OutputFindCategoryControllerDto {
@@ -24,8 +25,11 @@ export default class FindCategoryController {
       input: InputControllerDto<InputFindCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputFindCategoryControllerDto>> {
       try {
-         const { id } = input.data;
-         const category = await this.findCategoryUseCase.execute(id);
+         const { id, userId } = input.data;
+         const category = await this.findCategoryUseCase.execute({
+            id,
+            userId,
+         });
          const output = {
             id: category.id,
             name: category.name,

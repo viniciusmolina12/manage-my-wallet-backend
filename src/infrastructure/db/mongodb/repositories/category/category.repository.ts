@@ -7,12 +7,13 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       await CategoryModel.create({
          _id: entity.id,
          name: entity.name,
+         userId: entity.userId,
          description: entity.description,
       });
    }
    async update(entity: Category): Promise<void> {
       await CategoryModel.findOneAndUpdate(
-         { _id: entity.id },
+         { _id: entity.id, userId: entity.userId },
          { name: entity.name, description: entity.description }
       );
    }
@@ -23,6 +24,18 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       return new Category(
          result._id.toString(),
          result.name,
+         result.userId,
+         result?.description
+      );
+   }
+
+   async findByUser(id: string, userId: string): Promise<Category | null> {
+      const result = await CategoryModel.findOne({ _id: id, userId });
+      if (!result) return null;
+      return new Category(
+         result._id.toString(),
+         result.name,
+         result.userId,
          result?.description
       );
    }
@@ -34,6 +47,20 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
             new Category(
                category._id.toString(),
                category.name,
+               category.userId,
+               category?.description
+            )
+      );
+   }
+
+   async findAllByUser(userId: string): Promise<Category[]> {
+      const result = await CategoryModel.find({ userId });
+      return result.map(
+         (category) =>
+            new Category(
+               category._id.toString(),
+               category.name,
+               category.userId,
                category?.description
             )
       );
@@ -43,12 +70,20 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       await CategoryModel.findByIdAndDelete({ _id: id });
    }
 
-   async findCategoryByName(name: string): Promise<Category | undefined> {
-      const result = await CategoryModel.findOne({ name: name });
+   async deleteByUser(id: string, userId: string): Promise<void> {
+      await CategoryModel.findByIdAndDelete({ _id: id, userId });
+   }
+
+   async findCategoryByName(
+      name: string,
+      userId: string
+   ): Promise<Category | undefined> {
+      const result = await CategoryModel.findOne({ name: name, userId });
       if (!result) return undefined;
       return new Category(
          result._id.toString(),
          result.name,
+         result.userId,
          result?.description
       );
    }
