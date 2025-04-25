@@ -1,6 +1,7 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { InputCreateBillDto } from './create.bill.dto';
 import CreateBillUseCase from './create.usecase';
+import Item from '@core/domain/item/entity/item.entity';
 
 const mockRepository = {
    create: jest.fn(),
@@ -11,6 +12,22 @@ const mockRepository = {
    findByUser: jest.fn(),
    findAllByUser: jest.fn(),
    deleteByUser: jest.fn(),
+};
+
+const mockItemRepository = {
+   create: jest.fn(),
+   update: jest.fn(),
+   find: jest.fn(),
+   findAll: jest.fn(),
+   delete: jest.fn(),
+   findByUser: jest
+      .fn()
+      .mockResolvedValue(
+         new Item('any_item_id', 'any_name', 'any_description', 'any_user_id')
+      ),
+   findAllByUser: jest.fn(),
+   deleteByUser: jest.fn(),
+   findAllByUserId: jest.fn(),
 };
 
 describe('Create bill usecase', () => {
@@ -27,7 +44,7 @@ describe('Create bill usecase', () => {
             },
          ],
       };
-      const sut = new CreateBillUseCase(mockRepository);
+      const sut = new CreateBillUseCase(mockRepository, mockItemRepository);
       const bill = await sut.execute(input);
       expect(bill.name).toBe('any_name');
       expect(bill.total).toBe(20);
@@ -51,9 +68,30 @@ describe('Create bill usecase', () => {
             },
          ],
       };
-      const sut = new CreateBillUseCase(mockRepository);
+      const sut = new CreateBillUseCase(mockRepository, mockItemRepository);
       await expect(sut.execute({ ...input, name: '' })).rejects.toThrow(
          new EntityError('bill: Name is required, ')
+      );
+   });
+
+   it('should throw an error if item is not found', async () => {
+      const input: InputCreateBillDto = {
+         description: 'any_description',
+         userId: 'any_user_id',
+         name: 'any_name',
+         items: [
+            {
+               itemId: 'any_item_id',
+               price: 10,
+               quantity: 2,
+            },
+         ],
+      };
+
+      mockItemRepository.findByUser.mockResolvedValue(null);
+      const sut = new CreateBillUseCase(mockRepository, mockItemRepository);
+      await expect(sut.execute(input)).rejects.toThrow(
+         new EntityError('Item not found')
       );
    });
 });

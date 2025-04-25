@@ -12,12 +12,17 @@ import ListBillController from '@controllers/bill/list.bill.controller';
 import DeleteBillUseCase from '@core/usecases/bill/delete/delete.usecase';
 import DeleteBillController from '@controllers/bill/delete.bill.controller';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/item.repository';
 
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
-   const createItemUseCase = new CreateBillUseCase(mongoDbBillRepository);
+   const mongoDbItemRepository = new MongoDbItemRepository();
+   const createItemUseCase = new CreateBillUseCase(
+      mongoDbBillRepository,
+      mongoDbItemRepository
+   );
    const controller = new CreateBillController(createItemUseCase);
    const { code, ...data } = await controller.handle({
       data: { ...req.body, userId: req.userId },

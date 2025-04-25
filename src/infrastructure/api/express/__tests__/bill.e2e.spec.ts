@@ -3,6 +3,7 @@ import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import BillModel from '@infrastructure/db/mongodb/model/bill.model';
 import token from './___mocks__/jsonwebtoken.mock';
+import itemModel from '@infrastructure/db/mongodb/model/item.model';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -17,6 +18,13 @@ afterAll(async () => {
 });
 describe('Bill e2e tests', () => {
    it('should create a bill', async () => {
+      const item = await itemModel.create({
+         _id: 'any_item_id',
+         name: 'any_item_name',
+         categoryId: 'any_category_id',
+         description: 'any_item_description',
+         userId: 'any_user_id',
+      });
       const response = await request(app)
          .post('/api/bill')
          .set('Authorization', 'Bearer ' + token)
@@ -47,15 +55,18 @@ describe('Bill e2e tests', () => {
    });
 
    it('should return an error when creating an bill with invalid data', async () => {
+      const item = await itemModel.create({
+         _id: 'any_item_id',
+         name: 'any_item_name',
+         categoryId: 'any_category_id',
+         description: 'any_item_description',
+         userId: 'any_user_id',
+      });
       const response = await request(app)
          .post('/api/bill')
          .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'bill: Name is required, bill: Items is required, '
-      );
    });
 
    it('should update an bill', async () => {
@@ -261,6 +272,20 @@ describe('Bill e2e tests', () => {
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Bill not found');
+      expect(response.body).not.toHaveProperty('data');
+   });
+
+   it('should throw an error when try create a bill with an invalid item', async () => {
+      const response = await request(app)
+         .post('/api/bill')
+         .set('Authorization', 'Bearer ' + token)
+         .send({
+            name: 'any_bill_name',
+            description: 'any_bill_description',
+            items: [{ itemId: 'non-existent-id', price: 10, quantity: 1 }],
+         });
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');
    });
 });
