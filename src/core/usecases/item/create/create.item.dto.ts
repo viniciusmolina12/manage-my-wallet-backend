@@ -1,6 +1,7 @@
 export interface InputCreateItemDto {
    name: string;
    description?: string;
+   userId: string;
    categoryId: string;
 }
 

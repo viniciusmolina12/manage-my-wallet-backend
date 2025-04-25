@@ -6,7 +6,9 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 
-interface InputListItemControllerDto {}
+interface InputListItemControllerDto {
+   userId: string;
+}
 
 interface OutputListItemControllerDto {
    items: {
@@ -25,7 +27,9 @@ export default class ListItemController {
       input: InputControllerDto<InputListItemControllerDto>
    ): Promise<OutputControllerDto<OutputListItemControllerDto>> {
       try {
-         const items = await this.listItemUseCase.execute();
+         const items = await this.listItemUseCase.execute({
+            userId: input.data.userId,
+         });
          const output = {
             items: items.items.map((item) => ({
                id: item.id,

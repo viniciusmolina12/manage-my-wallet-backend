@@ -1,5 +1,6 @@
 export interface InputFindItemDto {
    id: string;
+   userId: string;
 }
 
 export interface OutputFindItemDto {

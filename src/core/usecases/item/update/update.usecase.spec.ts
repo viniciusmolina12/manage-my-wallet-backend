@@ -7,6 +7,9 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUserId: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 
 const input = {
@@ -14,15 +17,17 @@ const input = {
    name: 'Item 1',
    description: 'any description',
    categoryId: 'category_id_hash',
+   userId: 'any_user_id',
 };
 describe('Item update usecase test', () => {
    it('should update an item', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
-      mockRepository.find = jest.fn().mockReturnValue({
+      mockRepository.findByUser = jest.fn().mockReturnValue({
          id: 'any_id',
          name: 'Item 2',
          description: 'other_description',
          categoryId: 'other_category_id_hash',
+         userId: 'any_user_id',
       });
       const item = await sut.execute(input);
       expect(item.name).toBe(input.name);
@@ -31,16 +36,17 @@ describe('Item update usecase test', () => {
    });
    it('should throw an error if item does not exist', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
-      mockRepository.find = jest.fn().mockReturnValue(undefined);
+      mockRepository.findByUser.mockReturnValue(undefined);
       await expect(sut.execute(input)).rejects.toThrow('Item not found');
    });
 
    it('should throw an error if required properties is not provided', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
-      mockRepository.find = jest.fn().mockReturnValue({
+      mockRepository.findByUser.mockReturnValue({
          id: 'any_id',
          name: 'Item 2',
          description: 'other_description',
+         userId: 'any_user_id',
          categoryId: 'other_category_id_hash',
       });
       await expect(sut.execute({ ...input, name: '' })).rejects.toThrow(

@@ -6,12 +6,16 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUserId: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 
 const input = {
    name: 'Item 1',
    description: 'any description',
    categoryId: 'category_id_hash',
+   userId: 'any_user_id',
 };
 describe('Item create usecase test', () => {
    it('should create an item', async () => {

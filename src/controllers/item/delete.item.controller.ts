@@ -8,6 +8,7 @@ import { response } from '@controllers/@shared/protocols';
 
 interface InputDeleteItemControllerDto {
    id: string;
+   userId: string;
 }
 
 interface OutputDeleteItemControllerDto {}
@@ -20,8 +21,8 @@ export default class DeleteItemController {
       input: InputControllerDto<InputDeleteItemControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteItemControllerDto>> {
       try {
-         const { id } = input.data;
-         await this.deleteItemUseCase.execute(id);
+         const { id, userId } = input.data;
+         await this.deleteItemUseCase.execute({ id, userId });
          return response<OutputDeleteItemControllerDto>(
             200,
             'Item deleted succesfully'

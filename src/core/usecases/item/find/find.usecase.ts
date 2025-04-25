@@ -7,7 +7,7 @@ export default class FindItemUseCase {
    }
 
    async execute(input: InputFindItemDto): Promise<OutputFindItemDto> {
-      const item = await this.itemRepository.find(input.id);
+      const item = await this.itemRepository.findByUser(input.id, input.userId);
       if (!item) throw new Error('Item not found');
       return {
          id: item.id,

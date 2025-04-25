@@ -7,6 +7,7 @@ const ItemSchema = new Schema({
    name: { type: String, required: true },
    description: { type: String, required: false },
    categoryId: { type: String, required: true },
+   userId: { type: String, required: true },
 });
 
 export default mongoose.model('Item', ItemSchema);

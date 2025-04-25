@@ -7,8 +7,8 @@ export default class DeleteItemUseCase {
    }
 
    async execute(input: InputDeleteItemDto): Promise<OutputDeleteItemDto> {
-      const item = await this.itemRepository.find(input);
+      const item = await this.itemRepository.findByUser(input.id, input.userId);
       if (!item) throw new EntityError('Item not found');
-      await this.itemRepository.delete(input);
+      await this.itemRepository.deleteByUser(input.id, input.userId);
    }
 }

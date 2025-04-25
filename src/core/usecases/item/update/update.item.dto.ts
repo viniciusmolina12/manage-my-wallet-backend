@@ -1,5 +1,6 @@
 export interface InputUpdateItemDto {
    id: string;
+   userId: string;
    name: string;
    categoryId: string;
    description?: string;

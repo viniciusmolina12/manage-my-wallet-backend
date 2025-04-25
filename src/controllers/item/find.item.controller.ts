@@ -8,6 +8,7 @@ import { response } from '@controllers/@shared/protocols';
 
 interface InputFindItemControllerDto {
    id: string;
+   userId: string;
 }
 
 interface OutputFindItemControllerDto {
@@ -25,8 +26,8 @@ export default class FindItemController {
       input: InputControllerDto<InputFindItemControllerDto>
    ): Promise<OutputControllerDto<OutputFindItemControllerDto>> {
       try {
-         const { id } = input.data;
-         const item = await this.findItemUseCase.execute({ id });
+         const { id, userId } = input.data;
+         const item = await this.findItemUseCase.execute({ id, userId });
          const output = {
             id: item.id,
             name: item.name,

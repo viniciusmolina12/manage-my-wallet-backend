@@ -10,6 +10,7 @@ interface InputUpdateItemControllerDto {
    name: string;
    categoryId: string;
    description?: string;
+   userId: string;
 }
 
 interface OutputUpdateItemControllerDto {
@@ -26,12 +27,13 @@ export default class UpdateItemController {
       input: InputControllerDto<InputUpdateItemControllerDto>
    ): Promise<OutputControllerDto<OutputUpdateItemControllerDto>> {
       try {
-         const { id, name, categoryId, description } = input.data;
+         const { id, name, categoryId, description, userId } = input.data;
          const item = await this.updateItemUseCase.execute({
             id,
             name,
             categoryId,
             description,
+            userId,
          });
          const output = {
             name: item.name,

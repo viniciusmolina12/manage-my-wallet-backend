@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import ItemModel from '@infrastructure/db/mongodb/model/item.model';
-
+import token from './___mocks__/jsonwebtoken.mock';
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -16,11 +16,14 @@ afterAll(async () => {
 });
 describe('Item e2e tests', () => {
    it('should create an item', async () => {
-      const response = await request(app).post('/api/item').send({
-         name: 'any_item_name',
-         description: 'any_item_description',
-         categoryId: 'any_category_id',
-      });
+      const response = await request(app)
+         .post('/api/item')
+         .set('Authorization', 'Bearer ' + token)
+         .send({
+            name: 'any_item_name',
+            description: 'any_item_description',
+            categoryId: 'any_category_id',
+         });
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -40,7 +43,10 @@ describe('Item e2e tests', () => {
    });
 
    it('should return an error when creating an item with invalid data', async () => {
-      const response = await request(app).post('/api/item').send({});
+      const response = await request(app)
+         .post('/api/item')
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -52,14 +58,18 @@ describe('Item e2e tests', () => {
       const item = await ItemModel.create({
          _id: 'any_hash_id',
          name: 'Item 1',
+         userId: 'any_user_id',
          description: 'Description 1',
          categoryId: 'Category 1',
       });
-      const response = await request(app).put(`/api/item/${item._id}`).send({
-         name: 'any_item_name',
-         description: 'any_item_description',
-         categoryId: 'any_category_id',
-      });
+      const response = await request(app)
+         .put(`/api/item/${item._id}`)
+         .set('Authorization', 'Bearer ' + token)
+         .send({
+            name: 'any_item_name',
+            description: 'any_item_description',
+            categoryId: 'any_category_id',
+         });
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -78,7 +88,10 @@ describe('Item e2e tests', () => {
    });
 
    it('should return an error when try update a non-existent item', async () => {
-      const response = await request(app).put('/api/item/any_hash_id').send({});
+      const response = await request(app)
+         .put('/api/item/any_hash_id')
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');
@@ -90,8 +103,12 @@ describe('Item e2e tests', () => {
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
+         userId: 'any_user_id',
       });
-      const response = await request(app).put(`/api/item/${item.id}`).send({});
+      const response = await request(app)
+         .put(`/api/item/${item.id}`)
+         .set('Authorization', 'Bearer ' + token)
+         .send({});
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -106,8 +123,11 @@ describe('Item e2e tests', () => {
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
+         userId: 'any_user_id',
       });
-      const response = await request(app).get(`/api/item/${item._id}`);
+      const response = await request(app)
+         .get(`/api/item/${item._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -126,14 +146,18 @@ describe('Item e2e tests', () => {
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
+         userId: 'any_user_id',
       });
       const item2 = await ItemModel.create({
          _id: 'any_hash_id_2',
          name: 'Item 2',
          description: 'Description 2',
          categoryId: 'Category 2',
+         userId: 'any_user_id',
       });
-      const response = await request(app).get('/api/items');
+      const response = await request(app)
+         .get('/api/items')
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
@@ -169,8 +193,11 @@ describe('Item e2e tests', () => {
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
+         userId: 'any_user_id',
       });
-      const response = await request(app).delete(`/api/item/${item._id}`);
+      const response = await request(app)
+         .delete(`/api/item/${item._id}`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
          'message',
@@ -182,7 +209,9 @@ describe('Item e2e tests', () => {
    });
 
    it('should return an error when try delete a non-existent item', async () => {
-      const response = await request(app).delete(`/api/item/non-existent-id`);
+      const response = await request(app)
+         .delete(`/api/item/non-existent-id`)
+         .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');

@@ -6,6 +6,9 @@ const mockRepository = {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   findByUser: jest.fn(),
+   findAllByUserId: jest.fn(),
+   deleteByUser: jest.fn(),
 };
 
 const mockItemList = [
@@ -14,19 +17,21 @@ const mockItemList = [
       name: 'Item 2',
       description: 'other_description',
       categoryId: 'other_category_id_hash',
+      userId: 'any_user_id',
    },
    {
       id: 'other_id',
       name: 'Item 1',
       description: 'other_description',
       categoryId: 'other_category_id_hash',
+      userId: 'any_user_id',
    },
 ];
 describe('Item List usecase test', () => {
    it('should list items', async () => {
       const sut = new ListItemUsecase(mockRepository);
-      mockRepository.findAll.mockReturnValue(mockItemList);
-      const output = await sut.execute();
+      mockRepository.findAllByUserId.mockReturnValue(mockItemList);
+      const output = await sut.execute({ userId: 'any_user_id' });
       expect(output.items).toHaveLength(2);
       expect(output.items[0].id).toBe('any_id');
       expect(output.items[0].name).toBe('Item 2');

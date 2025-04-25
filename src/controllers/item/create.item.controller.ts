@@ -10,6 +10,7 @@ interface InputCreateItemControllerDto {
    name: string;
    description?: string;
    categoryId: string;
+   userId: string;
 }
 
 interface OutputCreateItemControllerDto {
@@ -27,11 +28,12 @@ export default class CreateItemController {
       input: InputControllerDto<InputCreateItemControllerDto>
    ): Promise<OutputControllerDto<OutputCreateItemControllerDto>> {
       try {
-         const { name, description, categoryId } = input.data;
+         const { name, description, categoryId, userId } = input.data;
          const item = await this.createItemUseCase.execute({
             name,
             description,
             categoryId,
+            userId,
          });
          const output = {
             id: item.id,

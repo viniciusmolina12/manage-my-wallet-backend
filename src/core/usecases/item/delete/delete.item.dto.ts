@@ -1,3 +1,6 @@
-export type InputDeleteItemDto = string;
+export type InputDeleteItemDto = {
+   id: string;
+   userId: string;
+};
 
 export type OutputDeleteItemDto = void;

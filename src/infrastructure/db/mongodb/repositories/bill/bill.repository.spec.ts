@@ -90,13 +90,14 @@ describe('MongoDB Item Repository tests', () => {
          'any_hash_id',
          'Item 1',
          'Category 1',
-         'Description 1'
+         'any_user_id'
       );
       const item = await ItemModel.create({
          _id: oldItem.id,
          name: oldItem.name,
          description: oldItem.description,
          categoryId: oldItem.categoryId,
+         userId: oldItem.userId,
       });
 
       const billItem = new BillItem('any_id', 'any_item_id', 10, 2);

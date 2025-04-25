@@ -13,6 +13,7 @@ export default class CreateItemUseCase {
          uuid(),
          input.name,
          input.categoryId,
+         input.userId,
          input.description
       );
       await this.itemRepository.create(item);

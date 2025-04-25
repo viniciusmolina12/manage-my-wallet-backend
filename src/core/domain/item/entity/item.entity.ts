@@ -6,11 +6,13 @@ export default class Item extends Entity {
    private _name: string;
    private _description?: string;
    private _categoryId: string;
+   private _userId: string;
 
    constructor(
       id: string,
       name: string,
       categoryId: string,
+      userId: string,
       description?: string
    ) {
       super();
@@ -18,6 +20,7 @@ export default class Item extends Entity {
       this._name = name;
       this._categoryId = categoryId;
       this._description = description;
+      this._userId = userId;
       this.validate();
    }
 
@@ -40,6 +43,13 @@ export default class Item extends Entity {
             message: 'Category is required',
          });
       }
+      if (!this._userId) {
+         this.notification.add({
+            source: 'Item',
+            message: 'User is required',
+         });
+      }
+
       if (this.notification.hasErrors()) {
          throw new EntityError(this.notification.getNotifications());
       }
@@ -56,5 +66,8 @@ export default class Item extends Entity {
    }
    get categoryId(): string {
       return this._categoryId;
+   }
+   get userId(): string {
+      return this._userId;
    }
 }

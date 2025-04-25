@@ -7,6 +7,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       await ItemModel.create({
          _id: entity.id,
          name: entity.name,
+         userId: entity.userId,
          categoryId: entity.categoryId,
          description: entity.description,
       });
@@ -29,6 +30,19 @@ export default class MongoDbItemRepository implements ItemRepository {
          result._id.toString(),
          result.name,
          result.categoryId,
+         result.userId,
+         result?.description
+      );
+   }
+
+   async findByUser(id: string, userId: string): Promise<Item | null> {
+      const result = await ItemModel.findOne({ _id: id, userId });
+      if (!result) return null;
+      return new Item(
+         result._id.toString(),
+         result.name,
+         result.categoryId,
+         result.userId,
          result?.description
       );
    }
@@ -41,6 +55,21 @@ export default class MongoDbItemRepository implements ItemRepository {
                item._id.toString(),
                item.name,
                item.categoryId,
+               item.userId,
+               item?.description
+            )
+      );
+   }
+
+   async findAllByUserId(userId: string): Promise<Item[]> {
+      const result = await ItemModel.find({ userId });
+      return result.map(
+         (item) =>
+            new Item(
+               item._id.toString(),
+               item.name,
+               item.categoryId,
+               item.userId,
                item?.description
             )
       );
@@ -48,5 +77,9 @@ export default class MongoDbItemRepository implements ItemRepository {
 
    async delete(id: string): Promise<void> {
       await ItemModel.findByIdAndDelete({ _id: id });
+   }
+
+   async deleteByUser(id: string, userId: string): Promise<void> {
+      await ItemModel.deleteMany({ _id: id, userId });
    }
 }
