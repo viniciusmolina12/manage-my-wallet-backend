@@ -1,17 +1,8 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { InputUpdateBillDto } from './update.bill.dto';
 import UpdateBillUseCase from './update.usecase';
+import mockRepository from '../__mocks__/repository.bill.mock';
 
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 const input = {
    id: 'any_id',
    name: 'any_name_2',

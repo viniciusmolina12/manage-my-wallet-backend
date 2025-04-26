@@ -1,15 +1,6 @@
+import mockRepository from '../__mocks__/repository.bill.mock';
 import DeleteBillUseCase from './delete.usecase';
 
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 describe('Delete bill usecase test', () => {
    it('should delete a bill', async () => {
       const sut = new DeleteBillUseCase(mockRepository);

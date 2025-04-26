@@ -1,15 +1,5 @@
 import FindBillUseCase from './find.usecase';
-
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
+import mockRepository from '../__mocks__/repository.bill.mock';
 describe('Find bill usecase', () => {
    it('should find a bill', async () => {
       mockRepository.findByUser.mockReturnValueOnce({

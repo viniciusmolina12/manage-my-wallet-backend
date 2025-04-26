@@ -2,17 +2,7 @@ import EntityError from '@core/domain/@shared/error/entity.error';
 import { InputCreateBillDto } from './create.bill.dto';
 import CreateBillUseCase from './create.usecase';
 import mockItemRepository from '../../item/__mocks__/repository.item.mock';
-
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
+import mockRepository from '../__mocks__/repository.bill.mock';
 
 mockItemRepository.findByUser.mockResolvedValue({
    id: 'any_item_id',
