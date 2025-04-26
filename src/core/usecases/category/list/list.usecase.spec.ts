@@ -1,16 +1,6 @@
 import ListCategoryUseCase from './list.usecase';
+import mockRepository from '../__mocks__/repository.category.mock';
 
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findCategoryByName: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 describe('List category usecase test', () => {
    it('should list all categories', async () => {
       const sut = new ListCategoryUseCase(mockRepository);

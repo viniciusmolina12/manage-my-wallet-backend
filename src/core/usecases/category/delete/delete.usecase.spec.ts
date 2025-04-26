@@ -1,16 +1,6 @@
+import mockRepository from '../__mocks__/repository.category.mock';
 import DeleteCategoryUseCase from './delete.usecase';
 
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findCategoryByName: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 describe('Delete category usecase test', () => {
    it('should delete a category', async () => {
       const sut = new DeleteCategoryUseCase(mockRepository);

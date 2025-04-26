@@ -1,16 +1,5 @@
+import mockRepository from '../__mocks__/repository.category.mock';
 import FindCategoryUseCase from './find.usecase';
-
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findCategoryByName: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 describe('Find category usecase test', () => {
    it('should throw an error if category does not exist', async () => {
       const sut = new FindCategoryUseCase(mockRepository);

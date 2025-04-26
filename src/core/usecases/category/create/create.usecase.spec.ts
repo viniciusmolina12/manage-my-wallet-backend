@@ -1,16 +1,5 @@
 import CreateCategoryUseCase from './create.usecase';
-
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findCategoryByName: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-};
+import mockRepository from '../__mocks__/repository.category.mock';
 
 describe('Create category usecase', () => {
    it('should be able to create a new category', async () => {
