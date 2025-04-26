@@ -9,7 +9,8 @@ import ListVendorController from '@controllers/vendor/list.vendor.controller';
 import { ListVendorUseCase } from '@core/usecases/vendor/list/list.usecase';
 import DeleteVendorController from '@controllers/vendor/delete.vendor.controller';
 import DeleteVendorUseCase from '@core/usecases/vendor/delete/delete.usecase';
-
+import UpdateVendorController from '@controllers/vendor/update.vendor.controller';
+import { UpdateVendorUseCase } from '@core/usecases/vendor/update/update.usecase';
 const route = Router();
 
 route.post(
@@ -72,4 +73,23 @@ route.delete(
    }
 );
 
+route.put(
+   '/api/vendor/:id',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const updateVendorUseCase = new UpdateVendorUseCase(
+         mongoDbVendorRepository
+      );
+      const controller = new UpdateVendorController(updateVendorUseCase);
+      const { code, ...data } = await controller.handle({
+         data: {
+            id: req.params.id,
+            name: req.body.name,
+            userId: req.userId as string,
+         },
+      });
+      res.status(code).send(data);
+   }
+);
 export default route;

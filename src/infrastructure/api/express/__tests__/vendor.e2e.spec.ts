@@ -147,4 +147,52 @@ describe('Vendor e2e tests', () => {
          expect(response.body).toHaveProperty('message', 'Vendor not found');
       });
    });
+
+   describe('/api/vendor/:id PUT', () => {
+      it('should update a vendor', async () => {
+         await vendorModel.create({
+            _id: 'any_hash_id',
+            name: 'Vendor 1',
+            userId: 'any_user_id',
+         });
+         const response = await request(app)
+            .put('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token)
+            .send({ name: 'Vendor 2' });
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data.id).toBe('any_hash_id');
+         expect(response.body.data.name).toBe('Vendor 2');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Vendor updated successfully'
+         );
+      });
+
+      it('should return an error when vendor is not found', async () => {
+         const response = await request(app)
+            .put('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token)
+            .send({ name: 'Vendor 2' });
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message', 'Vendor not found');
+      });
+
+      it('should return an error when vendor name already exists', async () => {
+         await vendorModel.create({
+            _id: 'any_hash_id',
+            name: 'Vendor 1',
+            userId: 'any_user_id',
+         });
+         const response = await request(app)
+            .put('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token)
+            .send({ name: 'Vendor 1' });
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty(
+            'message',
+            'Vendor name already exists'
+         );
+      });
+   });
 });
