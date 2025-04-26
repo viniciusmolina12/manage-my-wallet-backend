@@ -1,6 +1,6 @@
 import User from '@core/domain/user/entity/user.entity';
 import UpdateUserUseCase from './update.usecase';
-import mockRepository from '../__mocks__/repository.mock';
+import mockRepository from '../__mocks__/repository.user.mock';
 const input = {
    id: 'any_id',
    name: 'any_other_name',
