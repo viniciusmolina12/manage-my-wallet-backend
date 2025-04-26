@@ -175,7 +175,7 @@ describe('Category e2e tests', () => {
       );
    });
 
-   it('should delete an category', async () => {
+   it('should delete a category', async () => {
       const category = await CategoryModel.create({
          _id: 'any_hash_id',
          name: 'Category 1',

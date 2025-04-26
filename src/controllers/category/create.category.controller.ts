@@ -10,7 +10,6 @@ interface InputCreateCategoryControllerDto {
    name: string;
    description?: string;
    userId: string;
-   categoryId: string;
 }
 
 interface OutputCreateCategoryControllerDto {

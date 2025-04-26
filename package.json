@@ -13,10 +13,10 @@
       "lint-staged": "prettier --write --ignore-unknown"
    },
    "_moduleAliases": {
-      "@core": "dist/core",
-      "@infrastructure": "dist/infrastructure",
-      "@controllers": "dist/controllers",
-      "@config": "dist/config"
+      "@core": "src/core",
+      "@infrastructure": "src/infrastructure",
+      "@controllers": "src/controllers",
+      "@config": "src/config"
    },
    "author": "",
    "license": "ISC",

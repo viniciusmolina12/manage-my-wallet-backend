@@ -15,7 +15,6 @@ export class CreateVendorUseCase {
          vendor.name,
          vendor.userId
       );
-      console.log(vendorExists);
       if (vendorExists) throw new EntityError('Vendor already exists');
       await this.vendorRepository.create(vendor);
       return {

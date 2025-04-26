@@ -44,7 +44,7 @@ route.get(
 );
 
 route.get(
-   '/api/vendor',
+   '/api/vendors',
    authMiddleware,
    async (req: Request, res: Response) => {
       const mongoDbVendorRepository = new MongoDbVendorRepository();

@@ -27,7 +27,9 @@ export default class RecoverPasswordUserUseCase {
          throw new EntityError('User not found');
       }
       const user = users[0];
-      const expiresIn = new Date(new Date().setDate(new Date().getHours() + 1));
+      const expiresIn = new Date(
+         new Date().setHours(new Date().getHours() + 1)
+      );
       const token = this.jwtGenerator.generateJwt(
          { name: user.name, email: user.email, type: 'recover-password' },
          ENV.SECRET_KEY,

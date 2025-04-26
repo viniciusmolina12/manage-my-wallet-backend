@@ -55,7 +55,7 @@ route.post('/api/login', async (req: Request, res: Response) => {
    res.status(code).send(data);
 });
 
-route.post('/api/reset-password', async (req: Request, res: Response) => {
+route.post('/api/user/reset-password', async (req: Request, res: Response) => {
    const mongoDbUserRepository = new MongoDbUserRepository();
    const bcryptEncrypt = new BcryptEncrypt();
    const resetPasswordUserUseCase = new ResetPasswordUserUseCase(
@@ -67,23 +67,28 @@ route.post('/api/reset-password', async (req: Request, res: Response) => {
    res.status(code).send(data);
 });
 
-route.post('/api/recover-password', async (req: Request, res: Response) => {
-   const mongoDbUserRepository = new MongoDbUserRepository();
-   const jsonWebTokenJwtGenerator = new JsonWebTokenJwtGenerator();
-   const nodemailerMailer = new NodeMailerMailer({
-      host: ENV.MAILER_HOST,
-      port: ENV.MAILER_PORT as unknown as number,
-      auth: { user: ENV.MAILER_AUTH_USER, pass: ENV.MAILER_AUTH_PASSWORD },
-   });
-   const recoverPasswordUserUseCase = new RecoverPasswordUserUseCase(
-      mongoDbUserRepository,
-      nodemailerMailer,
-      jsonWebTokenJwtGenerator
-   );
-   const controller = new RecoverPasswordUserController(
-      recoverPasswordUserUseCase
-   );
-   const { code, ...data } = await controller.handle({ data: { ...req.body } });
-   res.status(code).send(data);
-});
+route.post(
+   '/api/user/recover-password',
+   async (req: Request, res: Response) => {
+      const mongoDbUserRepository = new MongoDbUserRepository();
+      const jsonWebTokenJwtGenerator = new JsonWebTokenJwtGenerator();
+      const nodemailerMailer = new NodeMailerMailer({
+         host: ENV.MAILER_HOST,
+         port: ENV.MAILER_PORT as unknown as number,
+         auth: { user: ENV.MAILER_AUTH_USER, pass: ENV.MAILER_AUTH_PASSWORD },
+      });
+      const recoverPasswordUserUseCase = new RecoverPasswordUserUseCase(
+         mongoDbUserRepository,
+         nodemailerMailer,
+         jsonWebTokenJwtGenerator
+      );
+      const controller = new RecoverPasswordUserController(
+         recoverPasswordUserUseCase
+      );
+      const { code, ...data } = await controller.handle({
+         data: { ...req.body },
+      });
+      res.status(code).send(data);
+   }
+);
 export default route;

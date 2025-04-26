@@ -298,10 +298,12 @@ describe('User e2e tests', () => {
             },
             password: oldPassword,
          });
-         const response = await request(app).post(`/api/reset-password`).send({
-            token,
-            password: newPassword,
-         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token,
+               password: newPassword,
+            });
 
          const userAfterChangePassword = await UserModel.findOne({
             _id: 'any_id',
@@ -315,10 +317,12 @@ describe('User e2e tests', () => {
       });
 
       it('should throw an error if token does not exist', async () => {
-         const response = await request(app).post(`/api/reset-password`).send({
-            token: 'invalid_token',
-            password: 'any_password',
-         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token: 'invalid_token',
+               password: 'any_password',
+            });
          expect(response.status).toBe(400);
          expect(response.body).toMatchObject({
             message: 'User not found',
@@ -337,10 +341,12 @@ describe('User e2e tests', () => {
             },
             password: 'any_password',
          });
-         const response = await request(app).post(`/api/reset-password`).send({
-            token: 'any_token',
-            password: 'any_password',
-         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token: 'any_token',
+               password: 'any_password',
+            });
          expect(response.status).toBe(400);
          expect(response.body).toMatchObject({
             message: 'Token expired',
@@ -348,9 +354,11 @@ describe('User e2e tests', () => {
       });
 
       it('should throw an error if token is not provided', async () => {
-         const response = await request(app).post(`/api/reset-password`).send({
-            password: 'any_password',
-         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               password: 'any_password',
+            });
          expect(response.status).toBe(400);
          expect(response.body).toMatchObject({
             message: 'Missing properties: token or password',
@@ -358,9 +366,11 @@ describe('User e2e tests', () => {
       });
 
       it('should throw an error if password is not provided', async () => {
-         const response = await request(app).post(`/api/reset-password`).send({
-            token: 'any_token',
-         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token: 'any_token',
+            });
          expect(response.status).toBe(400);
          expect(response.body).toMatchObject({
             message: 'Missing properties: token or password',
@@ -378,7 +388,7 @@ describe('User e2e tests', () => {
                '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2',
          });
          const response = await request(app)
-            .post(`/api/recover-password`)
+            .post(`/api/user/recover-password`)
             .send({ email: 'any_mail@mail.com' });
 
          expect((nodemailer as any).sendMailMock).toHaveBeenCalled();
@@ -391,7 +401,7 @@ describe('User e2e tests', () => {
 
       it('should throw an error if user not found', async () => {
          const response = await request(app)
-            .post(`/api/recover-password`)
+            .post(`/api/user/recover-password`)
             .send({ email: 'invalid_email' });
 
          expect(response.status).toBe(400);

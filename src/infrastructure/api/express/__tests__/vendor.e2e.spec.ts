@@ -49,7 +49,6 @@ describe('Vendor e2e tests', () => {
             .post('/api/vendor')
             .set('Authorization', 'Bearer ' + token)
             .send({ name: 'Vendor 1' });
-         console.log(response.body);
          expect(response.status).toBe(400);
          expect(response.body).toHaveProperty(
             'message',
@@ -98,7 +97,7 @@ describe('Vendor e2e tests', () => {
             userId: 'any_user_id',
          });
          const response = await request(app)
-            .get('/api/vendor')
+            .get('/api/vendors')
             .set('Authorization', 'Bearer ' + token);
          expect(response.status).toBe(200);
          expect(response.body).toHaveProperty('data');
@@ -115,7 +114,7 @@ describe('Vendor e2e tests', () => {
 
       it('should return an empty array when user has no vendors', async () => {
          const response = await request(app)
-            .get('/api/vendor')
+            .get('/api/vendors')
             .set('Authorization', 'Bearer ' + token);
          expect(response.status).toBe(200);
          expect(response.body.data.vendors).toHaveLength(0);

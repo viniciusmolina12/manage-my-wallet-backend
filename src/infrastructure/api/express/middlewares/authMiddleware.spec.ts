@@ -32,7 +32,7 @@ describe('Auth Middleware', () => {
    it('should allowed access with valid token and extract userId', async () => {
       const jsonwebtoken = new JsonWebTokenJwtGenerator();
       const token = jsonwebtoken.generateJwt(
-         { userId: 'abc123' },
+         { id: 'abc123' },
          ENV.SECRET_KEY,
          '1h'
       );

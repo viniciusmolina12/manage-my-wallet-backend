@@ -24,8 +24,8 @@ export const authMiddleware = (
    const token = authHeader.split(' ')[1];
 
    try {
-      const decoded = jwt.verify(token, ENV.SECRET_KEY) as { userId: string };
-      req.userId = decoded.userId;
+      const decoded = jwt.verify(token, ENV.SECRET_KEY) as { id: string };
+      req.userId = decoded.id;
 
       next();
    } catch (error) {

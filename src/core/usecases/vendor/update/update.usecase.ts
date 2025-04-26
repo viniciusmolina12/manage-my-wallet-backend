@@ -19,7 +19,6 @@ export class UpdateVendorUseCase {
       if (newVendorNameAlreadyExits)
          throw new EntityError('Vendor name already exists');
       vendor.changeName(input.name);
-      console.log(vendor);
       await this.vendorRepository.update(vendor);
       return {
          id: vendor.id,
