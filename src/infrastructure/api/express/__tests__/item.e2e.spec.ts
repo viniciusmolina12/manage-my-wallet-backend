@@ -54,6 +54,26 @@ describe('Item e2e tests', () => {
       );
    });
 
+   it('should return an error when creating an item with an existing name', async () => {
+      await ItemModel.create({
+         _id: 'any_hash_id',
+         name: 'Item 1',
+         description: 'Description 1',
+         categoryId: 'Category 1',
+         userId: 'any_user_id',
+      });
+      const response = await request(app)
+         .post('/api/item')
+         .set('Authorization', 'Bearer ' + token)
+         .send({
+            name: 'Item 1',
+            description: 'any_item_description',
+            categoryId: 'any_category_id',
+         });
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('message', 'Item already exists');
+   });
+
    it('should update an item', async () => {
       const item = await ItemModel.create({
          _id: 'any_hash_id',

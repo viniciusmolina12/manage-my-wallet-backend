@@ -139,6 +139,39 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemsFound[1].categoryId).toBe(item2.categoryId);
    });
 
+   it('should find an item by name', async () => {
+      const sut = new MongoDbItemRepository();
+      const item = new Item(
+         'any_hash_id',
+         'Item 1',
+         'Category 1',
+         'any_user_id',
+         'Description 1'
+      );
+      await ItemModel.create({
+         _id: item.id,
+         name: item.name,
+         description: item.description,
+         categoryId: item.categoryId,
+         userId: item.userId,
+      });
+      const itemFound = await sut.findByName(item.name, item.userId);
+      expect(itemFound?.id).toBe(item.id);
+      expect(itemFound?.name).toBe(item.name);
+      expect(itemFound?.description).toBe(item.description);
+      expect(itemFound?.categoryId).toBe(item.categoryId);
+      expect(itemFound?.userId).toBe(item.userId);
+   });
+
+   it('should not find an item by name', async () => {
+      const sut = new MongoDbItemRepository();
+      const itemFound = await sut.findByName(
+         'non_existent_name',
+         'any_user_id'
+      );
+      expect(itemFound).toBeNull();
+   });
+
    it('should delete an item', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(

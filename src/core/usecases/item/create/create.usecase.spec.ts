@@ -1,15 +1,6 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
 import CreateItemUseCase from './create.usecase';
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUserId: jest.fn(),
-   deleteByUser: jest.fn(),
-};
+import mockRepository from '../__mocks__/repository.item.mock';
 
 const input = {
    name: 'Item 1',
@@ -30,6 +21,22 @@ describe('Item create usecase test', () => {
       const sut = new CreateItemUseCase(mockRepository);
       await expect(sut.execute({ ...input, name: '' })).rejects.toThrow(
          new EntityError('Item: Name is required, ')
+      );
+   });
+
+   it('should throw an error if item already exists', async () => {
+      const sut = new CreateItemUseCase(mockRepository);
+      mockRepository.findByName.mockReturnValueOnce(
+         Promise.resolve({
+            id: 'any_id',
+            name: 'Item 1',
+            description: 'any description',
+            categoryId: 'category_id_hash',
+            userId: 'any_user_id',
+         })
+      );
+      await expect(sut.execute({ ...input, name: 'Item 1' })).rejects.toThrow(
+         new EntityError('Item already exists')
       );
    });
 });

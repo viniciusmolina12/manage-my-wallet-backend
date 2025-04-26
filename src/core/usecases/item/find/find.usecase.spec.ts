@@ -1,15 +1,6 @@
+import mockRepository from '../__mocks__/repository.item.mock';
 import FindItemUseCase from './find.usecase';
 
-const mockRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest.fn(),
-   findAllByUserId: jest.fn(),
-   deleteByUser: jest.fn(),
-};
 describe('Find item create usecase test', () => {
    it('should find an item', async () => {
       const sut = new FindItemUseCase(mockRepository);

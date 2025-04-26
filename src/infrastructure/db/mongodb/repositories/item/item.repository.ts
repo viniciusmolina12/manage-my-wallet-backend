@@ -47,6 +47,18 @@ export default class MongoDbItemRepository implements ItemRepository {
       );
    }
 
+   async findByName(name: string, userId: string): Promise<Item | null> {
+      const result = await ItemModel.findOne({ name, userId });
+      if (!result) return null;
+      return new Item(
+         result._id.toString(),
+         result.name,
+         result.categoryId,
+         result.userId,
+         result?.description
+      );
+   }
+
    async findAll(): Promise<Item[]> {
       const result = await ItemModel.find();
       return result.map(

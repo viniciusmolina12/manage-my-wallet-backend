@@ -28,6 +28,7 @@ const mockItemRepository = {
    findAllByUser: jest.fn(),
    deleteByUser: jest.fn(),
    findAllByUserId: jest.fn(),
+   findByName: jest.fn(),
 };
 
 describe('Create bill usecase', () => {

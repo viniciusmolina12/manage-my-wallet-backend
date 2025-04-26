@@ -29,6 +29,7 @@ export default class CreateItemController {
    ): Promise<OutputControllerDto<OutputCreateItemControllerDto>> {
       try {
          const { name, description, categoryId, userId } = input.data;
+
          const item = await this.createItemUseCase.execute({
             name,
             description,
