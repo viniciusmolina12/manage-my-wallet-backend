@@ -4,6 +4,7 @@ export default {
    find: jest.fn(),
    findAll: jest.fn(),
    delete: jest.fn(),
+   deleteByUser: jest.fn(),
    search: jest.fn(async (): Promise<Array<any>> => []),
    getRecoveryPasswordToken: jest.fn(),
    getRecoveryData: jest.fn(),

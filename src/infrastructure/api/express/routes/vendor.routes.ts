@@ -7,6 +7,8 @@ import FindVendorController from '@controllers/vendor/find.vendor.controller';
 import { FindVendorUseCase } from '@core/usecases/vendor/find/find.usecase';
 import ListVendorController from '@controllers/vendor/list.vendor.controller';
 import { ListVendorUseCase } from '@core/usecases/vendor/list/list.usecase';
+import DeleteVendorController from '@controllers/vendor/delete.vendor.controller';
+import DeleteVendorUseCase from '@core/usecases/vendor/delete/delete.usecase';
 
 const route = Router();
 
@@ -53,4 +55,21 @@ route.get(
       res.status(code).send(data);
    }
 );
+
+route.delete(
+   '/api/vendor/:id',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const deleteVendorUseCase = new DeleteVendorUseCase(
+         mongoDbVendorRepository
+      );
+      const controller = new DeleteVendorController(deleteVendorUseCase);
+      const { code, ...data } = await controller.handle({
+         data: { id: req.params.id, userId: req.userId as string },
+      });
+      res.status(code).send(data);
+   }
+);
+
 export default route;

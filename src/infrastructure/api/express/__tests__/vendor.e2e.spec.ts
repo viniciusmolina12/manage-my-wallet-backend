@@ -121,4 +121,30 @@ describe('Vendor e2e tests', () => {
          expect(response.body.data.vendors).toHaveLength(0);
       });
    });
+
+   describe('/api/vendor/:id DELETE', () => {
+      it('should delete a vendor', async () => {
+         await vendorModel.create({
+            _id: 'any_hash_id',
+            name: 'Vendor 1',
+            userId: 'any_user_id',
+         });
+         const response = await request(app)
+            .delete('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty(
+            'message',
+            'Vendor deleted successfully'
+         );
+      });
+
+      it('should return an error when vendor is not found', async () => {
+         const response = await request(app)
+            .delete('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message', 'Vendor not found');
+      });
+   });
 });
