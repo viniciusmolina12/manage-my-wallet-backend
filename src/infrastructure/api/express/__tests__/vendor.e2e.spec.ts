@@ -84,4 +84,41 @@ describe('Vendor e2e tests', () => {
          expect(response.body).toHaveProperty('message', 'Vendor not found');
       });
    });
+
+   describe('/api/vendor GET', () => {
+      it('should return a list of vendors', async () => {
+         await vendorModel.create({
+            _id: 'any_hash_id',
+            name: 'Vendor 1',
+            userId: 'any_user_id',
+         });
+         await vendorModel.create({
+            _id: 'any_hash_id_2',
+            name: 'Vendor 2',
+            userId: 'any_user_id',
+         });
+         const response = await request(app)
+            .get('/api/vendor')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Vendors listed successfully'
+         );
+         expect(response.body.data.vendors).toHaveLength(2);
+         expect(response.body.data.vendors[0].id).toBe('any_hash_id');
+         expect(response.body.data.vendors[0].name).toBe('Vendor 1');
+         expect(response.body.data.vendors[1].id).toBe('any_hash_id_2');
+         expect(response.body.data.vendors[1].name).toBe('Vendor 2');
+      });
+
+      it('should return an empty array when user has no vendors', async () => {
+         const response = await request(app)
+            .get('/api/vendor')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(200);
+         expect(response.body.data.vendors).toHaveLength(0);
+      });
+   });
 });

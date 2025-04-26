@@ -28,10 +28,16 @@ export default class CreateVendorController {
             name,
             userId,
          });
+         const output = {
+            id: vendor.id,
+            name: vendor.name,
+            createdAt: vendor.createdAt,
+            updatedAt: vendor.updatedAt,
+         };
          return response<OutputCreateVendorControllerDto>(
             201,
             'Vendor created successfully',
-            vendor
+            output
          );
       } catch (e: any) {
          if (e instanceof EntityError) return response(400, e.message);

@@ -5,6 +5,8 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import CreateVendorController from '@controllers/vendor/create.vendor.controller';
 import FindVendorController from '@controllers/vendor/find.vendor.controller';
 import { FindVendorUseCase } from '@core/usecases/vendor/find/find.usecase';
+import ListVendorController from '@controllers/vendor/list.vendor.controller';
+import { ListVendorUseCase } from '@core/usecases/vendor/list/list.usecase';
 
 const route = Router();
 
@@ -33,6 +35,20 @@ route.get(
       const controller = new FindVendorController(findVendorUseCase);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id, userId: req.userId as string },
+      });
+      res.status(code).send(data);
+   }
+);
+
+route.get(
+   '/api/vendor',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const listVendorUseCase = new ListVendorUseCase(mongoDbVendorRepository);
+      const controller = new ListVendorController(listVendorUseCase);
+      const { code, ...data } = await controller.handle({
+         data: { userId: req.userId as string },
       });
       res.status(code).send(data);
    }
