@@ -25,6 +25,7 @@ describe('User e2e tests', () => {
             name: 'User test',
             email: 'any_email@mail.com',
             password: 'any_password',
+            confirmPassword: 'any_password',
          });
          expect(response.status).toBe(201);
          expect(response.body).toHaveProperty('data');
@@ -44,6 +45,7 @@ describe('User e2e tests', () => {
             name: 'User test',
             email: 'invalid_email',
             password: 'any_password',
+            confirmPassword: 'any_password',
          });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
@@ -60,6 +62,21 @@ describe('User e2e tests', () => {
          expect(response.body).toHaveProperty(
             'message',
             'user: Name is required, user: Email is required, user: Email is invalid, user: Password is required, '
+         );
+      });
+
+      it('should throw an error if password and confirm password do not match', async () => {
+         const response = await request(app).post('/api/user').send({
+            name: 'User test',
+            email: 'any_email@mail.com',
+            password: 'any_password',
+            confirmPassword: 'other_password',
+         });
+         expect(response.status).toBe(400);
+         expect(response.body).not.toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Password and confirm password do not match'
          );
       });
    });

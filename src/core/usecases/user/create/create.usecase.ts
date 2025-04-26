@@ -19,6 +19,9 @@ export default class CreateUserUseCase {
       this.jwtGenerator = jwtGenerator;
    }
    async execute(input: InputCreateUserDto): Promise<OutputCreateUserDto> {
+      if (input.password !== input.confirmPassword)
+         throw new EntityError('Password and confirm password do not match');
+
       const user = new User(
          uuid(),
          input.name,

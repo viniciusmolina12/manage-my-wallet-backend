@@ -27,6 +27,7 @@ const input = {
    name: 'any_name',
    email: 'any_email@mail.com',
    password: 'any_password',
+   confirmPassword: 'any_password',
 };
 describe('Create user usecase tests', () => {
    it('should create an user', async () => {
@@ -69,5 +70,12 @@ describe('Create user usecase tests', () => {
          ])
       );
       await expect(sut.execute(input)).rejects.toThrow('User already exists');
+   });
+
+   it('should throw if password and confirm password do not match', async () => {
+      const { sut } = makeSut();
+      await expect(
+         sut.execute({ ...input, confirmPassword: 'other_password' })
+      ).rejects.toThrow('Password and confirm password do not match');
    });
 });
