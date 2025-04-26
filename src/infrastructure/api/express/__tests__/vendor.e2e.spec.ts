@@ -57,4 +57,31 @@ describe('Vendor e2e tests', () => {
          );
       });
    });
+
+   describe('/api/vendor/:id GET', () => {
+      it('should return a vendor', async () => {
+         await vendorModel.create({
+            _id: 'any_hash_id',
+            name: 'Vendor 1',
+            userId: 'any_user_id',
+         });
+         const response = await request(app)
+            .get('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Vendor found successfully'
+         );
+      });
+
+      it('should return an error when vendor is not found', async () => {
+         const response = await request(app)
+            .get('/api/vendor/any_hash_id')
+            .set('Authorization', 'Bearer ' + token);
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message', 'Vendor not found');
+      });
+   });
 });
