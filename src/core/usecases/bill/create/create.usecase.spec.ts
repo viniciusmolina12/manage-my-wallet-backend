@@ -1,7 +1,7 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { InputCreateBillDto } from './create.bill.dto';
 import CreateBillUseCase from './create.usecase';
-import Item from '@core/domain/item/entity/item.entity';
+import mockItemRepository from '../../item/__mocks__/repository.item.mock';
 
 const mockRepository = {
    create: jest.fn(),
@@ -14,23 +14,12 @@ const mockRepository = {
    deleteByUser: jest.fn(),
 };
 
-const mockItemRepository = {
-   create: jest.fn(),
-   update: jest.fn(),
-   find: jest.fn(),
-   findAll: jest.fn(),
-   delete: jest.fn(),
-   findByUser: jest
-      .fn()
-      .mockResolvedValue(
-         new Item('any_item_id', 'any_name', 'any_description', 'any_user_id')
-      ),
-   findAllByUser: jest.fn(),
-   deleteByUser: jest.fn(),
-   findAllByUserId: jest.fn(),
-   findByName: jest.fn(),
-};
-
+mockItemRepository.findByUser.mockResolvedValue({
+   id: 'any_item_id',
+   name: 'any_name',
+   description: 'any_description',
+   userId: 'any_user_id',
+});
 describe('Create bill usecase', () => {
    it('should create a bill', async () => {
       const input: InputCreateBillDto = {
