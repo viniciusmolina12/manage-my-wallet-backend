@@ -4,11 +4,13 @@ import EntityError from '../../@shared/error/entity.error';
 export default class Vendor extends Entity {
    private _id: string;
    private _name: string;
+   private _userId: string;
 
-   constructor(id: string, name: string) {
+   constructor(id: string, name: string, userId: string) {
       super();
       this._id = id;
       this._name = name;
+      this._userId = userId;
       this.validate();
    }
 
@@ -22,6 +24,12 @@ export default class Vendor extends Entity {
       if (this._name.length === 0) {
          this.notification.add({
             message: 'Name is required',
+            source: 'vendor',
+         });
+      }
+      if (this._userId.length === 0) {
+         this.notification.add({
+            message: 'User ID is required',
             source: 'vendor',
          });
       }
@@ -40,5 +48,8 @@ export default class Vendor extends Entity {
    }
    get name(): string {
       return this._name;
+   }
+   get userId(): string {
+      return this._userId;
    }
 }
