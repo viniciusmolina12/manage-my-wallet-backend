@@ -38,6 +38,14 @@ export default class ResetPasswordUserUseCase {
          CONSTANTS.SALTS_ROUND
       ) as string;
       user.changePassword(encryptPassword);
+
+      const expiredDate = new Date(new Date().getTime() - 1 * 60 * 60 * 1000);
+
+      await this.userRepository.updateResetPasswordToken(
+         user,
+         token,
+         expiredDate
+      );
       await this.userRepository.update(user);
    }
 }

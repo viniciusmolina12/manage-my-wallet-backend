@@ -393,6 +393,40 @@ describe('User e2e tests', () => {
             message: 'Missing properties: token or password',
          });
       });
+
+      it('should throw an error if tries to use the same token more than 1 time', async () => {
+         const token = 'any_valid_token';
+         const oldPassword = 'old_pasword';
+         const newPassword = 'new_password';
+         await UserModel.create({
+            _id: 'any_id',
+            email: 'any_mail@mail.com',
+            name: 'any_name',
+            resetPassword: {
+               token,
+               expiresIn: new Date().setDate(new Date().getDate() + 1),
+            },
+            password: oldPassword,
+         });
+         const response = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token,
+               password: newPassword,
+            });
+         expect(response.status).toBe(200);
+         //Retry to use the same token
+         const retryResponse = await request(app)
+            .post(`/api/user/reset-password`)
+            .send({
+               token,
+               password: newPassword,
+            });
+         expect(retryResponse.status).toBe(400);
+         expect(retryResponse.body).toMatchObject({
+            message: 'Token expired',
+         });
+      });
    });
 
    describe('recover-password', () => {
