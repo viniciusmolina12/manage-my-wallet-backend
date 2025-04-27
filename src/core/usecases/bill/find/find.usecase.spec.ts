@@ -9,6 +9,7 @@ describe('Find bill usecase', () => {
          userId: 'any_user_id',
          total: 56,
          createdDate: new Date('2020-02-10 10:20:30'),
+         vendorId: 'any_vendor_id',
          items: [
             {
                id: 'any_other_id',
@@ -30,6 +31,7 @@ describe('Find bill usecase', () => {
       expect(bill.name).toBe('any_name_2');
       expect(bill.description).toBe('any_other_description');
       expect(bill.total).toBe(56);
+      expect(bill.vendorId).toBe('any_vendor_id');
       expect(bill.items.length).toBe(2);
    });
 

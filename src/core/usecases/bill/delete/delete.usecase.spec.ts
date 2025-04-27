@@ -6,6 +6,7 @@ describe('Delete bill usecase test', () => {
       const sut = new DeleteBillUseCase(mockRepository);
       mockRepository.findByUser.mockReturnValue({
          description: 'any_description',
+         vendorId: 'any_vendor_id',
          name: 'any_name',
          items: [
             {

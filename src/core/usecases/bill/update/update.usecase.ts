@@ -3,11 +3,17 @@ import { BillRepository } from '@core/domain/bill/repository/bill.repository';
 import { InputUpdateBillDto, OutputUpdateBillDto } from './update.bill.dto';
 import BillItem from '@core/domain/bill/entity/bill-item.entity';
 import Bill from '@core/domain/bill/entity/bill.entity';
-
+import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import EntityError from '@core/domain/@shared/error/entity.error';
 export default class UpdateBillUseCase {
    private readonly billRepository: BillRepository;
-   constructor(billRepository: BillRepository) {
+   private readonly vendorRepository: VendorRepository;
+   constructor(
+      billRepository: BillRepository,
+      vendorRepository: VendorRepository
+   ) {
       this.billRepository = billRepository;
+      this.vendorRepository = vendorRepository;
    }
 
    async execute(input: InputUpdateBillDto): Promise<OutputUpdateBillDto> {
@@ -15,6 +21,13 @@ export default class UpdateBillUseCase {
       const billExists = await this.billRepository.findByUser(id, userId);
       if (!billExists) {
          throw new Error('Bill not exists');
+      }
+      const vendor = await this.vendorRepository.findByUser(
+         input.vendorId,
+         userId
+      );
+      if (!vendor) {
+         throw new EntityError('Vendor not exists');
       }
 
       const billItems: BillItem[] = [];
@@ -32,6 +45,7 @@ export default class UpdateBillUseCase {
          input.id,
          input.name,
          billItems,
+         input.vendorId,
          new Date(),
          input.userId,
          input.description
@@ -42,6 +56,7 @@ export default class UpdateBillUseCase {
          createdDate: bill.createdDate,
          name: bill.name,
          description: bill.description,
+         vendorId: bill.vendorId,
          total: bill.total,
          items: bill.items.map((item: BillItem) => ({
             id: item.id,

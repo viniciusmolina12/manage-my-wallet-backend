@@ -13,15 +13,17 @@ import DeleteBillUseCase from '@core/usecases/bill/delete/delete.usecase';
 import DeleteBillController from '@controllers/bill/delete.bill.controller';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/item.repository';
-
+import MongoDbVendorRepository from '@infrastructure/db/mongodb/repositories/vendor/vendor.repository';
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const mongoDbItemRepository = new MongoDbItemRepository();
+   const mongoDbVendorRepository = new MongoDbVendorRepository();
    const createItemUseCase = new CreateBillUseCase(
       mongoDbBillRepository,
-      mongoDbItemRepository
+      mongoDbItemRepository,
+      mongoDbVendorRepository
    );
    const controller = new CreateBillController(createItemUseCase);
    const { code, ...data } = await controller.handle({
@@ -49,7 +51,11 @@ route.put(
    authMiddleware,
    async (req: Request, res: Response) => {
       const mongoDbBillRepository = new MongoDbBillRepository();
-      const updateBillUseCase = new UpdateBillUseCase(mongoDbBillRepository);
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const updateBillUseCase = new UpdateBillUseCase(
+         mongoDbBillRepository,
+         mongoDbVendorRepository
+      );
       const controller = new UpdateBillController(updateBillUseCase);
       const { code, ...data } = await controller.handle({
          data: {

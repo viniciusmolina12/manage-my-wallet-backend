@@ -4,7 +4,7 @@ import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import BillModel from '@infrastructure/db/mongodb/model/bill.model';
 import token from './___mocks__/jsonwebtoken.mock';
 import itemModel from '@infrastructure/db/mongodb/model/item.model';
-
+import vendorModel from '@infrastructure/db/mongodb/model/vendor.model';
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -25,12 +25,18 @@ describe('Bill e2e tests', () => {
          description: 'any_item_description',
          userId: 'any_user_id',
       });
+      const vendor = await vendorModel.create({
+         _id: 'any_vendor_id',
+         name: 'any_vendor_name',
+         userId: 'any_user_id',
+      });
       const response = await request(app)
          .post('/api/bill')
          .set('Authorization', 'Bearer ' + token)
          .send({
             name: 'any_bill_name',
             description: 'any_bill_description',
+            vendorId: 'any_vendor_id',
             items: [
                {
                   quantity: 10,
@@ -69,11 +75,17 @@ describe('Bill e2e tests', () => {
       expect(response.status).toBe(400);
    });
 
-   it('should update an bill', async () => {
+   it('should update a bill', async () => {
+      const vendor = await vendorModel.create({
+         _id: 'any_other_vendor_id',
+         name: 'any_vendor_name',
+         userId: 'any_user_id',
+      });
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          name: 'Bill 1',
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -92,6 +104,7 @@ describe('Bill e2e tests', () => {
             id: 'any_hash_id',
             name: 'any_bill_name',
             description: 'any_bill_description',
+            vendorId: 'any_other_vendor_id',
             items: [
                {
                   id: 'any_item_id',
@@ -125,10 +138,16 @@ describe('Bill e2e tests', () => {
    });
 
    it('should return an error when updating a bill with invalid data', async () => {
+      const vendor = await vendorModel.create({
+         _id: 'any_vendor_id',
+         name: 'any_vendor_name',
+         userId: 'any_user_id',
+      });
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          name: 'Bill 1',
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -143,7 +162,9 @@ describe('Bill e2e tests', () => {
       const response = await request(app)
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
-         .send({});
+         .send({
+            vendorId: 'any_vendor_id',
+         });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
@@ -157,6 +178,7 @@ describe('Bill e2e tests', () => {
          _id: 'any_hash_id',
          name: 'Bill 1',
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          createdDate: new Date(),
          description: 'Description 1',
          items: [
@@ -188,6 +210,7 @@ describe('Bill e2e tests', () => {
          createdDate: new Date(),
          name: 'Bill 1',
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          description: 'Description 1',
          items: [
             {
@@ -203,6 +226,7 @@ describe('Bill e2e tests', () => {
          createdDate: new Date(),
          name: 'Bill 2',
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          description: 'Description 2',
          items: [
             {
@@ -226,11 +250,19 @@ describe('Bill e2e tests', () => {
       expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
       expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
       expect(response.body.data.bills[0]).toHaveProperty(
+         'vendorId',
+         bill1.vendorId
+      );
+      expect(response.body.data.bills[0]).toHaveProperty(
          'description',
          bill1.description
       );
       expect(response.body.data.bills[1]).toHaveProperty('id', bill2._id);
       expect(response.body.data.bills[1]).toHaveProperty('name', bill2.name);
+      expect(response.body.data.bills[1]).toHaveProperty(
+         'vendorId',
+         bill2.vendorId
+      );
       expect(response.body.data.bills[1]).toHaveProperty(
          'description',
          bill2.description
@@ -242,6 +274,7 @@ describe('Bill e2e tests', () => {
          _id: 'any_hash_id',
          createdDate: new Date(),
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          name: 'Bill 1',
          description: 'Description 1',
          items: [
@@ -276,12 +309,18 @@ describe('Bill e2e tests', () => {
    });
 
    it('should throw an error when try create a bill with an invalid item', async () => {
+      const vendor = await vendorModel.create({
+         _id: 'any_vendor_id',
+         name: 'any_vendor_name',
+         userId: 'any_user_id',
+      });
       const response = await request(app)
          .post('/api/bill')
          .set('Authorization', 'Bearer ' + token)
          .send({
             name: 'any_bill_name',
             description: 'any_bill_description',
+            vendorId: 'any_vendor_id',
             items: [{ itemId: 'non-existent-id', price: 10, quantity: 1 }],
          });
       expect(response.status).toBe(400);

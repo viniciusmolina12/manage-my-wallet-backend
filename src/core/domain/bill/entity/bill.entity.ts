@@ -9,11 +9,12 @@ export default class Bill extends Entity {
    public description?: string;
    public createdDate: Date;
    public userId: string;
-
+   public vendorId: string;
    constructor(
       id: string,
       name: string,
       items: BillItem[],
+      vendorId: string,
       createdDate: Date,
       userId: string,
       description?: string
@@ -22,6 +23,7 @@ export default class Bill extends Entity {
       this.id = id;
       this.name = name;
       this.items = items;
+      this.vendorId = vendorId;
       this.description = description;
       this.createdDate = createdDate;
       this.userId = userId;
@@ -53,6 +55,12 @@ export default class Bill extends Entity {
             source: 'bill',
          });
       }
+      if (!this.vendorId) {
+         this.notification.add({
+            message: 'VendorId is required',
+            source: 'bill',
+         });
+      }
       if (this.notification.hasErrors()) {
          throw new EntityError(this.notification.getNotifications());
       }
@@ -60,6 +68,10 @@ export default class Bill extends Entity {
 
    get total(): number {
       return this.items.reduce((acc, item) => acc + item.total, 0);
+   }
+
+   get vendor(): string {
+      return this.vendorId;
    }
 
    changeName(name: string): void {

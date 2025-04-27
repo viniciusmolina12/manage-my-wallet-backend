@@ -10,6 +10,7 @@ interface InputCreateBillControllerDto {
    name: string;
    description?: string;
    userId: string;
+   vendorId: string;
    items: {
       quantity: number;
       price: number;

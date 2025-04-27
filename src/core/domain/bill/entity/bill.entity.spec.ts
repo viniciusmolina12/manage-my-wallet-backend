@@ -13,10 +13,11 @@ describe('Bill entity unit tests', () => {
             '',
             'Bill 1',
             [makeBillItem()],
+            'vendorId',
             new Date(),
             'any_user_id'
          );
-      }).toThrowError(new EntityError('bill: Id is required, '));
+      }).toThrow(new EntityError('bill: Id is required, '));
    });
 
    it('should throw a error if name is empty ', () => {
@@ -25,17 +26,38 @@ describe('Bill entity unit tests', () => {
          const bill = new Bill(
             '1',
             '',
-            [makeBillItem()],
+            [item],
+            'vendorId',
             new Date(),
             'any_user_id'
          );
-      }).toThrowError(new EntityError('bill: Name is required, '));
+      }).toThrow(new EntityError('bill: Name is required, '));
    });
 
    it('should throw a error if items is empty ', () => {
       expect(() => {
-         const bill = new Bill('1', 'Bill 1', [], new Date(), 'any_user_id');
-      }).toThrowError(new EntityError('bill: Items is required, '));
+         const bill = new Bill(
+            '1',
+            'Bill 1',
+            [],
+            'vendorId',
+            new Date(),
+            'any_user_id'
+         );
+      }).toThrow(new EntityError('bill: Items is required, '));
+   });
+
+   it('should throw a error if vendorId is empty ', () => {
+      expect(() => {
+         const bill = new Bill(
+            '1',
+            'Bill 1',
+            [makeBillItem()],
+            '',
+            new Date(),
+            'any_user_id'
+         );
+      }).toThrow(new EntityError('bill: VendorId is required, '));
    });
 
    it('should change name', () => {
@@ -43,6 +65,7 @@ describe('Bill entity unit tests', () => {
          '1',
          'Bill 1',
          [makeBillItem()],
+         'vendorId',
          new Date(),
          'any_user_id'
       );
@@ -56,6 +79,7 @@ describe('Bill entity unit tests', () => {
          '1',
          'Bill 1',
          [makeBillItem()],
+         'vendorId',
          new Date(),
          'any_user_id',
          'Description'
@@ -70,6 +94,7 @@ describe('Bill entity unit tests', () => {
          '1',
          'Bill 1',
          [makeBillItem(), makeBillItem()],
+         'vendorId',
          new Date(),
          'any_user_id',
          'Description'
@@ -79,6 +104,7 @@ describe('Bill entity unit tests', () => {
          '1',
          'Bill 1',
          [makeBillItem()],
+         'vendorId',
          new Date(),
          'any_user_id',
          'Description'

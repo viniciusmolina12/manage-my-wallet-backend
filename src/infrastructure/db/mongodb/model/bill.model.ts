@@ -12,6 +12,7 @@ const BillItemSchema = new Schema({
 const BillSchema = new Schema({
    _id: String,
    name: { type: String, required: true },
+   vendorId: { type: String, ref: 'Vendor', required: true },
    description: { type: String, required: false },
    items: [
       {

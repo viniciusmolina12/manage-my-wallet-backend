@@ -3,6 +3,7 @@ export interface InputUpdateBillDto {
    name: string;
    userId: string;
    description?: string;
+   vendorId: string;
    items: {
       id?: string;
       itemId: string;
@@ -15,6 +16,7 @@ export interface OutputUpdateBillDto {
    id: string;
    description?: string;
    name: string;
+   vendorId: string;
    createdDate: Date;
    total: number;
    items: {

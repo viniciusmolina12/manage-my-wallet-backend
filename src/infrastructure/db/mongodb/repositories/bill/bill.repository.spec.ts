@@ -26,6 +26,7 @@ describe('MongoDB Item Repository tests', () => {
          'any_id',
          'any_name',
          [billItem],
+         'any_vendor_id',
          new Date(),
          'any_user_id'
       );
@@ -45,6 +46,7 @@ describe('MongoDB Item Repository tests', () => {
          'any_id',
          'any_name',
          [oldBillItem],
+         'any_vendor_id',
          new Date(),
          'any_user_id',
          'any_description'
@@ -53,6 +55,7 @@ describe('MongoDB Item Repository tests', () => {
          _id: oldBill.id,
          name: oldBill.name,
          userId: oldBill.userId,
+         vendorId: oldBill.vendorId,
          description: oldBill.description,
          createdDate: new Date(),
          items: [oldBillItem],
@@ -70,6 +73,7 @@ describe('MongoDB Item Repository tests', () => {
          'any_id',
          'any_name_2',
          [updateBillItem, updateBillItem],
+         'any_vendor_id',
          new Date(),
          'any_user_id',
          'any_other_description'
@@ -105,6 +109,7 @@ describe('MongoDB Item Repository tests', () => {
          'any_id',
          'any_name',
          [billItem],
+         'any_vendor_id',
          new Date(),
          'any_user_id',
          'any_description'
@@ -114,6 +119,7 @@ describe('MongoDB Item Repository tests', () => {
          _id: bill.id,
          name: bill.name,
          userId: bill.userId,
+         vendorId: bill.vendorId,
          description: bill.description,
          createdDate: new Date(),
          items: [billItem],
@@ -134,6 +140,7 @@ describe('MongoDB Item Repository tests', () => {
          _id: bill1.id,
          name: bill1.name,
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          description: bill1.description,
          createdDate: new Date(),
          items: [billItem],
@@ -147,6 +154,7 @@ describe('MongoDB Item Repository tests', () => {
          _id: bill2.id,
          name: bill2.name,
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          description: bill2.description,
          createdDate: new Date(),
          items: [billItem, billItem],
@@ -158,11 +166,13 @@ describe('MongoDB Item Repository tests', () => {
       expect(billsFound[0].items.length).toBe(1);
       expect(billsFound[0].userId).toBe('any_user_id');
       expect(billsFound[0].description).toBe(bill1.description);
+      expect(billsFound[0].vendorId).toBe('any_vendor_id');
       expect(billsFound[1].id).toBe(bill2.id);
       expect(billsFound[1].userId).toBe('any_user_id');
       expect(billsFound[1].name).toBe(bill2.name);
       expect(billsFound[1].description).toBe(bill2.description);
       expect(billsFound[1].items.length).toBe(2);
+      expect(billsFound[1].vendorId).toBe('any_vendor_id');
    });
 
    it('should delete a bill', async () => {
@@ -173,6 +183,7 @@ describe('MongoDB Item Repository tests', () => {
          _id: bill.id,
          name: bill.name,
          userId: 'any_user_id',
+         vendorId: 'any_vendor_id',
          description: bill.description,
          createdDate: new Date(),
          items: [billItem],

@@ -9,6 +9,7 @@ export default class MongoDbBillRepository implements BillRepository {
          _id: entity.id,
          name: entity.name,
          userId: entity.userId,
+         vendorId: entity.vendorId,
          items: entity.items,
          createdDate: entity.createdDate,
          description: entity.description,
@@ -21,13 +22,15 @@ export default class MongoDbBillRepository implements BillRepository {
             name: entity.name,
             items: entity.items,
             description: entity.description,
+            vendorId: entity.vendorId,
          }
       );
    }
 
    async find(id: string): Promise<Bill | null> {
       const bill = await BillModel.findOne({ _id: id }).populate(
-         'items.itemId'
+         'items.itemId',
+         'vendorId'
       );
       if (!bill) return null;
       const billItems = bill.items.map(
@@ -37,6 +40,7 @@ export default class MongoDbBillRepository implements BillRepository {
          bill._id.toString(),
          bill.name,
          billItems,
+         bill.vendorId,
          bill.createdDate,
          bill.userId,
          bill?.description
@@ -54,6 +58,7 @@ export default class MongoDbBillRepository implements BillRepository {
             bill._id.toString(),
             bill.name,
             billItems,
+            bill.vendorId,
             bill.createdDate,
             bill.userId,
             bill?.description
@@ -76,6 +81,7 @@ export default class MongoDbBillRepository implements BillRepository {
          bill._id.toString(),
          bill.name,
          billItems,
+         bill.vendorId,
          bill.createdDate,
          bill.userId,
          bill?.description
@@ -93,6 +99,7 @@ export default class MongoDbBillRepository implements BillRepository {
             bill._id.toString(),
             bill.name,
             billItems,
+            bill.vendorId,
             bill.createdDate,
             bill.userId,
             bill?.description

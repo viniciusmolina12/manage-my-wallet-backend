@@ -5,27 +5,25 @@ describe('BillItem entity unit tests', () => {
    it('should throw a error if id is empty', () => {
       expect(() => {
          const billItem = new BillItem('', 'itemId', 1, 1);
-      }).toThrowError(new EntityError('billItem: Id is required, '));
+      }).toThrow(new EntityError('billItem: Id is required, '));
    });
 
    it('should throw a error if itemId is empty', () => {
       expect(() => {
          const billItem = new BillItem('1', '', 1, 1);
-      }).toThrowError(new EntityError('billItem: ItemId is required, '));
+      }).toThrow(new EntityError('billItem: ItemId is required, '));
    });
 
    it('should throw a error if price is less or equal 0', () => {
       expect(() => {
          const billItem = new BillItem('1', 'itemId', -1, 1);
-      }).toThrowError(
-         new EntityError('billItem: Price must be greater than 0, ')
-      );
+      }).toThrow(new EntityError('billItem: Price must be greater than 0, '));
    });
 
    it('should throw a error if quantity is less or equal 0', () => {
       expect(() => {
          const billItem = new BillItem('1', 'itemId', 1, -1);
-      }).toThrowError(
+      }).toThrow(
          new EntityError('billItem: Quantity must be greater than 0, ')
       );
    });

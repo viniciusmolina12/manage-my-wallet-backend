@@ -7,6 +7,7 @@ describe('List bill usecase', () => {
          {
             id: 'any_id',
             name: 'any_name',
+            vendorId: 'any_vendor_id',
             description: 'any_description',
             total: 56,
             userId: 'any_user_id',
@@ -29,6 +30,7 @@ describe('List bill usecase', () => {
          {
             id: 'any_id',
             name: 'any_name_2',
+            vendorId: 'any_vendor_id',
             description: 'any_other_description',
             total: 20,
             userId: 'any_user_id',
@@ -50,12 +52,14 @@ describe('List bill usecase', () => {
       expect(response.bills[0].name).toBe('any_name');
       expect(response.bills[0].description).toBe('any_description');
       expect(response.bills[0].total).toBe(56);
+      expect(response.bills[0].vendorId).toBe('any_vendor_id');
       expect(response.bills[0].createdDate).toBeInstanceOf(Date);
       expect(response.bills[0].items.length).toBe(2);
       expect(response.bills[1].id).toBe('any_id');
       expect(response.bills[1].name).toBe('any_name_2');
       expect(response.bills[1].description).toBe('any_other_description');
       expect(response.bills[1].total).toBe(20);
+      expect(response.bills[1].vendorId).toBe('any_vendor_id');
       expect(response.bills[1].createdDate).toBeInstanceOf(Date);
       expect(response.bills[1].items.length).toBe(1);
    });
