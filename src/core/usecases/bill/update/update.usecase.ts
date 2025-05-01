@@ -56,7 +56,7 @@ export default class UpdateBillUseCase {
          description: bill.description,
          vendorId: bill.vendorId,
          total: bill.total,
-         createdAt: bill.createdAt,
+         createdAt: billExists.createdAt,
          updatedAt: bill.updatedAt,
          items: bill.items.map((item: BillItem) => ({
             id: item.id,

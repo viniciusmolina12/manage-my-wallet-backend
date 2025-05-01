@@ -19,7 +19,7 @@ export default class MongoDbVendorRepository implements VendorRepository {
          {
             name: entity.name,
             userId: entity.userId,
-            updatedAt: entity.updatedAt,
+            updatedAt: new Date(),
          }
       );
    }

@@ -9,8 +9,6 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          name: entity.name,
          userId: entity.userId,
          description: entity.description,
-         createdAt: entity.createdAt,
-         updatedAt: entity.updatedAt,
       });
    }
    async update(entity: Category): Promise<void> {
@@ -19,7 +17,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          {
             name: entity.name,
             description: entity.description,
-            updatedAt: entity.updatedAt,
+            updatedAt: new Date(),
          }
       );
    }

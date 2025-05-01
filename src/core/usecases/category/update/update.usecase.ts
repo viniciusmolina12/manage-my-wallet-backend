@@ -41,7 +41,7 @@ export default class UpdateCategoryUseCase {
          id: category.id,
          name: category.name,
          description: category.description,
-         createdAt: category.createdAt,
+         createdAt: categoryFound.createdAt,
          updatedAt: category.updatedAt,
       };
    }
