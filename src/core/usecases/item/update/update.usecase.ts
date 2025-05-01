@@ -23,6 +23,8 @@ export default class UpdateItemUseCase {
          categoryId: updatedItem.categoryId,
          description: updatedItem?.description,
          name: updatedItem.name,
+         createdAt: updatedItem.createdAt,
+         updatedAt: updatedItem.updatedAt,
       };
    }
 }

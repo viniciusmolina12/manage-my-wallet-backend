@@ -17,6 +17,8 @@ export default class ListItemUsecase {
          name: item.name,
          categoryId: item.categoryId,
          description: item.description,
+         createdAt: item.createdAt,
+         updatedAt: item.updatedAt,
       }));
       return { items: output };
    }

@@ -17,6 +17,8 @@ interface OutputUpdateItemControllerDto {
    name: string;
    categoryId: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export default class UpdateItemController {
@@ -39,6 +41,8 @@ export default class UpdateItemController {
             name: item.name,
             categoryId: item.categoryId,
             description: item.description,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
          };
          return response<OutputUpdateItemControllerDto>(
             200,

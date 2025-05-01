@@ -10,4 +10,6 @@ export interface OutputUpdateItemDto {
    name: string;
    categoryId: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }

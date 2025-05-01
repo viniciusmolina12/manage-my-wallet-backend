@@ -8,4 +8,6 @@ export interface OutputFindItemDto {
    name: string;
    categoryId: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }

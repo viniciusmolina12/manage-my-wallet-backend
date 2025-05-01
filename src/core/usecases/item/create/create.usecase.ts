@@ -28,6 +28,8 @@ export default class CreateItemUseCase {
          categoryId: item.categoryId,
          name: item.name,
          description: item.description,
+         createdAt: item.createdAt,
+         updatedAt: item.updatedAt,
       };
    }
 }

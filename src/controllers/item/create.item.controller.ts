@@ -18,6 +18,8 @@ interface OutputCreateItemControllerDto {
    name: string;
    description?: string;
    categoryId: string;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export default class CreateItemController {
@@ -41,6 +43,8 @@ export default class CreateItemController {
             name: item.name,
             description: item.description,
             categoryId: item.categoryId,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
          };
          return response<OutputCreateItemControllerDto>(
             201,

@@ -14,6 +14,8 @@ export default class FindItemUseCase {
          name: item.name,
          categoryId: item.categoryId,
          description: item.description,
+         createdAt: item.createdAt,
+         updatedAt: item.updatedAt,
       };
    }
 }

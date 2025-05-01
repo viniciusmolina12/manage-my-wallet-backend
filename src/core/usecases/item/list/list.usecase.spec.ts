@@ -7,6 +7,8 @@ const mockItemList = [
       description: 'other_description',
       categoryId: 'other_category_id_hash',
       userId: 'any_user_id',
+      createdAt: new Date(),
+      updatedAt: new Date(),
    },
    {
       id: 'other_id',
@@ -14,6 +16,8 @@ const mockItemList = [
       description: 'other_description',
       categoryId: 'other_category_id_hash',
       userId: 'any_user_id',
+      createdAt: new Date(),
+      updatedAt: new Date(),
    },
 ];
 describe('Item List usecase test', () => {

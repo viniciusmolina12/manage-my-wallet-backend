@@ -19,6 +19,7 @@ export default class MongoDbItemRepository implements ItemRepository {
             name: entity.name,
             categoryId: entity.categoryId,
             description: entity.description,
+            updatedAt: new Date(),
          }
       );
    }
@@ -26,25 +27,31 @@ export default class MongoDbItemRepository implements ItemRepository {
    async find(id: string): Promise<Item | null> {
       const result = await ItemModel.findOne({ _id: id });
       if (!result) return null;
-      return new Item(
+      const item = new Item(
          result._id.toString(),
          result.name,
          result.categoryId,
          result.userId,
          result?.description
       );
+      item.createdAt = result.createdAt;
+      item.updatedAt = result.updatedAt;
+      return item;
    }
 
    async findByUser(id: string, userId: string): Promise<Item | null> {
       const result = await ItemModel.findOne({ _id: id, userId });
       if (!result) return null;
-      return new Item(
+      const item = new Item(
          result._id.toString(),
          result.name,
          result.categoryId,
          result.userId,
          result?.description
       );
+      item.createdAt = result.createdAt;
+      item.updatedAt = result.updatedAt;
+      return item;
    }
 
    async findByName(name: string, userId: string): Promise<Item | null> {
@@ -61,30 +68,34 @@ export default class MongoDbItemRepository implements ItemRepository {
 
    async findAll(): Promise<Item[]> {
       const result = await ItemModel.find();
-      return result.map(
-         (item) =>
-            new Item(
-               item._id.toString(),
-               item.name,
-               item.categoryId,
-               item.userId,
-               item?.description
-            )
-      );
+      return result.map((i) => {
+         const item = new Item(
+            i._id.toString(),
+            i.name,
+            i.categoryId,
+            i.userId,
+            i?.description
+         );
+         item.createdAt = i.createdAt;
+         item.updatedAt = i.updatedAt;
+         return item;
+      });
    }
 
    async findAllByUserId(userId: string): Promise<Item[]> {
       const result = await ItemModel.find({ userId });
-      return result.map(
-         (item) =>
-            new Item(
-               item._id.toString(),
-               item.name,
-               item.categoryId,
-               item.userId,
-               item?.description
-            )
-      );
+      return result.map((i) => {
+         const item = new Item(
+            i._id.toString(),
+            i.name,
+            i.categoryId,
+            i.userId,
+            i?.description
+         );
+         item.createdAt = i.createdAt;
+         item.updatedAt = i.updatedAt;
+         return item;
+      });
    }
 
    async delete(id: string): Promise<void> {
@@ -92,6 +103,6 @@ export default class MongoDbItemRepository implements ItemRepository {
    }
 
    async deleteByUser(id: string, userId: string): Promise<void> {
-      await ItemModel.deleteMany({ _id: id, userId });
+      await ItemModel.findByIdAndDelete({ _id: id, userId });
    }
 }

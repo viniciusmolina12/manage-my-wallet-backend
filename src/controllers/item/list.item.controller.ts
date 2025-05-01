@@ -16,6 +16,8 @@ interface OutputListItemControllerDto {
       name: string;
       description?: string;
       categoryId: string;
+      createdAt: Date;
+      updatedAt: Date;
    }[];
 }
 
@@ -36,6 +38,8 @@ export default class ListItemController {
                name: item.name,
                description: item.description,
                categoryId: item.categoryId,
+               createdAt: item.createdAt,
+               updatedAt: item.updatedAt,
             })),
          };
          return response<OutputListItemControllerDto>(

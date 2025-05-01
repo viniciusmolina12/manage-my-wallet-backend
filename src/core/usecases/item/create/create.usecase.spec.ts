@@ -15,6 +15,8 @@ describe('Item create usecase test', () => {
       expect(item.name).toBe(input.name);
       expect(item.description).toBe(input.description);
       expect(item.categoryId).toBe(input.categoryId);
+      expect(item.createdAt).toBeDefined();
+      expect(item.updatedAt).toBeDefined();
    });
 
    it('should throw an error if required properties is not provided', async () => {
@@ -33,6 +35,8 @@ describe('Item create usecase test', () => {
             description: 'any description',
             categoryId: 'category_id_hash',
             userId: 'any_user_id',
+            createdAt: new Date(),
+            updatedAt: new Date(),
          })
       );
       await expect(sut.execute({ ...input, name: 'Item 1' })).rejects.toThrow(

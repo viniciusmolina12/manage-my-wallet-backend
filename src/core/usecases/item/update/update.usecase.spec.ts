@@ -18,11 +18,15 @@ describe('Item update usecase test', () => {
          description: 'other_description',
          categoryId: 'other_category_id_hash',
          userId: 'any_user_id',
+         createdAt: new Date(),
+         updatedAt: new Date(),
       });
       const item = await sut.execute(input);
       expect(item.name).toBe(input.name);
       expect(item.description).toBe(input.description);
       expect(item.categoryId).toBe(input.categoryId);
+      expect(item.createdAt).toBeDefined();
+      expect(item.updatedAt).toBeDefined();
    });
    it('should throw an error if item does not exist', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
@@ -38,6 +42,8 @@ describe('Item update usecase test', () => {
          description: 'other_description',
          userId: 'any_user_id',
          categoryId: 'other_category_id_hash',
+         createdAt: new Date(),
+         updatedAt: new Date(),
       });
       await expect(sut.execute({ ...input, name: '' })).rejects.toThrow(
          new EntityError('Item: Name is required, ')

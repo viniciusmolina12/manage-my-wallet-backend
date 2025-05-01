@@ -133,10 +133,14 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemsFound[0].name).toBe(item1.name);
       expect(itemsFound[0].description).toBe(item1.description);
       expect(itemsFound[0].categoryId).toBe(item1.categoryId);
+      expect(itemsFound[0].createdAt).toBeDefined();
+      expect(itemsFound[0].updatedAt).toBeDefined();
       expect(itemsFound[1].id).toBe(item2.id);
       expect(itemsFound[1].name).toBe(item2.name);
       expect(itemsFound[1].description).toBe(item2.description);
       expect(itemsFound[1].categoryId).toBe(item2.categoryId);
+      expect(itemsFound[1].createdAt).toBeDefined();
+      expect(itemsFound[1].updatedAt).toBeDefined();
    });
 
    it('should find an item by name', async () => {
@@ -161,6 +165,8 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemFound?.description).toBe(item.description);
       expect(itemFound?.categoryId).toBe(item.categoryId);
       expect(itemFound?.userId).toBe(item.userId);
+      expect(itemFound?.createdAt).toBeDefined();
+      expect(itemFound?.updatedAt).toBeDefined();
    });
 
    it('should not find an item by name', async () => {
@@ -236,6 +242,8 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemFound?.description).toBe(item.description);
       expect(itemFound?.categoryId).toBe(item.categoryId);
       expect(itemFound?.userId).toBe(item.userId);
+      expect(itemFound?.createdAt).toBeDefined();
+      expect(itemFound?.updatedAt).toBeDefined();
    });
 
    it('should find all items by user', async () => {
@@ -278,5 +286,9 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemsFound[1].name).toBe(item2.name);
       expect(itemsFound[1].description).toBe(item2.description);
       expect(itemsFound[1].categoryId).toBe(item2.categoryId);
+      expect(itemsFound[0].createdAt).toBeDefined();
+      expect(itemsFound[0].updatedAt).toBeDefined();
+      expect(itemsFound[1].createdAt).toBeDefined();
+      expect(itemsFound[1].updatedAt).toBeDefined();
    });
 });

@@ -40,6 +40,8 @@ describe('Item e2e tests', () => {
          'categoryId',
          'any_category_id'
       );
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should return an error when creating an item with invalid data', async () => {
@@ -52,6 +54,7 @@ describe('Item e2e tests', () => {
          'message',
          'Item: Name is required, Item: Category is required, '
       );
+      expect(response.body).not.toHaveProperty('data');
    });
 
    it('should return an error when creating an item with an existing name', async () => {
@@ -105,6 +108,8 @@ describe('Item e2e tests', () => {
          'categoryId',
          'any_category_id'
       );
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should return an error when try update a non-existent item', async () => {
@@ -158,6 +163,8 @@ describe('Item e2e tests', () => {
       expect(response.body.data).toHaveProperty('name', 'Item 1');
       expect(response.body.data).toHaveProperty('description', 'Description 1');
       expect(response.body.data).toHaveProperty('categoryId', 'Category 1');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should get all items', async () => {
@@ -195,6 +202,8 @@ describe('Item e2e tests', () => {
          'categoryId',
          item1.categoryId
       );
+      expect(response.body.data.items[0]).toHaveProperty('createdAt');
+      expect(response.body.data.items[0]).toHaveProperty('updatedAt');
       expect(response.body.data.items[1]).toHaveProperty('id', item2._id);
       expect(response.body.data.items[1]).toHaveProperty('name', item2.name);
       expect(response.body.data.items[1]).toHaveProperty(
@@ -205,6 +214,8 @@ describe('Item e2e tests', () => {
          'categoryId',
          item2.categoryId
       );
+      expect(response.body.data.items[1]).toHaveProperty('createdAt');
+      expect(response.body.data.items[1]).toHaveProperty('updatedAt');
    });
 
    it('should delete an item', async () => {
