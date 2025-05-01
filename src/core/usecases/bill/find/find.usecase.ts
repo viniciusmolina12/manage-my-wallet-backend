@@ -14,7 +14,6 @@ export default class FindBillUseCase {
       if (!bill) throw new EntityError('Bill not found');
       return {
          id: bill.id,
-         createdDate: bill.createdDate,
          name: bill.name,
          description: bill.description,
          vendorId: bill.vendorId,

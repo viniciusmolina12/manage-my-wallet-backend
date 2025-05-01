@@ -8,7 +8,6 @@ export interface OutputListBillDto {
       description?: string;
       name: string;
       vendorId: string;
-      createdDate: Date;
       total: number;
       items: {
          id: string;

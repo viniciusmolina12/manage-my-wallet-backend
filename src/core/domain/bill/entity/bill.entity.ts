@@ -7,7 +7,6 @@ export default class Bill extends Entity {
    public name: string;
    public items: BillItem[];
    public description?: string;
-   public createdDate: Date;
    public userId: string;
    public vendorId: string;
    constructor(
@@ -15,7 +14,6 @@ export default class Bill extends Entity {
       name: string,
       items: BillItem[],
       vendorId: string,
-      createdDate: Date,
       userId: string,
       description?: string
    ) {
@@ -25,7 +23,6 @@ export default class Bill extends Entity {
       this.items = items;
       this.vendorId = vendorId;
       this.description = description;
-      this.createdDate = createdDate;
       this.userId = userId;
       this.validate();
    }
@@ -49,12 +46,7 @@ export default class Bill extends Entity {
             source: 'bill',
          });
       }
-      if (!this.createdDate) {
-         this.notification.add({
-            message: 'Created Date is required',
-            source: 'bill',
-         });
-      }
+
       if (!this.vendorId) {
          this.notification.add({
             message: 'VendorId is required',

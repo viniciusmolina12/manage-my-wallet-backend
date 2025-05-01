@@ -86,7 +86,6 @@ describe('Bill e2e tests', () => {
          name: 'Bill 1',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
-         createdDate: new Date(),
          description: 'Description 1',
          items: [
             {
@@ -148,7 +147,6 @@ describe('Bill e2e tests', () => {
          name: 'Bill 1',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
-         createdDate: new Date(),
          description: 'Description 1',
          items: [
             {
@@ -179,7 +177,6 @@ describe('Bill e2e tests', () => {
          name: 'Bill 1',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
-         createdDate: new Date(),
          description: 'Description 1',
          items: [
             {
@@ -207,7 +204,6 @@ describe('Bill e2e tests', () => {
    it('should get all bills', async () => {
       const bill1 = await BillModel.create({
          _id: 'any_hash_id',
-         createdDate: new Date(),
          name: 'Bill 1',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
@@ -223,7 +219,6 @@ describe('Bill e2e tests', () => {
       });
       const bill2 = await BillModel.create({
          _id: 'any_hash_id_2',
-         createdDate: new Date(),
          name: 'Bill 2',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
@@ -272,7 +267,6 @@ describe('Bill e2e tests', () => {
    it('should delete an bill', async () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
-         createdDate: new Date(),
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          name: 'Bill 1',

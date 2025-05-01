@@ -7,7 +7,6 @@ export interface OutputFindBillDto {
    id: string;
    description?: string;
    name: string;
-   createdDate: Date;
    vendorId: string;
    total: number;
    items: {

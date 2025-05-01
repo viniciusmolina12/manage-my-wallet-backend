@@ -23,7 +23,8 @@ const BillSchema = new Schema({
       },
    ],
    userId: { type: String, ref: 'User', required: true },
-   createdDate: { type: Date, required: true },
+   createdAt: { type: Date, required: true, default: Date.now },
+   updatedAt: { type: Date, required: true, default: Date.now },
 });
 
 export default mongoose.model('Bill', BillSchema);

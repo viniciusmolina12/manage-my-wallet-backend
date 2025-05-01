@@ -6,7 +6,6 @@ export default class CreateBillUseCaseMapper {
    static toOutput(entity: Bill): OutputCreateBillDto {
       return {
          id: entity.id,
-         createdDate: entity.createdDate,
          userId: entity.userId,
          vendorId: entity.vendorId,
          name: entity.name,

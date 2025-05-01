@@ -8,7 +8,6 @@ describe('Find bill usecase', () => {
          description: 'any_other_description',
          userId: 'any_user_id',
          total: 56,
-         createdDate: new Date('2020-02-10 10:20:30'),
          vendorId: 'any_vendor_id',
          items: [
             {

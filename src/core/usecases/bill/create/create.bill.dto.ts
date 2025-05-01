@@ -16,7 +16,6 @@ export interface OutputCreateBillDto {
    description?: string;
    vendorId: string;
    name: string;
-   createdDate: Date;
    total: number;
    items: {
       id: string;

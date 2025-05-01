@@ -27,7 +27,6 @@ describe('MongoDB Item Repository tests', () => {
          'any_name',
          [billItem],
          'any_vendor_id',
-         new Date(),
          'any_user_id'
       );
       await sut.create(bill);
@@ -47,7 +46,6 @@ describe('MongoDB Item Repository tests', () => {
          'any_name',
          [oldBillItem],
          'any_vendor_id',
-         new Date(),
          'any_user_id',
          'any_description'
       );
@@ -57,7 +55,6 @@ describe('MongoDB Item Repository tests', () => {
          userId: oldBill.userId,
          vendorId: oldBill.vendorId,
          description: oldBill.description,
-         createdDate: new Date(),
          items: [oldBillItem],
       });
 
@@ -74,7 +71,6 @@ describe('MongoDB Item Repository tests', () => {
          'any_name_2',
          [updateBillItem, updateBillItem],
          'any_vendor_id',
-         new Date(),
          'any_user_id',
          'any_other_description'
       );
@@ -110,7 +106,6 @@ describe('MongoDB Item Repository tests', () => {
          'any_name',
          [billItem],
          'any_vendor_id',
-         new Date(),
          'any_user_id',
          'any_description'
       );
@@ -121,7 +116,6 @@ describe('MongoDB Item Repository tests', () => {
          userId: bill.userId,
          vendorId: bill.vendorId,
          description: bill.description,
-         createdDate: new Date(),
          items: [billItem],
       });
 
@@ -142,7 +136,6 @@ describe('MongoDB Item Repository tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill1.description,
-         createdDate: new Date(),
          items: [billItem],
       });
       const bill2 = new Category(
@@ -156,7 +149,6 @@ describe('MongoDB Item Repository tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill2.description,
-         createdDate: new Date(),
          items: [billItem, billItem],
       });
       const billsFound = await sut.findAllByUser('any_user_id');
@@ -185,7 +177,6 @@ describe('MongoDB Item Repository tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill.description,
-         createdDate: new Date(),
          items: [billItem],
       });
       await sut.deleteByUser(bill.id, 'any_user_id');

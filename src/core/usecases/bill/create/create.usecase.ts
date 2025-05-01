@@ -39,7 +39,6 @@ export default class CreateBillUseCase {
          input.name,
          billItems,
          input.vendorId,
-         new Date(),
          input.userId,
          input.description
       );

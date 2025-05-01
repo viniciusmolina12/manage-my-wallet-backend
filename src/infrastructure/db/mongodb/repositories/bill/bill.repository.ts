@@ -11,7 +11,6 @@ export default class MongoDbBillRepository implements BillRepository {
          userId: entity.userId,
          vendorId: entity.vendorId,
          items: entity.items,
-         createdDate: entity.createdDate,
          description: entity.description,
       });
    }
@@ -41,7 +40,6 @@ export default class MongoDbBillRepository implements BillRepository {
          bill.name,
          billItems,
          bill.vendorId,
-         bill.createdDate,
          bill.userId,
          bill?.description
       );
@@ -59,7 +57,6 @@ export default class MongoDbBillRepository implements BillRepository {
             bill.name,
             billItems,
             bill.vendorId,
-            bill.createdDate,
             bill.userId,
             bill?.description
          );
@@ -82,7 +79,6 @@ export default class MongoDbBillRepository implements BillRepository {
          bill.name,
          billItems,
          bill.vendorId,
-         bill.createdDate,
          bill.userId,
          bill?.description
       );
@@ -100,7 +96,6 @@ export default class MongoDbBillRepository implements BillRepository {
             bill.name,
             billItems,
             bill.vendorId,
-            bill.createdDate,
             bill.userId,
             bill?.description
          );
