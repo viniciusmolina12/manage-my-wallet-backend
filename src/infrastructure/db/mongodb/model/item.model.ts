@@ -8,8 +8,8 @@ const ItemSchema = new Schema({
    description: { type: String, required: false },
    categoryId: { type: String, required: true },
    userId: { type: String, required: true },
-   createdAt: { type: Date, default: Date.now },
-   updatedAt: { type: Date, default: Date.now },
+   createdAt: { type: Date, required: true, default: Date.now },
+   updatedAt: { type: Date, required: true, default: Date.now },
 });
 
 export default mongoose.model('Item', ItemSchema);

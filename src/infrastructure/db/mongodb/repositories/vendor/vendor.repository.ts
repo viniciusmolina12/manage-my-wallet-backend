@@ -16,36 +16,58 @@ export default class MongoDbVendorRepository implements VendorRepository {
    async update(entity: Vendor): Promise<void> {
       await VendorModel.findOneAndUpdate(
          { _id: entity.id },
-         { name: entity.name, userId: entity.userId }
+         {
+            name: entity.name,
+            userId: entity.userId,
+            updatedAt: entity.updatedAt,
+         }
       );
    }
 
    async find(id: string): Promise<Vendor | null> {
       const result = await VendorModel.findOne({ _id: id });
       if (!result) return null;
-      return new Vendor(result._id.toString(), result.name, result.userId);
+      const vendor = new Vendor(
+         result._id.toString(),
+         result.name,
+         result.userId
+      );
+      vendor.createdAt = result.createdAt;
+      vendor.updatedAt = result.updatedAt;
+      return vendor;
    }
 
    async findByUser(id: string, userId: string): Promise<Vendor | null> {
       const result = await VendorModel.findOne({ _id: id, userId });
       if (!result) return null;
-      return new Vendor(result._id.toString(), result.name, result.userId);
+      const vendor = new Vendor(
+         result._id.toString(),
+         result.name,
+         result.userId
+      );
+      vendor.createdAt = result.createdAt;
+      vendor.updatedAt = result.updatedAt;
+      return vendor;
    }
 
    async findAll(): Promise<Vendor[]> {
       const result = await VendorModel.find();
-      return result.map(
-         (vendor) =>
-            new Vendor(vendor._id.toString(), vendor.name, vendor.userId)
-      );
+      return result.map((v) => {
+         const vendor = new Vendor(v._id.toString(), v.name, v.userId);
+         vendor.createdAt = v.createdAt;
+         vendor.updatedAt = v.updatedAt;
+         return vendor;
+      });
    }
 
    async findAllByUser(userId: string): Promise<Vendor[]> {
       const result = await VendorModel.find({ userId });
-      return result.map(
-         (vendor) =>
-            new Vendor(vendor._id.toString(), vendor.name, vendor.userId)
-      );
+      return result.map((v) => {
+         const vendor = new Vendor(v._id.toString(), v.name, v.userId);
+         vendor.createdAt = v.createdAt;
+         vendor.updatedAt = v.updatedAt;
+         return vendor;
+      });
    }
 
    async delete(id: string): Promise<void> {
@@ -62,6 +84,13 @@ export default class MongoDbVendorRepository implements VendorRepository {
    ): Promise<Vendor | null> {
       const result = await VendorModel.findOne({ name: name, userId });
       if (!result) return null;
-      return new Vendor(result._id.toString(), result.name, result.userId);
+      const vendor = new Vendor(
+         result._id.toString(),
+         result.name,
+         result.userId
+      );
+      vendor.createdAt = result.createdAt;
+      vendor.updatedAt = result.updatedAt;
+      return vendor;
    }
 }

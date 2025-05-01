@@ -29,6 +29,10 @@ describe('Vendor e2e tests', () => {
             'message',
             'Vendor created successfully'
          );
+         expect(response.body.data.id).toBeDefined();
+         expect(response.body.data.name).toBe('Vendor 1');
+         expect(response.body.data.createdAt).toBeDefined();
+         expect(response.body.data.updatedAt).toBeDefined();
       });
 
       it('should return an error when creating a vendor with invalid data', async () => {
@@ -73,6 +77,10 @@ describe('Vendor e2e tests', () => {
             'message',
             'Vendor found successfully'
          );
+         expect(response.body.data.id).toBeDefined();
+         expect(response.body.data.name).toBe('Vendor 1');
+         expect(response.body.data.createdAt).toBeDefined();
+         expect(response.body.data.updatedAt).toBeDefined();
       });
 
       it('should return an error when vendor is not found', async () => {
@@ -108,8 +116,12 @@ describe('Vendor e2e tests', () => {
          expect(response.body.data.vendors).toHaveLength(2);
          expect(response.body.data.vendors[0].id).toBe('any_hash_id');
          expect(response.body.data.vendors[0].name).toBe('Vendor 1');
+         expect(response.body.data.vendors[0].createdAt).toBeDefined();
+         expect(response.body.data.vendors[0].updatedAt).toBeDefined();
          expect(response.body.data.vendors[1].id).toBe('any_hash_id_2');
          expect(response.body.data.vendors[1].name).toBe('Vendor 2');
+         expect(response.body.data.vendors[1].createdAt).toBeDefined();
+         expect(response.body.data.vendors[1].updatedAt).toBeDefined();
       });
 
       it('should return an empty array when user has no vendors', async () => {
@@ -162,6 +174,8 @@ describe('Vendor e2e tests', () => {
          expect(response.body).toHaveProperty('data');
          expect(response.body.data.id).toBe('any_hash_id');
          expect(response.body.data.name).toBe('Vendor 2');
+         expect(response.body.data.createdAt).toBeDefined();
+         expect(response.body.data.updatedAt).toBeDefined();
          expect(response.body).toHaveProperty(
             'message',
             'Vendor updated successfully'
