@@ -44,7 +44,6 @@ export default class CreateBillUseCase {
          input.description
       );
       await this.billRepository.create(bill);
-      console.log('bill aquiiii', bill);
       return CreateBillUseCaseMapper.toOutput(bill);
    }
 
