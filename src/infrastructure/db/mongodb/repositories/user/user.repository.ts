@@ -21,6 +21,7 @@ export default class MongoDbUserRepository implements UserRepository {
             email: entity.email,
             password: entity.password,
             name: entity.name,
+            updatedAt: new Date(),
          }
       );
    }
@@ -28,7 +29,10 @@ export default class MongoDbUserRepository implements UserRepository {
    async find(id: string): Promise<User | null> {
       const user = await UserModel.findOne({ _id: id });
       if (!user) return null;
-      return new User(user.id, user.name, user.email, user.password);
+      const userFound = new User(user.id, user.name, user.email, user.password);
+      userFound.createdAt = user.createdAt;
+      userFound.updatedAt = user.updatedAt;
+      return userFound;
    }
 
    async createRecoveryData(
@@ -77,7 +81,15 @@ export default class MongoDbUserRepository implements UserRepository {
    }): Promise<User[]> {
       const user = await UserModel.find(filter);
       const users = user.map((user) => {
-         return new User(user.id, user.name, user.email, user.password);
+         const userFound = new User(
+            user.id,
+            user.name,
+            user.email,
+            user.password
+         );
+         userFound.createdAt = user.createdAt;
+         userFound.updatedAt = user.updatedAt;
+         return userFound;
       });
       return users;
    }

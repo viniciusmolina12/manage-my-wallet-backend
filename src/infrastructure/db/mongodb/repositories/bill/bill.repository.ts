@@ -22,6 +22,7 @@ export default class MongoDbBillRepository implements BillRepository {
             items: entity.items,
             description: entity.description,
             vendorId: entity.vendorId,
+            updatedAt: new Date(),
          }
       );
    }

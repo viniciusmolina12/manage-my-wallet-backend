@@ -11,6 +11,8 @@ const UserSchema = new Schema({
       token: String,
       expiresIn: Date,
    },
+   createdAt: { type: Date, default: Date.now },
+   updatedAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model('User', UserSchema);

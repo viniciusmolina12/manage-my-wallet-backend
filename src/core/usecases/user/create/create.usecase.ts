@@ -43,8 +43,8 @@ export default class CreateUserUseCase {
          name: user.name,
          email: user.email,
          token,
-         createdAt: new Date(),
-         updatedAt: new Date(),
+         createdAt: user.createdAt,
+         updatedAt: user.updatedAt,
       };
    }
 }
