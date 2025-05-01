@@ -14,8 +14,11 @@ interface InputUpdateCategoryControllerDto {
 }
 
 interface OutputUpdateCategoryControllerDto {
+   id: string;
    name: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export default class UpdateCategoryController {
@@ -34,8 +37,11 @@ export default class UpdateCategoryController {
             userId,
          });
          const output = {
+            id: category.id,
             name: category.name,
             description: category.description,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
          };
          return response<OutputUpdateCategoryControllerDto>(
             200,

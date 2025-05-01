@@ -6,6 +6,9 @@ export interface InputUpdateCategoryDto {
 }
 
 export interface OutputUpdateCategoryDto {
+   id: string;
    name: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }

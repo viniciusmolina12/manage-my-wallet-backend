@@ -33,6 +33,8 @@ export default class CreateCategoryUseCase {
          id: category.id,
          name: category.name,
          description: category?.description,
+         createdAt: category.createdAt,
+         updatedAt: category.updatedAt,
       };
    }
 }

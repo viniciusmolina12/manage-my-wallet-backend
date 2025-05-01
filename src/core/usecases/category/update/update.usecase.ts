@@ -38,8 +38,11 @@ export default class UpdateCategoryUseCase {
       );
       await this.categoryRepository.update(category);
       return {
+         id: category.id,
          name: category.name,
          description: category.description,
+         createdAt: category.createdAt,
+         updatedAt: category.updatedAt,
       };
    }
 }

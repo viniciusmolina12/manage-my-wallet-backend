@@ -22,6 +22,8 @@ export default class FindCategoryUseCase {
          id: category.id,
          name: category.name,
          description: category?.description,
+         createdAt: category.createdAt,
+         updatedAt: category.updatedAt,
       };
    }
 }

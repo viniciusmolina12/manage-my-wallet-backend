@@ -15,6 +15,8 @@ interface OutputFindCategoryControllerDto {
    id: string;
    name: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export default class FindCategoryController {
@@ -34,6 +36,8 @@ export default class FindCategoryController {
             id: category.id,
             name: category.name,
             description: category.description,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
          };
          return response<OutputFindCategoryControllerDto>(
             200,

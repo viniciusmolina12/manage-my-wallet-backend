@@ -9,61 +9,77 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          name: entity.name,
          userId: entity.userId,
          description: entity.description,
+         createdAt: entity.createdAt,
+         updatedAt: entity.updatedAt,
       });
    }
    async update(entity: Category): Promise<void> {
       await CategoryModel.findOneAndUpdate(
          { _id: entity.id, userId: entity.userId },
-         { name: entity.name, description: entity.description }
+         {
+            name: entity.name,
+            description: entity.description,
+            updatedAt: entity.updatedAt,
+         }
       );
    }
 
    async find(id: string): Promise<Category | null> {
       const result = await CategoryModel.findOne({ _id: id });
       if (!result) return null;
-      return new Category(
+      const category = new Category(
          result._id.toString(),
          result.name,
          result.userId,
          result?.description
       );
+      category.createdAt = result.createdAt;
+      category.updatedAt = result.updatedAt;
+      return category;
    }
 
    async findByUser(id: string, userId: string): Promise<Category | null> {
       const result = await CategoryModel.findOne({ _id: id, userId });
       if (!result) return null;
-      return new Category(
+      const category = new Category(
          result._id.toString(),
          result.name,
          result.userId,
          result?.description
       );
+      category.createdAt = result.createdAt;
+      category.updatedAt = result.updatedAt;
+      return category;
    }
 
    async findAll(): Promise<Category[]> {
       const result = await CategoryModel.find();
-      return result.map(
-         (category) =>
-            new Category(
-               category._id.toString(),
-               category.name,
-               category.userId,
-               category?.description
-            )
-      );
+      return result.map((c) => {
+         const category = new Category(
+            c._id.toString(),
+            c.name,
+            c.userId,
+            c?.description
+         );
+         category.createdAt = c.createdAt;
+         category.updatedAt = c.updatedAt;
+         return category;
+      });
    }
 
    async findAllByUser(userId: string): Promise<Category[]> {
       const result = await CategoryModel.find({ userId });
-      return result.map(
-         (category) =>
-            new Category(
-               category._id.toString(),
-               category.name,
-               category.userId,
-               category?.description
-            )
-      );
+      return result.map((c) => {
+         const category = new Category(
+            c._id.toString(),
+            c.name,
+            c.userId,
+            c?.description
+         );
+         category.createdAt = c.createdAt;
+         category.updatedAt = c.updatedAt;
+         return category;
+      });
    }
 
    async delete(id: string): Promise<void> {
@@ -80,11 +96,14 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
    ): Promise<Category | undefined> {
       const result = await CategoryModel.findOne({ name: name, userId });
       if (!result) return undefined;
-      return new Category(
+      const category = new Category(
          result._id.toString(),
          result.name,
          result.userId,
          result?.description
       );
+      category.createdAt = result.createdAt;
+      category.updatedAt = result.updatedAt;
+      return category;
    }
 }

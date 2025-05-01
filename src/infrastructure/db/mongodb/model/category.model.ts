@@ -7,6 +7,8 @@ const CategorySchema = new Schema({
    name: { type: String, required: true },
    description: { type: String, required: false },
    userId: { type: String, required: true },
+   createdAt: { type: Date, required: true, default: Date.now },
+   updatedAt: { type: Date, required: true, default: Date.now },
 });
 
 export default mongoose.model('Category', CategorySchema);

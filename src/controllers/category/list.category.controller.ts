@@ -15,6 +15,8 @@ interface OutputListCategoryControllerDto {
       id: string;
       name: string;
       description?: string;
+      createdAt: Date;
+      updatedAt: Date;
    }[];
 }
 
@@ -35,6 +37,8 @@ export default class ListCategoryController {
                id: category.id,
                name: category.name,
                description: category.description,
+               createdAt: category.createdAt,
+               updatedAt: category.updatedAt,
             })),
          };
          return response<OutputListCategoryControllerDto>(

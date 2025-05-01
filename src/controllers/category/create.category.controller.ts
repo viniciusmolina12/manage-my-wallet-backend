@@ -16,6 +16,8 @@ interface OutputCreateCategoryControllerDto {
    id: string;
    name: string;
    description?: string;
+   createdAt: Date;
+   updatedAt: Date;
 }
 
 export default class CreateCategoryController {
@@ -36,6 +38,8 @@ export default class CreateCategoryController {
             id: category.id,
             name: category.name,
             description: category.description,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
          };
          return response<OutputCreateCategoryControllerDto>(
             201,

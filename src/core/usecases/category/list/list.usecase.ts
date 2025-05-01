@@ -19,6 +19,8 @@ export default class ListCategoryUseCase {
             id: category.id,
             name: category.name,
             description: category?.description,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
          })),
       };
    }

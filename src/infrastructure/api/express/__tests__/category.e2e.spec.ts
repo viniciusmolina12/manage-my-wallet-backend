@@ -31,6 +31,8 @@ describe('Category e2e tests', () => {
       );
       expect(response.body.data).toHaveProperty('id');
       expect(response.body.data).toHaveProperty('name', 'any_category_name');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
       expect(response.body.data).toHaveProperty(
          'description',
          'any_category_description'
@@ -70,6 +72,8 @@ describe('Category e2e tests', () => {
          'Category updated succesfully'
       );
       expect(response.body.data).toHaveProperty('name', 'any_category_name');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
       expect(response.body.data).toHaveProperty(
          'description',
          'any_category_description'
@@ -111,6 +115,8 @@ describe('Category e2e tests', () => {
          name: 'Category 1',
          description: 'Description 1',
          userId: 'any_user_id',
+         createdAt: new Date(),
+         updatedAt: new Date(),
       });
       const response = await request(app)
          .get(`/api/category/${category._id}`)
@@ -124,6 +130,8 @@ describe('Category e2e tests', () => {
       expect(response.body.data).toHaveProperty('id', category._id);
       expect(response.body.data).toHaveProperty('name', 'Category 1');
       expect(response.body.data).toHaveProperty('description', 'Description 1');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should get all categories', async () => {
@@ -132,12 +140,16 @@ describe('Category e2e tests', () => {
          name: 'Category 1',
          description: 'Description 1',
          userId: 'any_user_id',
+         createdAt: new Date(),
+         updatedAt: new Date(),
       });
       const category2 = await CategoryModel.create({
          _id: 'any_hash_id_2',
          name: 'Category 2',
          description: 'Description 2',
          userId: 'any_user_id',
+         createdAt: new Date(),
+         updatedAt: new Date(),
       });
       const response = await request(app)
          .get('/api/categories')
@@ -161,6 +173,8 @@ describe('Category e2e tests', () => {
          'description',
          category1.description
       );
+      expect(response.body.data.categories[0]).toHaveProperty('createdAt');
+      expect(response.body.data.categories[0]).toHaveProperty('updatedAt');
       expect(response.body.data.categories[1]).toHaveProperty(
          'id',
          category2._id
@@ -173,6 +187,8 @@ describe('Category e2e tests', () => {
          'description',
          category2.description
       );
+      expect(response.body.data.categories[1]).toHaveProperty('createdAt');
+      expect(response.body.data.categories[1]).toHaveProperty('updatedAt');
    });
 
    it('should delete a category', async () => {
