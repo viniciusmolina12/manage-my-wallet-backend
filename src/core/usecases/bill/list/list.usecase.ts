@@ -1,5 +1,9 @@
-import { BillRepository } from '@core/domain/bill/repository/bill.repository';
+import {
+   BillRepository,
+   SearchBill,
+} from '@core/domain/bill/repository/bill.repository';
 import { InputListBillDto, OutputListBillDto } from './list.bill.dto';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 export default class ListBillUseCase {
    private readonly billRepository: BillRepository;
@@ -7,10 +11,14 @@ export default class ListBillUseCase {
       this.billRepository = billRepository;
    }
 
-   async execute(input: InputListBillDto): Promise<OutputListBillDto> {
+   async execute(
+      input: InputListBillDto,
+      filter: Filter<SearchBill>
+   ): Promise<OutputListBillDto> {
       const { userId } = input;
-      const bills = await this.billRepository.findAllByUser(userId);
-      const output = bills.map((bill) => ({
+      const result = await this.billRepository.findAllByUser(userId, filter);
+      const { data, ...meta } = result;
+      const output = data.map((bill) => ({
          id: bill.id,
          description: bill.description,
          name: bill.name,
@@ -26,6 +34,6 @@ export default class ListBillUseCase {
             quantity: item.quantity,
          })),
       }));
-      return { bills: output };
+      return { bills: output, meta };
    }
 }

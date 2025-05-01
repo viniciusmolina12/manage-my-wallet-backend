@@ -5,9 +5,14 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import ListBillUseCase from '@core/usecases/bill/list/list.usecase';
-
+import { Filter } from '@core/domain/@shared/filter/filter';
+import { SearchBill } from '@core/domain/bill/repository/bill.repository';
 interface InputListBillControllerDto {
    userId: string;
+   page: number;
+   perPage: number;
+   order: string;
+   search: SearchBill;
 }
 
 interface OutputListBillControllerDto {
@@ -36,7 +41,13 @@ export default class ListBillController {
       input: InputControllerDto<InputListBillControllerDto>
    ): Promise<OutputControllerDto<OutputListBillControllerDto>> {
       try {
-         const bills = await this.listBillUseCase.execute(input.data);
+         const filter = new Filter(
+            input.data.page,
+            input.data.perPage,
+            input.data.order,
+            input.data.search
+         );
+         const bills = await this.listBillUseCase.execute(input.data, filter);
          const output = {
             bills: bills.bills.map((bill) => ({
                id: bill.id,
@@ -53,6 +64,12 @@ export default class ListBillController {
                   itemId: item.itemId,
                })),
             })),
+            meta: {
+               total: bills.meta.total,
+               hasNext: bills.meta.hasNext,
+               page: bills.meta.page ? bills.meta.page : 1,
+               perPage: bills.meta.perPage ? bills.meta.perPage : 10,
+            },
          };
          return response<OutputListBillControllerDto>(
             200,

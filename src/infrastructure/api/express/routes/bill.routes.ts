@@ -71,8 +71,24 @@ route.get('/api/bills', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const listBillUseCase = new ListBillUseCase(mongoDbBillRepository);
    const controller = new ListBillController(listBillUseCase);
+   const search = {
+      name: req.query.name as string,
+      vendorId: req.query.vendorId as string,
+      startDate: req.query.startDate
+         ? new Date(req.query.startDate as string)
+         : undefined,
+      endDate: req.query.endDate
+         ? new Date(req.query.endDate as string)
+         : undefined,
+   };
    const { code, ...data } = await controller.handle({
-      data: { userId: req.userId as string },
+      data: {
+         userId: req.userId as string,
+         page: parseInt(req.query.page as string),
+         perPage: parseInt(req.query.perPage as string),
+         order: req.query.order as string,
+         search,
+      },
    });
    res.status(code).send(data);
 });

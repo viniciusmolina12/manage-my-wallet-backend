@@ -6,6 +6,7 @@ import BillModel from '../../model/bill.model';
 import ItemModel from '../../model/item.model';
 import MongoDbBillRepository from './bill.repository';
 import Item from '@core/domain/item/entity/item.entity';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -136,49 +137,224 @@ describe('MongoDB Item Repository tests', () => {
       expect(billFound?.description).toBe(bill.description);
    });
 
-   it('should find all bills', async () => {
-      const sut = new MongoDbBillRepository();
-      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
-      const bill1 = new Category('any_hash_id', 'Category 1', 'Description 1');
-      await BillModel.create({
-         _id: bill1.id,
-         name: bill1.name,
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: bill1.description,
-         items: [billItem],
+   describe('findAllByUser', () => {
+      it('should find all bills by name', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         await BillModel.create({
+            _id: 'any_id_1',
+            name: 'any_name',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_1',
+            items: [billItem],
+         });
+
+         await BillModel.create({
+            _id: 'any_id_2',
+            name: 'other_name',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_2',
+            items: [billItem, billItem],
+         });
+         const filter = new Filter(1, 10, 'asc', {
+            name: 'any_name',
+         });
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.data).toHaveLength(1);
+         expect(billsFound.page).toBe(1);
+         expect(billsFound.perPage).toBe(10);
+         expect(billsFound.total).toBe(2);
+         expect(billsFound.hasNext).toBe(false);
+         expect(billsFound.data[0].id).toBe('any_id_1');
+         expect(billsFound.data[0].date).toEqual(
+            new Date('2021-01-01T00:00:00.000Z')
+         );
+         expect(billsFound.data[0].name).toBe('any_name');
       });
-      const bill2 = new Category(
-         'any_hash_id_2',
-         'Category 2',
-         'Description 2'
-      );
-      await BillModel.create({
-         _id: bill2.id,
-         name: bill2.name,
-         date: new Date('2021-01-02T00:00:00.000Z'),
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: bill2.description,
-         items: [billItem, billItem],
+
+      it('should find all bills by date', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         await BillModel.create({
+            _id: 'any_id_1',
+            name: 'any_name',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_1',
+            items: [billItem],
+         });
+
+         await BillModel.create({
+            _id: 'any_id_2',
+            name: 'any_name',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_2',
+            items: [billItem],
+         });
+
+         await BillModel.create({
+            _id: 'any_id_3',
+            name: 'should_not_be_found',
+            date: new Date('2021-01-03T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_2',
+            items: [billItem],
+         });
+
+         const filter = new Filter(1, 10, 'asc', {
+            startDate: new Date('2021-01-01T00:00:00.000Z'),
+            endDate: new Date('2021-01-02T00:00:00.000Z'),
+         });
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.data).toHaveLength(2);
+         expect(billsFound.data[0].id).toBe('any_id_1');
+         expect(billsFound.data[0].date).toEqual(
+            new Date('2021-01-01T00:00:00.000Z')
+         );
+         expect(billsFound.data[1].id).toBe('any_id_2');
+         expect(billsFound.data[1].date).toEqual(
+            new Date('2021-01-02T00:00:00.000Z')
+         );
       });
-      const billsFound = await sut.findAllByUser('any_user_id');
-      expect(billsFound).toHaveLength(2);
-      expect(billsFound[0].id).toBe(bill1.id);
-      expect(billsFound[0].date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
-      expect(billsFound[0].name).toBe(bill1.name);
-      expect(billsFound[0].items.length).toBe(1);
-      expect(billsFound[0].userId).toBe('any_user_id');
-      expect(billsFound[0].description).toBe(bill1.description);
-      expect(billsFound[0].vendorId).toBe('any_vendor_id');
-      expect(billsFound[1].id).toBe(bill2.id);
-      expect(billsFound[1].date).toEqual(new Date('2021-01-02T00:00:00.000Z'));
-      expect(billsFound[1].userId).toBe('any_user_id');
-      expect(billsFound[1].name).toBe(bill2.name);
-      expect(billsFound[1].description).toBe(bill2.description);
-      expect(billsFound[1].items.length).toBe(2);
-      expect(billsFound[1].vendorId).toBe('any_vendor_id');
+
+      it('should find all bills by vendorId', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         await BillModel.create({
+            _id: 'any_id_1',
+            name: 'any_name',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_1',
+            items: [billItem],
+         });
+
+         await BillModel.create({
+            _id: 'any_id_2',
+            name: 'any_name',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'other_vendor_id',
+            description: 'any_description_2',
+            items: [billItem],
+         });
+
+         const filter = new Filter(1, 10, 'asc', {
+            vendorId: 'any_vendor_id',
+         });
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.data).toHaveLength(1);
+         expect(billsFound.data[0].id).toBe('any_id_1');
+         expect(billsFound.data[0].vendorId).toBe('any_vendor_id');
+      });
+
+      it('should find all bills by userId', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         await BillModel.create({
+            _id: 'any_id_1',
+            name: 'any_name',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_1',
+            items: [billItem],
+         });
+
+         await BillModel.create({
+            _id: 'any_id_2',
+            name: 'any_name',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            userId: 'other_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'any_description_2',
+            items: [billItem],
+         });
+
+         const filter = new Filter(1, 10, 'asc', {});
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.data).toHaveLength(1);
+         expect(billsFound.data[0].id).toBe('any_id_1');
+         expect(billsFound.data[0].userId).toBe('any_user_id');
+      });
+
+      it('should return total of bills', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         for (let i = 0; i < 20; i++) {
+            await BillModel.create({
+               _id: `any_id_${i}`,
+               name: 'any_name',
+               date: new Date('2021-01-01T00:00:00.000Z'),
+               userId: 'any_user_id',
+               vendorId: 'any_vendor_id',
+               description: 'any_description_1',
+               items: [billItem],
+            });
+         }
+         const filter = new Filter(1, 10, 'asc', {});
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.total).toBe(20);
+         expect(billsFound.hasNext).toBe(true);
+      });
+
+      it('should return hasNext false when total is less than limit', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         for (let i = 0; i < 10; i++) {
+            await BillModel.create({
+               _id: `any_id_${i}`,
+               name: 'any_name',
+               date: new Date('2021-01-01T00:00:00.000Z'),
+               userId: 'any_user_id',
+               vendorId: 'any_vendor_id',
+               description: 'any_description_1',
+               items: [billItem],
+            });
+         }
+         const filter = new Filter(1, 10, 'asc', {});
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.hasNext).toBe(false);
+      });
+
+      it('should paginate bills', async () => {
+         const sut = new MongoDbBillRepository();
+         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+
+         for (let i = 0; i < 25; i++) {
+            await BillModel.create({
+               _id: `any_id_${i}`,
+               name: 'any_name',
+               date: new Date('2021-01-01T00:00:00.000Z'),
+               userId: 'any_user_id',
+               vendorId: 'any_vendor_id',
+               description: 'any_description_1',
+               items: [billItem],
+            });
+         }
+         const filter = new Filter(2, 10, 'asc', {});
+         const billsFound = await sut.findAllByUser('any_user_id', filter);
+         expect(billsFound.data).toHaveLength(10);
+         expect(billsFound.page).toBe(2);
+         expect(billsFound.perPage).toBe(10);
+         expect(billsFound.total).toBe(25);
+         expect(billsFound.hasNext).toBe(true);
+      });
    });
 
    it('should delete a bill', async () => {

@@ -215,77 +215,280 @@ describe('Bill e2e tests', () => {
       expect(response.body.data).toHaveProperty('updatedAt');
    });
 
-   it('should get all bills', async () => {
-      const bill1 = await BillModel.create({
-         _id: 'any_hash_id',
-         name: 'Bill 1',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: 'Description 1',
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
-      const bill2 = await BillModel.create({
-         _id: 'any_hash_id_2',
-         name: 'Bill 2',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: 'Description 2',
-         date: new Date('2021-01-02T00:00:00.000Z'),
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
-      const response = await request(app)
-         .get('/api/bills')
-         .set('Authorization', 'Bearer ' + token);
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('data');
-      expect(response.body).toHaveProperty(
-         'message',
-         'Bills listed successfully'
-      );
-      expect(response.body.data.bills).toHaveLength(2);
-      expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
-      expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
-      expect(response.body.data.bills[0]).toHaveProperty('date', '2021-01-01');
-      expect(response.body.data.bills[0]).toHaveProperty(
-         'vendorId',
-         bill1.vendorId
-      );
-      expect(response.body.data.bills[0]).toHaveProperty(
-         'description',
-         bill1.description
-      );
-      expect(response.body.data.bills[0]).toHaveProperty('createdAt');
-      expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
-      expect(response.body.data.bills[1]).toHaveProperty('id', bill2._id);
-      expect(response.body.data.bills[1]).toHaveProperty('name', bill2.name);
-      expect(response.body.data.bills[1]).toHaveProperty('date', '2021-01-02');
-      expect(response.body.data.bills[1]).toHaveProperty(
-         'vendorId',
-         bill2.vendorId
-      );
-      expect(response.body.data.bills[1]).toHaveProperty(
-         'description',
-         bill2.description
-      );
-      expect(response.body.data.bills[1]).toHaveProperty('createdAt');
-      expect(response.body.data.bills[1]).toHaveProperty('updatedAt');
-   });
+   describe('/api/bills GET', () => {
+      it('should get all bills by name', async () => {
+         const bill1 = await BillModel.create({
+            _id: 'any_hash_id',
+            name: 'Bill 1',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 1',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         const bill2 = await BillModel.create({
+            _id: 'any_hash_id_2',
+            name: 'Bill 2',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 2',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
 
+         const bill3 = await BillModel.create({
+            _id: 'any_hash_id_3',
+            name: 'other_bill',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 2',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               name: 'Bill 1',
+            });
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Bills listed successfully'
+         );
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'date',
+            '2021-01-01'
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'vendorId',
+            bill1.vendorId
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'description',
+            bill1.description
+         );
+         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
+         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
+      });
+
+      it('should get all bills by vendorId', async () => {
+         const bill1 = await BillModel.create({
+            _id: 'any_hash_id',
+            name: 'Bill 1',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 1',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         await BillModel.create({
+            _id: 'any_hash_id_2',
+            name: 'Bill 2',
+            userId: 'any_user_id',
+            vendorId: 'other_vendor_id',
+            description: 'Description 2',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               vendorId: 'any_vendor_id',
+            });
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Bills listed successfully'
+         );
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'date',
+            '2021-01-01'
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'vendorId',
+            bill1.vendorId
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'description',
+            bill1.description
+         );
+         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
+         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
+      });
+
+      it('should get all bills by startDate', async () => {
+         const bill1 = await BillModel.create({
+            _id: 'any_hash_id',
+            name: 'Bill 1',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 1',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         await BillModel.create({
+            _id: 'any_hash_id_2',
+            name: 'Bill 2',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 2',
+            date: new Date('2020-01-02T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               startDate: '2021-01-01',
+            });
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Bills listed successfully'
+         );
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'date',
+            '2021-01-01'
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'vendorId',
+            bill1.vendorId
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'description',
+            bill1.description
+         );
+         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
+         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
+      });
+
+      it('should get all bills by endDate', async () => {
+         const bill1 = await BillModel.create({
+            _id: 'any_hash_id',
+            name: 'Bill 1',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 1',
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         await BillModel.create({
+            _id: 'any_hash_id_2',
+            name: 'Bill 2',
+            userId: 'any_user_id',
+            vendorId: 'any_vendor_id',
+            description: 'Description 2',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            items: [
+               {
+                  _id: 'any_item_id',
+                  quantity: 10,
+                  price: 100,
+                  itemId: 'any_item_id',
+               },
+            ],
+         });
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               endDate: '2021-01-01',
+            });
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Bills listed successfully'
+         );
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'date',
+            '2021-01-01'
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'vendorId',
+            bill1.vendorId
+         );
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'description',
+            bill1.description
+         );
+         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
+         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
+      });
+   });
    it('should delete a bill', async () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',

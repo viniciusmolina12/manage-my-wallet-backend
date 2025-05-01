@@ -19,4 +19,10 @@ export interface OutputListBillDto {
          quantity: number;
       }[];
    }[];
+   meta: {
+      total: number;
+      hasNext: boolean;
+      page: number;
+      perPage: number;
+   };
 }
