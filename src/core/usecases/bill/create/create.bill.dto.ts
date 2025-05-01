@@ -3,6 +3,7 @@ export interface InputCreateBillDto {
    userId: string;
    description?: string;
    vendorId: string;
+   date: Date;
    items: {
       itemId: string;
       price: number;
@@ -16,6 +17,7 @@ export interface OutputCreateBillDto {
    description?: string;
    vendorId: string;
    name: string;
+   date: Date;
    total: number;
    createdAt: Date;
    updatedAt: Date;

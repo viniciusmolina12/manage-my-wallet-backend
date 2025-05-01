@@ -12,6 +12,7 @@ interface InputUpdateBillControllerDto {
    userId: string;
    description?: string;
    vendorId: string;
+   date: Date;
    items: {
       id?: string;
       itemId: string;
@@ -25,6 +26,7 @@ interface OutputUpdateBillControllerDto {
    description?: string;
    total: number;
    vendorId: string;
+   date: string;
    createdAt: Date;
    updatedAt: Date;
    items: {
@@ -48,6 +50,7 @@ export default class UpdateBillController {
             description: bill.description,
             total: bill.total,
             vendorId: bill.vendorId,
+            date: bill.date.toISOString().split('T')[0],
             createdAt: bill.createdAt,
             updatedAt: bill.updatedAt,
             items: bill.items.map((item) => ({

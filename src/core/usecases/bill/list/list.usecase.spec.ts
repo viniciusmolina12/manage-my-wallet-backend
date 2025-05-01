@@ -11,6 +11,7 @@ describe('List bill usecase', () => {
             description: 'any_description',
             total: 56,
             userId: 'any_user_id',
+            date: new Date('2021-01-01T00:00:00.000Z'),
             createdAt: new Date(),
             updatedAt: new Date(),
             items: [
@@ -35,6 +36,7 @@ describe('List bill usecase', () => {
             description: 'any_other_description',
             total: 20,
             userId: 'any_user_id',
+            date: new Date('2021-01-01T00:00:00.000Z'),
             createdAt: new Date(),
             updatedAt: new Date(),
             items: [
@@ -55,6 +57,9 @@ describe('List bill usecase', () => {
       expect(response.bills[0].description).toBe('any_description');
       expect(response.bills[0].total).toBe(56);
       expect(response.bills[0].vendorId).toBe('any_vendor_id');
+      expect(response.bills[0].date).toEqual(
+         new Date('2021-01-01T00:00:00.000Z')
+      );
       expect(response.bills[0].items.length).toBe(2);
       expect(response.bills[0].createdAt).toBeDefined();
       expect(response.bills[0].updatedAt).toBeDefined();
@@ -63,6 +68,9 @@ describe('List bill usecase', () => {
       expect(response.bills[1].description).toBe('any_other_description');
       expect(response.bills[1].total).toBe(20);
       expect(response.bills[1].vendorId).toBe('any_vendor_id');
+      expect(response.bills[1].date).toEqual(
+         new Date('2021-01-01T00:00:00.000Z')
+      );
       expect(response.bills[1].items.length).toBe(1);
       expect(response.bills[1].createdAt).toBeDefined();
       expect(response.bills[1].updatedAt).toBeDefined();

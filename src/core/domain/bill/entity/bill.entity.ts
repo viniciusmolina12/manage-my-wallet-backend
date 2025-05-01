@@ -6,12 +6,14 @@ export default class Bill extends Entity {
    public id: string;
    public name: string;
    public items: BillItem[];
+   public date: Date;
    public description?: string;
    public userId: string;
    public vendorId: string;
    constructor(
       id: string,
       name: string,
+      date: Date,
       items: BillItem[],
       vendorId: string,
       userId: string,
@@ -20,6 +22,7 @@ export default class Bill extends Entity {
       super();
       this.id = id;
       this.name = name;
+      this.date = new Date(date);
       this.items = items;
       this.vendorId = vendorId;
       this.description = description;
@@ -37,6 +40,12 @@ export default class Bill extends Entity {
       if (!this.name) {
          this.notification.add({
             message: 'Name is required',
+            source: 'bill',
+         });
+      }
+      if (!this.date) {
+         this.notification.add({
+            message: 'Date is required',
             source: 'bill',
          });
       }
@@ -68,6 +77,11 @@ export default class Bill extends Entity {
 
    changeName(name: string): void {
       this.name = name;
+      this.validate();
+   }
+
+   changeDate(date: Date): void {
+      this.date = date;
       this.validate();
    }
 

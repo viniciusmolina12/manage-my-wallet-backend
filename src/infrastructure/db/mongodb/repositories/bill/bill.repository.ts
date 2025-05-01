@@ -8,6 +8,7 @@ export default class MongoDbBillRepository implements BillRepository {
       await BillModel.create({
          _id: entity.id,
          name: entity.name,
+         date: entity.date,
          userId: entity.userId,
          vendorId: entity.vendorId,
          items: entity.items,
@@ -19,6 +20,7 @@ export default class MongoDbBillRepository implements BillRepository {
          { _id: entity.id, userId: entity.userId },
          {
             name: entity.name,
+            date: entity.date,
             items: entity.items,
             description: entity.description,
             vendorId: entity.vendorId,
@@ -28,39 +30,47 @@ export default class MongoDbBillRepository implements BillRepository {
    }
 
    async find(id: string): Promise<Bill | null> {
-      const bill = await BillModel.findOne({ _id: id }).populate(
+      const billFound = await BillModel.findOne({ _id: id }).populate(
          'items.itemId',
          'vendorId'
       );
-      if (!bill) return null;
-      const billItems = bill.items.map(
+      if (!billFound) return null;
+      const billItems = billFound.items.map(
          (item) => new BillItem(item._id, item._id, item.price, item.quantity)
       );
-      return new Bill(
-         bill._id.toString(),
-         bill.name,
+      const bill = new Bill(
+         billFound._id.toString(),
+         billFound.name,
+         billFound.date,
          billItems,
-         bill.vendorId,
-         bill.userId,
-         bill?.description
+         billFound.vendorId,
+         billFound.userId,
+         billFound?.description
       );
+      bill.createdAt = billFound.createdAt;
+      bill.updatedAt = billFound.updatedAt;
+      return bill;
    }
 
    async findAll(): Promise<Bill[]> {
       const result = await BillModel.find();
-      return result.map((bill) => {
-         const billItems = bill.items.map(
+      return result.map((b) => {
+         const billItems = b.items.map(
             (item) =>
                new BillItem(item._id, item._id, item.price, item.quantity)
          );
-         return new Bill(
-            bill._id.toString(),
-            bill.name,
+         const bill = new Bill(
+            b._id.toString(),
+            b.name,
+            b.date,
             billItems,
-            bill.vendorId,
-            bill.userId,
-            bill?.description
+            b.vendorId,
+            b.userId,
+            b?.description
          );
+         bill.createdAt = b.createdAt;
+         bill.updatedAt = b.updatedAt;
+         return bill;
       });
    }
 
@@ -68,38 +78,46 @@ export default class MongoDbBillRepository implements BillRepository {
       await BillModel.findByIdAndDelete({ _id: id });
    }
    async findByUser(id: string, userId: string): Promise<Bill | null> {
-      const bill = await BillModel.findOne({ _id: id, userId }).populate(
+      const billFound = await BillModel.findOne({ _id: id, userId }).populate(
          'items.itemId'
       );
-      if (!bill) return null;
-      const billItems = bill.items.map(
+      if (!billFound) return null;
+      const billItems = billFound.items.map(
          (item) => new BillItem(item._id, item._id, item.price, item.quantity)
       );
-      return new Bill(
-         bill._id.toString(),
-         bill.name,
+      const bill = new Bill(
+         billFound._id.toString(),
+         billFound.name,
+         billFound.date,
          billItems,
-         bill.vendorId,
-         bill.userId,
-         bill?.description
+         billFound.vendorId,
+         billFound.userId,
+         billFound?.description
       );
+      bill.createdAt = billFound.createdAt;
+      bill.updatedAt = billFound.updatedAt;
+      return bill;
    }
 
    async findAllByUser(userId: string): Promise<Bill[]> {
       const result = await BillModel.find({ userId });
-      return result.map((bill) => {
-         const billItems = bill.items.map(
+      return result.map((b) => {
+         const billItems = b.items.map(
             (item) =>
                new BillItem(item._id, item._id, item.price, item.quantity)
          );
-         return new Bill(
-            bill._id.toString(),
-            bill.name,
+         const bill = new Bill(
+            b._id.toString(),
+            b.name,
+            b.date,
             billItems,
-            bill.vendorId,
-            bill.userId,
-            bill?.description
+            b.vendorId,
+            b.userId,
+            b?.description
          );
+         bill.createdAt = b.createdAt;
+         bill.updatedAt = b.updatedAt;
+         return bill;
       });
    }
 

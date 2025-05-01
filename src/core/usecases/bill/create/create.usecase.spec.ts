@@ -33,6 +33,7 @@ describe('Create bill usecase', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          name: 'any_name',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [{ itemId: 'any_item_id', price: 10, quantity: 2 }],
       };
    });
@@ -43,6 +44,7 @@ describe('Create bill usecase', () => {
       expect(bill.name).toBe('any_name');
       expect(bill.total).toBe(20);
       expect(bill.description).toBe('any_description');
+      expect(bill.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(bill.items.length).toBe(1);
       expect(bill.items[0].itemId).toBe('any_item_id');
       expect(bill.items[0].price).toBe(10);

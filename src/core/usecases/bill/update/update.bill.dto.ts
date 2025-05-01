@@ -4,6 +4,7 @@ export interface InputUpdateBillDto {
    userId: string;
    description?: string;
    vendorId: string;
+   date: Date;
    items: {
       id?: string;
       itemId: string;
@@ -17,6 +18,7 @@ export interface OutputUpdateBillDto {
    description?: string;
    name: string;
    vendorId: string;
+   date: Date;
    total: number;
    createdAt: Date;
    updatedAt: Date;

@@ -25,6 +25,7 @@ describe('MongoDB Item Repository tests', () => {
       const bill = new Bill(
          'any_id',
          'any_name',
+         new Date('2021-01-01T00:00:00.000Z'),
          [billItem],
          'any_vendor_id',
          'any_user_id'
@@ -35,6 +36,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billCreated?._id).toBe(bill.id);
       expect(billCreated?.name).toBe(bill.name);
       expect(billCreated?.userId).toBe(bill.userId);
+      expect(billCreated?.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(billCreated?.description).toBeUndefined();
       expect(billCreated?.items).toHaveLength(1);
    });
@@ -44,6 +46,7 @@ describe('MongoDB Item Repository tests', () => {
       const oldBill = new Bill(
          'any_id',
          'any_name',
+         new Date('2021-01-01T00:00:00.000Z'),
          [oldBillItem],
          'any_vendor_id',
          'any_user_id',
@@ -52,6 +55,7 @@ describe('MongoDB Item Repository tests', () => {
       await BillModel.create({
          _id: oldBill.id,
          name: oldBill.name,
+         date: oldBill.date,
          userId: oldBill.userId,
          vendorId: oldBill.vendorId,
          description: oldBill.description,
@@ -62,6 +66,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billCreated).toBeTruthy();
       expect(billCreated?._id).toBe(oldBill.id);
       expect(billCreated?.name).toBe(oldBill.name);
+      expect(billCreated?.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(billCreated?.description).toBe(oldBill.description);
       expect(billCreated?.items).toHaveLength(1);
 
@@ -69,6 +74,7 @@ describe('MongoDB Item Repository tests', () => {
       const updateBill = new Bill(
          'any_id',
          'any_name_2',
+         new Date('2021-01-02T00:00:00.000Z'),
          [updateBillItem, updateBillItem],
          'any_vendor_id',
          'any_user_id',
@@ -78,6 +84,7 @@ describe('MongoDB Item Repository tests', () => {
       const billUpdated = await BillModel.findOne({ _id: oldBill.id });
       expect(billUpdated?._id).toBe(updateBill.id);
       expect(billUpdated?.name).toBe(updateBill.name);
+      expect(billUpdated?.date).toEqual(new Date('2021-01-02T00:00:00.000Z'));
       expect(billUpdated?.description).toBe(updateBill.description);
       expect(billUpdated?.userId).toBe(updateBill.userId);
       expect(billUpdated?.items).toHaveLength(2);
@@ -104,6 +111,7 @@ describe('MongoDB Item Repository tests', () => {
       const bill = new Bill(
          'any_id',
          'any_name',
+         new Date('2021-01-01T00:00:00.000Z'),
          [billItem],
          'any_vendor_id',
          'any_user_id',
@@ -113,6 +121,7 @@ describe('MongoDB Item Repository tests', () => {
       await BillModel.create({
          _id: bill.id,
          name: bill.name,
+         date: bill.date,
          userId: bill.userId,
          vendorId: bill.vendorId,
          description: bill.description,
@@ -123,6 +132,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billFound?.id).toBe(bill.id);
       expect(billFound?.name).toBe(bill.name);
       expect(billFound?.userId).toBe(bill.userId);
+      expect(billFound?.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(billFound?.description).toBe(bill.description);
    });
 
@@ -133,6 +143,7 @@ describe('MongoDB Item Repository tests', () => {
       await BillModel.create({
          _id: bill1.id,
          name: bill1.name,
+         date: new Date('2021-01-01T00:00:00.000Z'),
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill1.description,
@@ -146,6 +157,7 @@ describe('MongoDB Item Repository tests', () => {
       await BillModel.create({
          _id: bill2.id,
          name: bill2.name,
+         date: new Date('2021-01-02T00:00:00.000Z'),
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill2.description,
@@ -154,12 +166,14 @@ describe('MongoDB Item Repository tests', () => {
       const billsFound = await sut.findAllByUser('any_user_id');
       expect(billsFound).toHaveLength(2);
       expect(billsFound[0].id).toBe(bill1.id);
+      expect(billsFound[0].date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(billsFound[0].name).toBe(bill1.name);
       expect(billsFound[0].items.length).toBe(1);
       expect(billsFound[0].userId).toBe('any_user_id');
       expect(billsFound[0].description).toBe(bill1.description);
       expect(billsFound[0].vendorId).toBe('any_vendor_id');
       expect(billsFound[1].id).toBe(bill2.id);
+      expect(billsFound[1].date).toEqual(new Date('2021-01-02T00:00:00.000Z'));
       expect(billsFound[1].userId).toBe('any_user_id');
       expect(billsFound[1].name).toBe(bill2.name);
       expect(billsFound[1].description).toBe(bill2.description);
@@ -174,6 +188,7 @@ describe('MongoDB Item Repository tests', () => {
       await BillModel.create({
          _id: bill.id,
          name: bill.name,
+         date: new Date('2021-01-01T00:00:00.000Z'),
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: bill.description,

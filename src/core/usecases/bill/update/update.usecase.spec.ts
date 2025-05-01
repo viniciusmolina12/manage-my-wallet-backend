@@ -14,6 +14,7 @@ describe('Update bill usecase', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'any_other_description',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [
             {
                id: 'any_other_id',
@@ -59,6 +60,7 @@ describe('Update bill usecase', () => {
       expect(bill.name).toBe('any_name_2');
       expect(bill.description).toBe('any_other_description');
       expect(bill.total).toBe(56);
+      expect(bill.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(bill.items.length).toBe(2);
       expect(bill.items[0].itemId).toBe('any_other_item_id');
       expect(bill.items[0].price).toBe(10);

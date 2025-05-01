@@ -37,6 +37,7 @@ describe('Bill e2e tests', () => {
             name: 'any_bill_name',
             description: 'any_bill_description',
             vendorId: 'any_vendor_id',
+            date: new Date('2021-01-01T00:00:00.000Z'),
             items: [
                {
                   quantity: 10,
@@ -57,6 +58,7 @@ describe('Bill e2e tests', () => {
          'description',
          'any_bill_description'
       );
+      expect(response.body.data).toHaveProperty('date', '2021-01-01');
       expect(response.body.data).toHaveProperty('items');
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
@@ -89,6 +91,7 @@ describe('Bill e2e tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'Description 1',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [
             {
                _id: 'any_item_id',
@@ -106,6 +109,7 @@ describe('Bill e2e tests', () => {
             name: 'any_bill_name',
             description: 'any_bill_description',
             vendorId: 'any_other_vendor_id',
+            date: new Date('2021-01-02T00:00:00.000Z'),
             items: [
                {
                   id: 'any_item_id',
@@ -126,6 +130,7 @@ describe('Bill e2e tests', () => {
          'description',
          'any_bill_description'
       );
+      expect(response.body.data).toHaveProperty('date', '2021-01-02');
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
    });
@@ -152,6 +157,7 @@ describe('Bill e2e tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'Description 1',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [
             {
                _id: 'any_item_id',
@@ -182,6 +188,7 @@ describe('Bill e2e tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'Description 1',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [
             {
                _id: 'any_item_id',
@@ -202,6 +209,7 @@ describe('Bill e2e tests', () => {
       );
       expect(response.body.data).toHaveProperty('id', bill._id);
       expect(response.body.data).toHaveProperty('name', 'Bill 1');
+      expect(response.body.data).toHaveProperty('date', '2021-01-01');
       expect(response.body.data).toHaveProperty('description', 'Description 1');
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
@@ -214,6 +222,7 @@ describe('Bill e2e tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'Description 1',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          items: [
             {
                _id: 'any_item_id',
@@ -229,6 +238,7 @@ describe('Bill e2e tests', () => {
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
          description: 'Description 2',
+         date: new Date('2021-01-02T00:00:00.000Z'),
          items: [
             {
                _id: 'any_item_id',
@@ -250,6 +260,7 @@ describe('Bill e2e tests', () => {
       expect(response.body.data.bills).toHaveLength(2);
       expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
       expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+      expect(response.body.data.bills[0]).toHaveProperty('date', '2021-01-01');
       expect(response.body.data.bills[0]).toHaveProperty(
          'vendorId',
          bill1.vendorId
@@ -262,6 +273,7 @@ describe('Bill e2e tests', () => {
       expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       expect(response.body.data.bills[1]).toHaveProperty('id', bill2._id);
       expect(response.body.data.bills[1]).toHaveProperty('name', bill2.name);
+      expect(response.body.data.bills[1]).toHaveProperty('date', '2021-01-02');
       expect(response.body.data.bills[1]).toHaveProperty(
          'vendorId',
          bill2.vendorId
@@ -274,11 +286,12 @@ describe('Bill e2e tests', () => {
       expect(response.body.data.bills[1]).toHaveProperty('updatedAt');
    });
 
-   it('should delete an bill', async () => {
+   it('should delete a bill', async () => {
       const bill = await BillModel.create({
          _id: 'any_hash_id',
          userId: 'any_user_id',
          vendorId: 'any_vendor_id',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          name: 'Bill 1',
          description: 'Description 1',
          items: [

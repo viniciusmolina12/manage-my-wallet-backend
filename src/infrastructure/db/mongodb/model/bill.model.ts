@@ -14,6 +14,7 @@ const BillSchema = new Schema({
    name: { type: String, required: true },
    vendorId: { type: String, ref: 'Vendor', required: true },
    description: { type: String, required: false },
+   date: { type: Date, required: true },
    items: [
       {
          _id: { type: String, required: true },

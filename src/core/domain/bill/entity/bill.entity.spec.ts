@@ -12,6 +12,7 @@ describe('Bill entity unit tests', () => {
          const bill = new Bill(
             '',
             'Bill 1',
+            new Date(),
             [makeBillItem()],
             'vendorId',
             'any_user_id'
@@ -22,13 +23,27 @@ describe('Bill entity unit tests', () => {
    it('should throw a error if name is empty ', () => {
       const item = new BillItem('1', '1', 100, 2);
       expect(() => {
-         const bill = new Bill('1', '', [item], 'vendorId', 'any_user_id');
+         const bill = new Bill(
+            '1',
+            '',
+            new Date(),
+            [item],
+            'vendorId',
+            'any_user_id'
+         );
       }).toThrow(new EntityError('bill: Name is required, '));
    });
 
    it('should throw a error if items is empty ', () => {
       expect(() => {
-         const bill = new Bill('1', 'Bill 1', [], 'vendorId', 'any_user_id');
+         const bill = new Bill(
+            '1',
+            'Bill 1',
+            new Date(),
+            [],
+            'vendorId',
+            'any_user_id'
+         );
       }).toThrow(new EntityError('bill: Items is required, '));
    });
 
@@ -37,6 +52,7 @@ describe('Bill entity unit tests', () => {
          const bill = new Bill(
             '1',
             'Bill 1',
+            new Date(),
             [makeBillItem()],
             '',
             'any_user_id'
@@ -48,6 +64,7 @@ describe('Bill entity unit tests', () => {
       const bill = new Bill(
          '1',
          'Bill 1',
+         new Date(),
          [makeBillItem()],
          'vendorId',
          'any_user_id'
@@ -61,6 +78,7 @@ describe('Bill entity unit tests', () => {
       const bill = new Bill(
          '1',
          'Bill 1',
+         new Date(),
          [makeBillItem()],
          'vendorId',
          'any_user_id',
@@ -75,6 +93,7 @@ describe('Bill entity unit tests', () => {
       const bill1 = new Bill(
          '1',
          'Bill 1',
+         new Date(),
          [makeBillItem(), makeBillItem()],
          'vendorId',
          'any_user_id',
@@ -84,11 +103,26 @@ describe('Bill entity unit tests', () => {
       const bill2 = new Bill(
          '1',
          'Bill 1',
+         new Date(),
          [makeBillItem()],
          'vendorId',
          'any_user_id',
          'Description'
       );
       expect(bill2.total).toBe(200);
+   });
+
+   it('should change date', () => {
+      const date = new Date('2021-01-01T00:00:00.000Z');
+      const bill = new Bill(
+         '1',
+         'Bill 1',
+         new Date(),
+         [makeBillItem()],
+         'vendorId',
+         'any_user_id'
+      );
+      bill.changeDate(date);
+      expect(bill.date).toEqual(date);
    });
 });

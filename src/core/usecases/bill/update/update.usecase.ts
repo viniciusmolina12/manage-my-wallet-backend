@@ -44,6 +44,7 @@ export default class UpdateBillUseCase {
       const bill = new Bill(
          input.id,
          input.name,
+         input.date,
          billItems,
          input.vendorId,
          input.userId,
@@ -56,6 +57,7 @@ export default class UpdateBillUseCase {
          description: bill.description,
          vendorId: bill.vendorId,
          total: bill.total,
+         date: bill.date,
          createdAt: billExists.createdAt,
          updatedAt: bill.updatedAt,
          items: bill.items.map((item: BillItem) => ({

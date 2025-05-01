@@ -9,6 +9,7 @@ export default class CreateBillUseCaseMapper {
          userId: entity.userId,
          vendorId: entity.vendorId,
          name: entity.name,
+         date: entity.date,
          description: entity.description,
          total: entity.total,
          createdAt: entity.createdAt,

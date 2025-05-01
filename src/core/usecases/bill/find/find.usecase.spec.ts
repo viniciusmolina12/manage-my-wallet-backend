@@ -9,6 +9,7 @@ describe('Find bill usecase', () => {
          userId: 'any_user_id',
          total: 56,
          vendorId: 'any_vendor_id',
+         date: new Date('2021-01-01T00:00:00.000Z'),
          createdAt: new Date(),
          updatedAt: new Date(),
          items: [
@@ -33,6 +34,7 @@ describe('Find bill usecase', () => {
       expect(bill.description).toBe('any_other_description');
       expect(bill.total).toBe(56);
       expect(bill.vendorId).toBe('any_vendor_id');
+      expect(bill.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(bill.items.length).toBe(2);
       expect(bill.createdAt).toBeDefined();
       expect(bill.updatedAt).toBeDefined();

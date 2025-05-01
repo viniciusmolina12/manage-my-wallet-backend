@@ -37,12 +37,14 @@ export default class CreateBillUseCase {
       const bill = new Bill(
          uuid(),
          input.name,
+         input.date,
          billItems,
          input.vendorId,
          input.userId,
          input.description
       );
       await this.billRepository.create(bill);
+      console.log('bill aquiiii', bill);
       return CreateBillUseCaseMapper.toOutput(bill);
    }
 

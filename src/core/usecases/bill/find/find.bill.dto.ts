@@ -11,6 +11,7 @@ export interface OutputFindBillDto {
    total: number;
    createdAt: Date;
    updatedAt: Date;
+   date: Date;
    items: {
       id: string;
       itemId: string;

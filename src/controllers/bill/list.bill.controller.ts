@@ -16,6 +16,7 @@ interface OutputListBillControllerDto {
       name: string;
       description?: string;
       total: number;
+      date: string;
       vendorId: string;
       createdAt: Date;
       updatedAt: Date;
@@ -43,6 +44,7 @@ export default class ListBillController {
                description: bill.description,
                total: bill.total,
                vendorId: bill.vendorId,
+               date: bill.date.toISOString().split('T')[0],
                createdAt: bill.createdAt,
                updatedAt: bill.updatedAt,
                items: bill.items.map((item) => ({
