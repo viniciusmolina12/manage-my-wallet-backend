@@ -17,6 +17,8 @@ interface OutputFindBillControllerDto {
    description?: string;
    total: number;
    vendorId: string;
+   createdAt: Date;
+   updatedAt: Date;
    items: {
       quantity: number;
       price: number;
@@ -40,6 +42,8 @@ export default class FindBillController {
             description: bill.description,
             total: bill.total,
             vendorId: bill.vendorId,
+            createdAt: bill.createdAt,
+            updatedAt: bill.updatedAt,
             items: bill.items.map((item) => ({
                quantity: item.quantity,
                price: item.price,

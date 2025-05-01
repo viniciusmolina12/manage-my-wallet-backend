@@ -23,6 +23,8 @@ interface OutputCreateBillControllerDto {
    name: string;
    description?: string;
    total: number;
+   createdAt: Date;
+   updatedAt: Date;
    items: {
       quantity: number;
       price: number;
@@ -44,6 +46,8 @@ export default class CreateBillController {
             name: bill.name,
             description: bill.description,
             total: bill.total,
+            createdAt: bill.createdAt,
+            updatedAt: bill.updatedAt,
             items: bill.items.map((item) => ({
                quantity: item.quantity,
                price: item.price,

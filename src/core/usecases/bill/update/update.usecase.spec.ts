@@ -41,6 +41,8 @@ describe('Update bill usecase', () => {
       name: 'any_name',
       vendorId: 'any_vendor_id',
       description: 'any_description',
+      createdAt: new Date(),
+      updatedAt: new Date(),
       items: [
          {
             id: 'any_id',
@@ -64,6 +66,8 @@ describe('Update bill usecase', () => {
       expect(bill.items[1].itemId).toBe('any_other_item_id_2');
       expect(bill.items[1].price).toBe(12);
       expect(bill.items[1].quantity).toBe(3);
+      expect(bill.createdAt).toBeDefined();
+      expect(bill.updatedAt).toBeDefined();
    });
 
    it('should throw an error if name is empty', async () => {

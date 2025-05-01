@@ -9,6 +9,8 @@ describe('Find bill usecase', () => {
          userId: 'any_user_id',
          total: 56,
          vendorId: 'any_vendor_id',
+         createdAt: new Date(),
+         updatedAt: new Date(),
          items: [
             {
                id: 'any_other_id',
@@ -32,6 +34,8 @@ describe('Find bill usecase', () => {
       expect(bill.total).toBe(56);
       expect(bill.vendorId).toBe('any_vendor_id');
       expect(bill.items.length).toBe(2);
+      expect(bill.createdAt).toBeDefined();
+      expect(bill.updatedAt).toBeDefined();
    });
 
    it('should throw an error if bill not found', async () => {

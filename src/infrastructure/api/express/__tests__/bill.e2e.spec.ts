@@ -58,6 +58,8 @@ describe('Bill e2e tests', () => {
          'any_bill_description'
       );
       expect(response.body.data).toHaveProperty('items');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should return an error when creating an bill with invalid data', async () => {
@@ -124,6 +126,8 @@ describe('Bill e2e tests', () => {
          'description',
          'any_bill_description'
       );
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should return an error when try update a non-existent bill', async () => {
@@ -199,6 +203,8 @@ describe('Bill e2e tests', () => {
       expect(response.body.data).toHaveProperty('id', bill._id);
       expect(response.body.data).toHaveProperty('name', 'Bill 1');
       expect(response.body.data).toHaveProperty('description', 'Description 1');
+      expect(response.body.data).toHaveProperty('createdAt');
+      expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    it('should get all bills', async () => {
@@ -252,6 +258,8 @@ describe('Bill e2e tests', () => {
          'description',
          bill1.description
       );
+      expect(response.body.data.bills[0]).toHaveProperty('createdAt');
+      expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       expect(response.body.data.bills[1]).toHaveProperty('id', bill2._id);
       expect(response.body.data.bills[1]).toHaveProperty('name', bill2.name);
       expect(response.body.data.bills[1]).toHaveProperty(
@@ -262,6 +270,8 @@ describe('Bill e2e tests', () => {
          'description',
          bill2.description
       );
+      expect(response.body.data.bills[1]).toHaveProperty('createdAt');
+      expect(response.body.data.bills[1]).toHaveProperty('updatedAt');
    });
 
    it('should delete an bill', async () => {

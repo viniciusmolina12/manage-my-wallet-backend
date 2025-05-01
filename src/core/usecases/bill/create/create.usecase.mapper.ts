@@ -11,6 +11,8 @@ export default class CreateBillUseCaseMapper {
          name: entity.name,
          description: entity.description,
          total: entity.total,
+         createdAt: entity.createdAt,
+         updatedAt: entity.updatedAt,
          items: entity.items.map((item: BillItem) => ({
             id: item.id,
             itemId: item.itemId,

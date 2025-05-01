@@ -18,6 +18,8 @@ export default class FindBillUseCase {
          description: bill.description,
          vendorId: bill.vendorId,
          total: bill.total,
+         createdAt: bill.createdAt,
+         updatedAt: bill.updatedAt,
          items: bill.items.map((item: BillItem) => ({
             id: item.id,
             itemId: item.itemId,

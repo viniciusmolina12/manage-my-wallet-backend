@@ -47,6 +47,8 @@ describe('Create bill usecase', () => {
       expect(bill.items[0].itemId).toBe('any_item_id');
       expect(bill.items[0].price).toBe(10);
       expect(bill.items[0].quantity).toBe(2);
+      expect(bill.createdAt).toBeDefined();
+      expect(bill.updatedAt).toBeDefined();
    });
 
    it('should throw an error if name is empty', async () => {
