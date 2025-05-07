@@ -120,6 +120,13 @@ export default class MongoDbBillRepository implements BillRepository {
                $lte: filter.search.endDate,
             },
          }),
+         ...(filter.search.startDate &&
+            filter.search.endDate && {
+               date: {
+                  $gte: filter.search.startDate,
+                  $lte: filter.search.endDate,
+               },
+            }),
          ...(filter.search.vendorId && {
             vendorId: filter.search.vendorId,
          }),
