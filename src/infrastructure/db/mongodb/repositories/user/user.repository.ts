@@ -4,12 +4,14 @@ import {
    UserWithResetToken,
 } from '@core/domain/user/repository/user.repository';
 import UserModel from '../../model/user.model';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+
 export default class MongoDbUserRepository implements UserRepository {
    async create(entity: User): Promise<void> {
       await UserModel.create({
          _id: entity.id,
          name: entity.name,
-         email: entity.email,
+         email: entity.email.toString(),
          password: entity.password,
       });
    }
@@ -18,7 +20,7 @@ export default class MongoDbUserRepository implements UserRepository {
       const a = await UserModel.findOneAndUpdate(
          { _id: entity.id },
          {
-            email: entity.email,
+            email: entity.email.toString(),
             password: entity.password,
             name: entity.name,
             updatedAt: new Date(),
@@ -29,7 +31,12 @@ export default class MongoDbUserRepository implements UserRepository {
    async find(id: string): Promise<User | null> {
       const user = await UserModel.findOne({ _id: id });
       if (!user) return null;
-      const userFound = new User(user.id, user.name, user.email, user.password);
+      const userFound = new User(
+         user.id,
+         user.name,
+         new Email(user.email),
+         user.password
+      );
       userFound.createdAt = user.createdAt;
       userFound.updatedAt = user.updatedAt;
       return userFound;
@@ -59,7 +66,7 @@ export default class MongoDbUserRepository implements UserRepository {
          userFound.resetPassword?.expiresIn as Date,
          userFound.id,
          userFound.name,
-         userFound.email,
+         new Email(userFound.email),
          userFound.password
       );
    }
@@ -84,7 +91,7 @@ export default class MongoDbUserRepository implements UserRepository {
          const userFound = new User(
             user.id,
             user.name,
-            user.email,
+            new Email(user.email),
             user.password
          );
          userFound.createdAt = user.createdAt;

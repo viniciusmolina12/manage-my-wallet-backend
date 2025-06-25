@@ -1,5 +1,6 @@
 import { RepositoryInterface } from '../../@shared/repository.interface';
 import User from '../entity/user.entity';
+import { Email } from '../../../domain/@shared/value-object/email.vo';
 
 export class UserWithResetToken extends User {
    constructor(
@@ -7,7 +8,7 @@ export class UserWithResetToken extends User {
       public expiresIn: Date,
       id: string,
       name: string,
-      email: string,
+      email: Email,
       password: string
    ) {
       super(id, name, email, password);

@@ -31,17 +31,21 @@ export default class RecoverPasswordUserUseCase {
          new Date().setHours(new Date().getHours() + 1)
       );
       const token = this.jwtGenerator.generateJwt(
-         { name: user.name, email: user.email, type: 'recover-password' },
+         {
+            name: user.name,
+            email: user.email.toString(),
+            type: 'recover-password',
+         },
          ENV.SECRET_KEY,
          '1h'
       );
       await this.userRepository.createRecoveryData(
-         user.email,
+         user.email.toString(),
          token,
          expiresIn
       );
       await this.mailer.sendMail({
-         to: user.email,
+         to: user.email.toString(),
          from: ENV.FROM_EMAIL,
          subject: 'Password recovery',
          content: `<p>Hello ${user.name},</p><p><a href="${ENV.RESET_PASSWORD_URL}?token=${token}">Click here to reset your password</a></p>`,
@@ -51,11 +55,13 @@ export default class RecoverPasswordUserUseCase {
          token,
          expiresIn
       );
-      const censoredEmail = user.email.replace(
-         /^(.)(.*)(?=@)/,
-         (match, firstChar, hiddenPart) =>
-            firstChar + '*'.repeat(hiddenPart.length)
-      );
+      const censoredEmail = user.email
+         .toString()
+         .replace(
+            /^(.)(.*)(?=@)/,
+            (match, firstChar, hiddenPart) =>
+               firstChar + '*'.repeat(hiddenPart.length)
+         );
       return { email: censoredEmail };
    }
 }

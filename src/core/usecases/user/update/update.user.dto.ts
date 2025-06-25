@@ -7,6 +7,5 @@ export interface InputUpdateUserDto {
 export interface OutputUpdateUserDto {
    name: string;
    email: string;
-   createdAt: Date;
    updatedAt: Date;
 }

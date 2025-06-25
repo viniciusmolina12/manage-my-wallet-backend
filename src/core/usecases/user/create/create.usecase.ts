@@ -7,6 +7,7 @@ import { InputCreateUserDto, OutputCreateUserDto } from './create.user.dto';
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import ENV from '@config/env';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 export default class CreateUserUseCase {
    constructor(
@@ -22,10 +23,11 @@ export default class CreateUserUseCase {
       if (input.password !== input.confirmPassword)
          throw new EntityError('Password and confirm password do not match');
 
+      const email = new Email(input.email);
       const user = new User(
          uuid(),
          input.name,
-         input.email,
+         email,
          this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND) as string
       );
       const userExists = await this.userRepository.search({
@@ -41,7 +43,7 @@ export default class CreateUserUseCase {
       return {
          id: user.id,
          name: user.name,
-         email: user.email,
+         email: user.email.toString(),
          token,
          createdAt: user.createdAt,
          updatedAt: user.updatedAt,

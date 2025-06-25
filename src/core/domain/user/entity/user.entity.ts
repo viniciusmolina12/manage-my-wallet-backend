@@ -1,16 +1,16 @@
 import Entity from '@core/domain/@shared/entity.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
-import { EmailValidate } from '@core/domain/@shared/validate/email.validate';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 export default class User extends Entity {
    public _id: string;
    private _name: string;
-   private _email: string;
+   private _email: Email;
    private _password: string;
    constructor(
       id: string,
       name: string,
-      email: string,
+      email: Email,
       password: string,
       createdAt?: Date,
       updatedAt?: Date
@@ -36,18 +36,6 @@ export default class User extends Entity {
             source: 'user',
          });
       }
-      if (!this._email) {
-         this.notification.add({
-            message: 'Email is required',
-            source: 'user',
-         });
-      }
-      if (!EmailValidate.validate(this._email)) {
-         this.notification.add({
-            message: 'Email is invalid',
-            source: 'user',
-         });
-      }
       if (!this._password) {
          this.notification.add({
             message: 'Password is required',
@@ -64,7 +52,7 @@ export default class User extends Entity {
       this.validate();
    }
 
-   changeEmail(email: string) {
+   changeEmail(email: Email) {
       this._email = email;
       this.validate();
    }
@@ -77,7 +65,7 @@ export default class User extends Entity {
       return this._id;
    }
 
-   get email(): string {
+   get email(): Email {
       return this._email;
    }
 
