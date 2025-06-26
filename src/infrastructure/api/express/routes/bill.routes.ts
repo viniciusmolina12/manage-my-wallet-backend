@@ -84,8 +84,8 @@ route.get('/api/bills', authMiddleware, async (req: Request, res: Response) => {
    const { code, ...data } = await controller.handle({
       data: {
          userId: req.userId as string,
-         page: parseInt(req.query.page as string),
-         perPage: parseInt(req.query.perPage as string),
+         page: parseInt(req.query.page as string) || 1,
+         perPage: parseInt(req.query.perPage as string) || 10,
          order: req.query.order as string,
          search,
       },

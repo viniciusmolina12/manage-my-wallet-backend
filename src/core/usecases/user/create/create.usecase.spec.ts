@@ -4,6 +4,8 @@ import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
 import User from '@core/domain/user/entity/user.entity';
 import mockRepository from '../__mocks__/repository.user.mock';
 import { EncryptStub, JwtGeneratorStub } from '../__mocks__/stubs.user.mock';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+
 interface SutTypes {
    encryptStub: Encrypt;
    jwtGeneratorStub: JwtGenerator;
@@ -48,7 +50,7 @@ describe('Create user usecase tests', () => {
       const userCompare = new User(
          user.id,
          user.name,
-         user.email,
+         new Email(user.email),
          'encrypted_password',
          user.createdAt,
          user.updatedAt

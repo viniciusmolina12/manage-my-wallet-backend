@@ -105,7 +105,7 @@ export default class MongoDbBillRepository implements BillRepository {
       userId: string,
       filter: Filter<SearchBill>
    ): Promise<Pagination<Bill>> {
-      const result = await BillModel.find({
+      const queryFilter = {
          userId,
          ...(filter.search.name && {
             name: { $regex: filter.search.name, $options: 'i' },
@@ -130,7 +130,8 @@ export default class MongoDbBillRepository implements BillRepository {
          ...(filter.search.vendorId && {
             vendorId: filter.search.vendorId,
          }),
-      })
+      };
+      const result = await BillModel.find(queryFilter)
          .sort({ date: filter.order === 'asc' ? 1 : -1 })
          .skip(filter.skip)
          .limit(filter.limit);
@@ -152,7 +153,7 @@ export default class MongoDbBillRepository implements BillRepository {
          bill.updatedAt = b.updatedAt;
          return bill;
       });
-      const total = await BillModel.countDocuments({ userId });
+      const total = await BillModel.countDocuments(queryFilter);
       const hasNext = total > filter.skip + filter.limit;
       return new Pagination(filter.page, filter.limit, total, hasNext, bills);
    }

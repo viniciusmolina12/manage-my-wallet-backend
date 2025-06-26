@@ -1,16 +1,24 @@
 import User from '@core/domain/user/entity/user.entity';
 import UpdateUserUseCase from './update.usecase';
 import mockRepository from '../__mocks__/repository.user.mock';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+
 const input = {
    id: 'any_id',
    name: 'any_other_name',
    email: 'any_other_email@mail.com',
 };
+
 describe('Update user usecase tests', () => {
    it('should update an user', async () => {
       const sut = new UpdateUserUseCase(mockRepository);
       mockRepository.find.mockReturnValueOnce(
-         new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')
+         new User(
+            'any_id',
+            'any_name',
+            new Email('any_email@mail.com'),
+            'any_password'
+         )
       );
       const user = await sut.execute(input);
       expect(user).toBeTruthy();
@@ -26,12 +34,17 @@ describe('Update user usecase tests', () => {
    it('should throw an error if email already exists', async () => {
       const sut = new UpdateUserUseCase(mockRepository);
       mockRepository.find.mockReturnValueOnce(
-         new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')
+         new User(
+            'any_id',
+            'any_name',
+            new Email('any_email@mail.com'),
+            'any_password'
+         )
       );
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             {
-               id: 'any_id',
+               id: 'any_other_id',
                name: 'any_name',
                email: 'any_other_email@mail.com',
                userName: 'any_username',
@@ -46,7 +59,12 @@ describe('Update user usecase tests', () => {
       const sut = new UpdateUserUseCase(mockRepository);
       const wrongInput = { ...input, name: '' };
       mockRepository.find.mockReturnValueOnce(
-         new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')
+         new User(
+            'any_id',
+            'any_name',
+            new Email('any_email@mail.com'),
+            'any_password'
+         )
       );
       await expect(sut.execute(wrongInput)).rejects.toThrow(
          'user: Name is required, '
@@ -57,21 +75,27 @@ describe('Update user usecase tests', () => {
       const sut = new UpdateUserUseCase(mockRepository);
       const wrongInput = { ...input, email: '' };
       mockRepository.find.mockReturnValueOnce(
-         new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')
+         new User(
+            'any_id',
+            'any_name',
+            new Email('any_email@mail.com'),
+            'any_password'
+         )
       );
-      await expect(sut.execute(wrongInput)).rejects.toThrow(
-         'user: Email is required, '
-      );
+      await expect(sut.execute(wrongInput)).rejects.toThrow('Invalid email');
    });
 
    it('should throw an error if email is invalid', async () => {
       const sut = new UpdateUserUseCase(mockRepository);
       const wrongInput = { ...input, email: 'invalid_email' };
       mockRepository.find.mockReturnValueOnce(
-         new User('any_id', 'any_name', 'any_email@mail.com', 'any_password')
+         new User(
+            'any_id',
+            'any_name',
+            new Email('any_email@mail.com'),
+            'any_password'
+         )
       );
-      await expect(sut.execute(wrongInput)).rejects.toThrow(
-         'user: Email is invalid, '
-      );
+      await expect(sut.execute(wrongInput)).rejects.toThrow('Invalid email');
    });
 });

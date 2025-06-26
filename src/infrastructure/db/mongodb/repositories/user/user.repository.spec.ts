@@ -2,6 +2,8 @@ import User from '@core/domain/user/entity/user.entity';
 import mockDb from '../__mocks__/mockDb';
 import UserModel from '../../model/user.model';
 import MongoDbUserRepository from './user.repository';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -13,12 +15,13 @@ beforeEach(async () => {
 afterAll(async () => {
    await mockDb.disconnect();
 });
+
 describe('User repository tests', () => {
    it('should create an user', async () => {
       const user = new User(
          'any_id',
          'any_name',
-         'email@email.com',
+         new Email('email@email.com'),
          'any_password'
       );
       const sut = new MongoDbUserRepository();
@@ -27,7 +30,7 @@ describe('User repository tests', () => {
       expect(userCreated).toBeTruthy();
       expect(userCreated?.id).toBe(user.id);
       expect(userCreated?.name).toBe(user.name);
-      expect(userCreated?.email).toBe(user.email);
+      expect(userCreated?.email).toBe(user.email.toString());
       expect(userCreated?.password).toBe(user.password);
    });
 
@@ -42,7 +45,7 @@ describe('User repository tests', () => {
       const user = new User(
          model._id,
          'other_name',
-         'other_email@email.com',
+         new Email('other_email@email.com'),
          'other_password'
       );
       const sut = new MongoDbUserRepository();
@@ -51,7 +54,7 @@ describe('User repository tests', () => {
       expect(userUpdated).toBeTruthy();
       expect(userUpdated?.id).toBe(user.id);
       expect(userUpdated?.name).toBe(user.name);
-      expect(userUpdated?.email).toBe(user.email);
+      expect(userUpdated?.email).toBe(user.email.toString());
       expect(userUpdated?.password).toBe(user.password);
    });
 
@@ -68,7 +71,7 @@ describe('User repository tests', () => {
       expect(user).toBeTruthy();
       expect(user?.id).toBe(model._id);
       expect(user?.name).toBe(model.name);
-      expect(user?.email).toBe(model.email);
+      expect(user?.email.toString()).toBe(model.email);
       expect(user?.password).toBe(model.password);
       expect(user?.createdAt).toBeDefined();
       expect(user?.updatedAt).toBeDefined();
@@ -116,7 +119,12 @@ describe('User repository tests', () => {
          email: 'email@email.com',
          password: 'any_password',
       });
-      const user = new User(model._id, model.name, model.email, model.password);
+      const user = new User(
+         model._id,
+         model.name,
+         new Email(model.email),
+         model.password
+      );
       const sut = new MongoDbUserRepository();
       const expiresIn = new Date();
       await sut.updateResetPasswordToken(user, 'any_token', expiresIn);
@@ -138,7 +146,7 @@ describe('User repository tests', () => {
       expect(user).toBeTruthy();
       expect(user[0].id).toBe(model._id);
       expect(user[0].name).toBe(model.name);
-      expect(user[0].email).toBe(model.email);
+      expect(user[0].email.toString()).toBe(model.email);
       expect(user[0].password).toBe(model.password);
    });
 

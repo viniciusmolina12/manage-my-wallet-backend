@@ -49,19 +49,18 @@ describe('User e2e tests', () => {
          });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty(
-            'message',
-            'user: Email is invalid, '
-         );
+         expect(response.body).toHaveProperty('message', 'Invalid email');
       });
 
-      it('should throw an error if required data is not provided', async () => {
-         const response = await request(app).post('/api/user').send({});
+      it('should throw an error if required data is not provide (except email)', async () => {
+         const response = await request(app).post('/api/user').send({
+            email: 'email@mail.com',
+         });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
          expect(response.body).toHaveProperty(
             'message',
-            'user: Name is required, user: Email is required, user: Email is invalid, user: Password is required, '
+            'user: Name is required, user: Password is required, '
          );
       });
 
@@ -99,7 +98,6 @@ describe('User e2e tests', () => {
                data: {
                   name: 'User test updated',
                   email: 'any_mail_update@mail.com',
-                  createdAt: expect.any(String),
                   updatedAt: expect.any(String),
                },
                message: 'User updated successfully',
@@ -137,10 +135,7 @@ describe('User e2e tests', () => {
          });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty(
-            'message',
-            'user: Email is invalid, '
-         );
+         expect(response.body).toHaveProperty('message', 'Invalid email');
       });
 
       it('should throw an error if email already exists', async () => {
@@ -175,7 +170,9 @@ describe('User e2e tests', () => {
             name: 'any_name',
             password: 'any_password',
          });
-         const response = await request(app).patch(`/api/user/any_id`).send({});
+         const response = await request(app).patch(`/api/user/any_id`).send({
+            email: 'any_email@mail.com',
+         });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
          expect(response.body).toHaveProperty(
@@ -196,10 +193,7 @@ describe('User e2e tests', () => {
             .send({ name: 'any_other_name' });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty(
-            'message',
-            'user: Email is required, user: Email is invalid, '
-         );
+         expect(response.body).toHaveProperty('message', 'Invalid email');
       });
    });
 
@@ -243,7 +237,7 @@ describe('User e2e tests', () => {
          });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is invalid');
+         expect(response.body.message).toBe('Email or password is incorrect');
          expect(response.body).not.toHaveProperty('data');
       });
 
@@ -261,7 +255,7 @@ describe('User e2e tests', () => {
          });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is invalid');
+         expect(response.body.message).toBe('Email or password is incorrect');
          expect(response.body).not.toHaveProperty('data');
       });
 
@@ -278,7 +272,7 @@ describe('User e2e tests', () => {
             .send({ password: 'any_password' });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is invalid');
+         expect(response.body.message).toBe('Email or password is incorrect');
          expect(response.body).not.toHaveProperty('data');
       });
 
@@ -295,7 +289,7 @@ describe('User e2e tests', () => {
             .send({ email: 'any_mail@mail.com' });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is invalid');
+         expect(response.body.message).toBe('Email or password is incorrect');
          expect(response.body).not.toHaveProperty('data');
       });
    });

@@ -10,6 +10,7 @@ export default class Bill extends Entity {
    public description?: string;
    public userId: string;
    public vendorId: string;
+
    constructor(
       id: string,
       name: string,

@@ -168,7 +168,7 @@ describe('MongoDB Item Repository tests', () => {
          expect(billsFound.data).toHaveLength(1);
          expect(billsFound.page).toBe(1);
          expect(billsFound.perPage).toBe(10);
-         expect(billsFound.total).toBe(2);
+         expect(billsFound.total).toBe(1);
          expect(billsFound.hasNext).toBe(false);
          expect(billsFound.data[0].id).toBe('any_id_1');
          expect(billsFound.data[0].date).toEqual(

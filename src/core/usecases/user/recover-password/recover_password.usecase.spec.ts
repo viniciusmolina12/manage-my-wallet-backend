@@ -4,6 +4,7 @@ import { JwtGeneratorStub, MailerStub } from '../__mocks__/stubs.user.mock';
 import RecoverPasswordUserUseCase from './recover_password.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import ENV from '@config/env';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 interface SutTypes {
    mailerStub: MailerStub;
@@ -32,7 +33,7 @@ describe('Recover user password usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'any_password'
             ),
          ])
@@ -55,7 +56,7 @@ describe('Recover user password usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'any_password'
             ),
          ])
@@ -83,7 +84,7 @@ describe('Recover user password usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'any_password'
             ),
          ])
@@ -107,7 +108,7 @@ describe('Recover user password usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'any_password'
             ),
          ])

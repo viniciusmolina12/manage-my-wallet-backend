@@ -5,6 +5,8 @@ import User from '@core/domain/user/entity/user.entity';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { EncryptStub, JwtGeneratorStub } from '../__mocks__/stubs.user.mock';
 import mockRepository from '../__mocks__/repository.user.mock';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+
 interface SutTypes {
    encryptStub: Encrypt;
    jwtGeneratorStub: JwtGenerator;
@@ -32,7 +34,7 @@ describe('Login usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'encrypted_password'
             ),
          ])
@@ -54,7 +56,7 @@ describe('Login usecase tests', () => {
             email: 'any_email@mail.com',
             password: 'encrypted_password',
          })
-      ).rejects.toThrow(new EntityError('Email or password is invalid'));
+      ).rejects.toThrow(new EntityError('Email or password is incorrect'));
    });
 
    it('should throw an error if password is invalid', async () => {
@@ -65,7 +67,7 @@ describe('Login usecase tests', () => {
             new User(
                'any_id',
                'any_name',
-               'any_email@mail.com',
+               new Email('any_email@mail.com'),
                'any_password'
             ),
          ])
@@ -75,6 +77,6 @@ describe('Login usecase tests', () => {
             email: 'any_email@mail.com',
             password: 'any_other_password',
          })
-      ).rejects.toThrow(new EntityError('Email or password is invalid'));
+      ).rejects.toThrow(new EntityError('Email or password is incorrect'));
    });
 });

@@ -3,6 +3,7 @@ import mockRepository from '../__mocks__/repository.user.mock';
 import { EncryptStub } from '../__mocks__/stubs.user.mock';
 import ResetPasswordUserUseCase from './reset_password.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 class UserWithResetToken extends User {
    resetPasswordToken: string = '';
@@ -11,7 +12,7 @@ class UserWithResetToken extends User {
 const user = new UserWithResetToken(
    'any_id',
    'any_name',
-   'any_email@mail.com',
+   new Email('any_email@mail.com'),
    'any_password'
 );
 
