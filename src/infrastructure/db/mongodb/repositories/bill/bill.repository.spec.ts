@@ -60,6 +60,7 @@ describe('MongoDB Item Repository tests', () => {
          userId: oldBill.userId,
          vendorId: oldBill.vendorId,
          description: oldBill.description,
+         total: oldBill.total,
          items: [oldBillItem],
       });
 
@@ -127,6 +128,7 @@ describe('MongoDB Item Repository tests', () => {
          vendorId: bill.vendorId,
          description: bill.description,
          items: [billItem],
+         total: bill.total,
       });
 
       const billFound = await sut.findByUser(bill.id, bill.userId);
@@ -150,6 +152,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_1',
             items: [billItem],
+            total: 20,
          });
 
          await BillModel.create({
@@ -160,6 +163,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_2',
             items: [billItem, billItem],
+            total: 40,
          });
          const filter = new Filter(1, 10, 'asc', {
             name: 'any_name',
@@ -189,6 +193,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_1',
             items: [billItem],
+            total: 20,
          });
 
          await BillModel.create({
@@ -199,6 +204,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_2',
             items: [billItem],
+            total: 20,
          });
 
          await BillModel.create({
@@ -209,6 +215,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_2',
             items: [billItem],
+            total: 20,
          });
 
          const filter = new Filter(1, 10, 'asc', {
@@ -239,6 +246,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_1',
             items: [billItem],
+            total: 20,
          });
 
          await BillModel.create({
@@ -249,6 +257,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'other_vendor_id',
             description: 'any_description_2',
             items: [billItem],
+            total: 20,
          });
 
          const filter = new Filter(1, 10, 'asc', {
@@ -272,6 +281,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_1',
             items: [billItem],
+            total: 20,
          });
 
          await BillModel.create({
@@ -282,6 +292,7 @@ describe('MongoDB Item Repository tests', () => {
             vendorId: 'any_vendor_id',
             description: 'any_description_2',
             items: [billItem],
+            total: 20,
          });
 
          const filter = new Filter(1, 10, 'asc', {});
@@ -304,6 +315,7 @@ describe('MongoDB Item Repository tests', () => {
                vendorId: 'any_vendor_id',
                description: 'any_description_1',
                items: [billItem],
+               total: 20,
             });
          }
          const filter = new Filter(1, 10, 'asc', {});
@@ -325,6 +337,7 @@ describe('MongoDB Item Repository tests', () => {
                vendorId: 'any_vendor_id',
                description: 'any_description_1',
                items: [billItem],
+               total: 20,
             });
          }
          const filter = new Filter(1, 10, 'asc', {});
@@ -345,6 +358,7 @@ describe('MongoDB Item Repository tests', () => {
                vendorId: 'any_vendor_id',
                description: 'any_description_1',
                items: [billItem],
+               total: 20,
             });
          }
          const filter = new Filter(2, 10, 'asc', {});
@@ -369,6 +383,7 @@ describe('MongoDB Item Repository tests', () => {
          vendorId: 'any_vendor_id',
          description: bill.description,
          items: [billItem],
+         total: 20,
       });
       await sut.deleteByUser(bill.id, 'any_user_id');
       const billFound = await BillModel.findOne({ _id: bill.id });

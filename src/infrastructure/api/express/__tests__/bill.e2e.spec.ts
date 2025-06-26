@@ -92,6 +92,7 @@ describe('Bill e2e tests', () => {
          vendorId: 'any_vendor_id',
          description: 'Description 1',
          date: new Date('2021-01-01T00:00:00.000Z'),
+         total: 1000,
          items: [
             {
                _id: 'any_item_id',
@@ -158,6 +159,7 @@ describe('Bill e2e tests', () => {
          vendorId: 'any_vendor_id',
          description: 'Description 1',
          date: new Date('2021-01-01T00:00:00.000Z'),
+         total: 1000,
          items: [
             {
                _id: 'any_item_id',
@@ -189,6 +191,7 @@ describe('Bill e2e tests', () => {
          vendorId: 'any_vendor_id',
          description: 'Description 1',
          date: new Date('2021-01-01T00:00:00.000Z'),
+         total: 1000,
          items: [
             {
                _id: 'any_item_id',
@@ -224,6 +227,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 1',
             date: new Date('2021-01-01T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -240,6 +244,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 2',
             date: new Date('2021-01-02T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -257,6 +262,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 2',
             date: new Date('2021-01-02T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -305,6 +311,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 1',
             date: new Date('2021-01-01T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -321,6 +328,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'other_vendor_id',
             description: 'Description 2',
             date: new Date('2021-01-01T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -369,6 +377,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 1',
             date: new Date('2021-01-01T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -385,6 +394,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 2',
             date: new Date('2020-01-02T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -433,6 +443,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 1',
             date: new Date('2021-01-01T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -449,6 +460,7 @@ describe('Bill e2e tests', () => {
             vendorId: 'any_vendor_id',
             description: 'Description 2',
             date: new Date('2021-01-02T00:00:00.000Z'),
+            total: 1000,
             items: [
                {
                   _id: 'any_item_id',
@@ -497,6 +509,7 @@ describe('Bill e2e tests', () => {
          date: new Date('2021-01-01T00:00:00.000Z'),
          name: 'Bill 1',
          description: 'Description 1',
+         total: 1000,
          items: [
             {
                _id: 'any_item_id',
