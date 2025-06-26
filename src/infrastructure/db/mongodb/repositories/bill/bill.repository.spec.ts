@@ -69,6 +69,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billCreated?._id).toBe(oldBill.id);
       expect(billCreated?.name).toBe(oldBill.name);
       expect(billCreated?.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
+      expect(billCreated?.total).toBe(oldBill.total);
       expect(billCreated?.description).toBe(oldBill.description);
       expect(billCreated?.items).toHaveLength(1);
 
@@ -88,6 +89,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billUpdated?.name).toBe(updateBill.name);
       expect(billUpdated?.date).toEqual(new Date('2021-01-02T00:00:00.000Z'));
       expect(billUpdated?.description).toBe(updateBill.description);
+      expect(billUpdated?.total).toBe(updateBill.total);
       expect(billUpdated?.userId).toBe(updateBill.userId);
       expect(billUpdated?.items).toHaveLength(2);
    });
