@@ -24,6 +24,7 @@ const BillSchema = new Schema({
       },
    ],
    userId: { type: String, ref: 'User', required: true },
+   total: { type: Number, required: true },
    createdAt: { type: Date, required: true, default: Date.now },
    updatedAt: { type: Date, required: true, default: Date.now },
 });

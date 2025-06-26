@@ -17,6 +17,7 @@ export default class MongoDbBillRepository implements BillRepository {
          vendorId: entity.vendorId,
          items: entity.items,
          description: entity.description,
+         total: entity.total,
       });
    }
    async update(entity: Bill): Promise<void> {
@@ -28,6 +29,7 @@ export default class MongoDbBillRepository implements BillRepository {
             items: entity.items,
             description: entity.description,
             vendorId: entity.vendorId,
+            total: entity.total,
             updatedAt: new Date(),
          }
       );
