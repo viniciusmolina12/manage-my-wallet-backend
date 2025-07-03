@@ -11,6 +11,13 @@ beforeAll(async () => {
 
 beforeEach(async () => {
    await mockDb.clear();
+   const item = await itemModel.create({
+      _id: 'any_item_id',
+      name: 'any_item_name',
+      categoryId: 'any_category_id',
+      description: 'any_item_description',
+      userId: 'any_user_id',
+   });
 });
 
 afterAll(async () => {
@@ -18,13 +25,6 @@ afterAll(async () => {
 });
 describe('Bill e2e tests', () => {
    it('should create a bill', async () => {
-      const item = await itemModel.create({
-         _id: 'any_item_id',
-         name: 'any_item_name',
-         categoryId: 'any_category_id',
-         description: 'any_item_description',
-         userId: 'any_user_id',
-      });
       const vendor = await vendorModel.create({
          _id: 'any_vendor_id',
          name: 'any_vendor_name',
@@ -65,13 +65,6 @@ describe('Bill e2e tests', () => {
    });
 
    it('should return an error when creating an bill with invalid data', async () => {
-      const item = await itemModel.create({
-         _id: 'any_item_id',
-         name: 'any_item_name',
-         categoryId: 'any_category_id',
-         description: 'any_item_description',
-         userId: 'any_user_id',
-      });
       const response = await request(app)
          .post('/api/bill')
          .set('Authorization', 'Bearer ' + token)

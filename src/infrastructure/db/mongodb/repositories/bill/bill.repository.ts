@@ -64,9 +64,10 @@ export default class MongoDbBillRepository implements BillRepository {
       await BillModel.findByIdAndDelete({ _id: id });
    }
    async findByUser(id: string, userId: string): Promise<Bill | null> {
-      const billFound = await BillModel.findOne({ _id: id, userId }).populate(
-         'items.itemId'
-      );
+      const billFound = await BillModel.findOne({ _id: id, userId }).populate({
+         path: 'items.itemId',
+         select: 'name description -_id _v',
+      });
       if (!billFound) return null;
       const bill = BillMapper.toDomain(billFound);
       bill.createdAt = billFound.createdAt;

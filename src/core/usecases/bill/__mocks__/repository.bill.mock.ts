@@ -7,6 +7,7 @@ const mockRepository = {
    findByUser: jest.fn(),
    findAllByUser: jest.fn(),
    deleteByUser: jest.fn(),
+   findAllByUserAndPeriod: jest.fn(),
 };
 
 export default mockRepository;

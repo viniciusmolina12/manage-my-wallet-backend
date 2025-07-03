@@ -391,4 +391,46 @@ describe('MongoDB Item Repository tests', () => {
       const billFound = await BillModel.findOne({ _id: bill.id });
       expect(billFound).toBeFalsy();
    });
+
+   it('should find all bills by user and period', async () => {
+      const sut = new MongoDbBillRepository();
+      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const bill = new Bill(
+         'any_id',
+         'any_name',
+         new Date('2021-01-01T00:00:00.000Z'),
+         [billItem],
+         'any_vendor_id',
+         'any_user_id'
+      );
+      await BillModel.create({
+         _id: bill.id,
+         name: bill.name,
+         date: bill.date,
+         userId: bill.userId,
+         vendorId: bill.vendorId,
+         description: bill.description,
+         items: [billItem],
+         total: 20,
+      });
+
+      await BillModel.create({
+         _id: 'any_id_2',
+         name: 'unfound_bill',
+         date: new Date('2021-01-03T00:00:00.000Z'),
+         userId: bill.userId,
+         vendorId: bill.vendorId,
+         description: bill.description,
+         items: [billItem],
+         total: 20,
+      });
+
+      const billsFound = await sut.findAllByUserAndPeriod(
+         'any_user_id',
+         new Date('2021-01-01T00:00:00.000Z'),
+         new Date('2021-01-02T00:00:00.000Z')
+      );
+      expect(billsFound).toHaveLength(1);
+      expect(billsFound[0].id).toBe(bill.id);
+   });
 });
