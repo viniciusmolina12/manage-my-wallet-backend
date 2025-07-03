@@ -12,6 +12,11 @@ export interface SearchBill {
 export interface BillRepository extends RepositoryInterface<Bill> {
    findByUser(id: string, userId: string): Promise<Bill | null>;
    deleteByUser(id: string, userId: string): Promise<void>;
+   findAllByUserAndPeriod(
+      userId: string,
+      startDate: Date,
+      endDate: Date
+   ): Promise<Bill[]>;
    findAllByUser(
       userId: string,
       filter: Filter<SearchBill>

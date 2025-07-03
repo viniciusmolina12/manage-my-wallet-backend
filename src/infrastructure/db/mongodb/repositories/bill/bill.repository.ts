@@ -6,6 +6,7 @@ import Bill from '@core/domain/bill/entity/bill.entity';
 import BillModel from '../../model/bill.model';
 import BillItem from '@core/domain/bill/entity/bill-item.entity';
 import { Filter, Pagination } from '@core/domain/@shared/filter/filter';
+import { BillMapper } from './bill.mapper';
 
 export default class MongoDbBillRepository implements BillRepository {
    async create(entity: Bill): Promise<void> {
@@ -41,18 +42,7 @@ export default class MongoDbBillRepository implements BillRepository {
          'vendorId'
       );
       if (!billFound) return null;
-      const billItems = billFound.items.map(
-         (item) => new BillItem(item._id, item._id, item.price, item.quantity)
-      );
-      const bill = new Bill(
-         billFound._id.toString(),
-         billFound.name,
-         billFound.date,
-         billItems,
-         billFound.vendorId,
-         billFound.userId,
-         billFound?.description
-      );
+      const bill = BillMapper.toDomain(billFound);
       return bill;
    }
 
@@ -63,15 +53,7 @@ export default class MongoDbBillRepository implements BillRepository {
             (item) =>
                new BillItem(item._id, item._id, item.price, item.quantity)
          );
-         const bill = new Bill(
-            b._id.toString(),
-            b.name,
-            b.date,
-            billItems,
-            b.vendorId,
-            b.userId,
-            b?.description
-         );
+         const bill = BillMapper.toDomain(b);
          bill.createdAt = b.createdAt;
          bill.updatedAt = b.updatedAt;
          return bill;
@@ -86,21 +68,25 @@ export default class MongoDbBillRepository implements BillRepository {
          'items.itemId'
       );
       if (!billFound) return null;
-      const billItems = billFound.items.map(
-         (item) => new BillItem(item._id, item._id, item.price, item.quantity)
-      );
-      const bill = new Bill(
-         billFound._id.toString(),
-         billFound.name,
-         billFound.date,
-         billItems,
-         billFound.vendorId,
-         billFound.userId,
-         billFound?.description
-      );
+      const bill = BillMapper.toDomain(billFound);
       bill.createdAt = billFound.createdAt;
       bill.updatedAt = billFound.updatedAt;
       return bill;
+   }
+
+   async findAllByUserAndPeriod(
+      userId: string,
+      startDate: Date,
+      endDate: Date
+   ): Promise<Bill[]> {
+      const result = await BillModel.find({
+         userId,
+         date: {
+            $gte: startDate,
+            $lte: endDate,
+         },
+      });
+      return BillMapper.toDomainList(result);
    }
 
    async findAllByUser(
@@ -137,24 +123,7 @@ export default class MongoDbBillRepository implements BillRepository {
          .sort({ date: filter.order === 'asc' ? 1 : -1 })
          .skip(filter.skip)
          .limit(filter.limit);
-      const bills = result.map((b) => {
-         const billItems = b.items.map(
-            (item) =>
-               new BillItem(item._id, item._id, item.price, item.quantity)
-         );
-         const bill = new Bill(
-            b._id.toString(),
-            b.name,
-            b.date,
-            billItems,
-            b.vendorId,
-            b.userId,
-            b?.description
-         );
-         bill.createdAt = b.createdAt;
-         bill.updatedAt = b.updatedAt;
-         return bill;
-      });
+      const bills = BillMapper.toDomainList(result);
       const total = await BillModel.countDocuments(queryFilter);
       const hasNext = total > filter.skip + filter.limit;
       return new Pagination(filter.page, filter.limit, total, hasNext, bills);
