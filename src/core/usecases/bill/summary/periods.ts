@@ -1,3 +1,10 @@
+export enum PeriodType {
+   MONTH = 'month',
+   YEAR = 'year',
+   SEMESTER = 'semester',
+   QUARTER = 'quarter',
+}
+
 export interface Period {
    startDate: Date;
    endDate: Date;
@@ -44,15 +51,15 @@ export class QuarterPeriod implements Period {
 }
 
 export class PeriodFactory {
-   static create(period: string, year: number, month: number): Period {
+   static create(period: PeriodType, year: number, month: number): Period {
       switch (period) {
-         case 'month':
+         case PeriodType.MONTH:
             return new MonthPeriod(year, month);
-         case 'year':
+         case PeriodType.YEAR:
             return new YearPeriod(year);
-         case 'semester':
+         case PeriodType.SEMESTER:
             return new SemesterPeriod(year);
-         case 'quarter':
+         case PeriodType.QUARTER:
             return new QuarterPeriod(year);
          default:
             throw new Error('Invalid period');
