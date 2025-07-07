@@ -1,6 +1,8 @@
+import { PeriodType } from './periods';
+
 export interface InputSummaryBillDto {
    userId: string;
-   period: 'month' | 'year' | 'semester' | 'quarter';
+   period: PeriodType;
 }
 
 export interface OutputSummaryBillDto {
