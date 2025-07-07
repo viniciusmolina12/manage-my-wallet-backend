@@ -2,7 +2,7 @@ import { BillRepository } from '@core/domain/bill/repository/bill.repository';
 import SummaryBillUseCase from './summary.usecase';
 import mockRepository from '../__mocks__/repository.bill.mock';
 import { Filter } from '@core/domain/@shared/filter/filter';
-import { PeriodFactory } from './periods';
+import { PeriodFactory, PeriodType } from './periods';
 
 describe('SummaryBillUseCase', () => {
    let sut: SummaryBillUseCase;
@@ -23,7 +23,7 @@ describe('SummaryBillUseCase', () => {
    it('should be able to get the summary of the bills', async () => {
       const result = await sut.execute({
          userId: 'any_user_id',
-         period: 'month',
+         period: PeriodType.MONTH,
       });
       expect(result).toEqual({
          bills: [],
@@ -37,7 +37,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'month',
+         period: PeriodType.MONTH,
       });
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
@@ -54,7 +54,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'year',
+         period: PeriodType.YEAR,
       });
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
@@ -71,7 +71,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'semester',
+         period: PeriodType.SEMESTER,
       });
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
@@ -88,7 +88,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'quarter',
+         period: PeriodType.QUARTER,
       });
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
@@ -101,7 +101,7 @@ describe('SummaryBillUseCase', () => {
    it('should call PeriodFactory.create only once', async () => {
       await sut.execute({
          userId: 'any_user_id',
-         period: 'month',
+         period: PeriodType.MONTH,
       });
 
       expect(periodFactorySpy).toHaveBeenCalledTimes(1);
@@ -118,7 +118,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'month',
+         period: PeriodType.MONTH,
       });
 
       expect(repositorySpy).toHaveBeenCalledWith(
@@ -137,7 +137,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'year',
+         period: PeriodType.YEAR,
       });
 
       expect(repositorySpy).toHaveBeenCalledWith(
@@ -156,7 +156,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'semester',
+         period: PeriodType.SEMESTER,
       });
 
       expect(repositorySpy).toHaveBeenCalledWith(
@@ -175,7 +175,7 @@ describe('SummaryBillUseCase', () => {
 
       await sut.execute({
          userId: 'any_user_id',
-         period: 'quarter',
+         period: PeriodType.QUARTER,
       });
 
       expect(repositorySpy).toHaveBeenCalledWith(
