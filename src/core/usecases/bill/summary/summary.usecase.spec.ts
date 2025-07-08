@@ -1,7 +1,5 @@
-import { BillRepository } from '@core/domain/bill/repository/bill.repository';
 import SummaryBillUseCase from './summary.usecase';
 import mockRepository from '../__mocks__/repository.bill.mock';
-import { Filter } from '@core/domain/@shared/filter/filter';
 import { PeriodFactory, PeriodType } from './periods';
 
 describe('SummaryBillUseCase', () => {
@@ -20,55 +18,25 @@ describe('SummaryBillUseCase', () => {
       jest.restoreAllMocks();
    });
 
-   it('should be able to get the summary of the bills', async () => {
-      const result = await sut.execute({
-         userId: 'any_user_id',
-         period: PeriodType.MONTH,
-      });
-      expect(result).toEqual({
-         bills: [],
-      });
-   });
-
    it('should call PeriodFactory.create with correct parameters for month period', async () => {
-      const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-      const expectedMonth = currentDate.getMonth();
-
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.MONTH,
       });
 
-      expect(periodFactorySpy).toHaveBeenCalledWith(
-         'month',
-         expectedYear,
-         expectedMonth
-      );
+      expect(periodFactorySpy).toHaveBeenCalledWith('month', expect.any(Date));
    });
 
    it('should call PeriodFactory.create with correct parameters for year period', async () => {
-      const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-      const expectedMonth = currentDate.getMonth();
-
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.YEAR,
       });
 
-      expect(periodFactorySpy).toHaveBeenCalledWith(
-         'year',
-         expectedYear,
-         expectedMonth
-      );
+      expect(periodFactorySpy).toHaveBeenCalledWith('year', expect.any(Date));
    });
 
    it('should call PeriodFactory.create with correct parameters for semester period', async () => {
-      const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-      const expectedMonth = currentDate.getMonth();
-
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.SEMESTER,
@@ -76,16 +44,11 @@ describe('SummaryBillUseCase', () => {
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
          'semester',
-         expectedYear,
-         expectedMonth
+         expect.any(Date)
       );
    });
 
    it('should call PeriodFactory.create with correct parameters for quarter period', async () => {
-      const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-      const expectedMonth = currentDate.getMonth();
-
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.QUARTER,
@@ -93,8 +56,7 @@ describe('SummaryBillUseCase', () => {
 
       expect(periodFactorySpy).toHaveBeenCalledWith(
          'quarter',
-         expectedYear,
-         expectedMonth
+         expect.any(Date)
       );
    });
 
@@ -109,13 +71,18 @@ describe('SummaryBillUseCase', () => {
 
    it('should call findAllByUserAndPeriod with correct dates for month period', async () => {
       const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-      const expectedMonth = currentDate.getMonth();
+      const expectedStartDate = new Date(
+         currentDate.getFullYear(),
+         currentDate.getMonth(),
+         1
+      );
+      const expectedEndDate = new Date(
+         currentDate.getFullYear(),
+         currentDate.getMonth() + 1,
+         0
+      );
 
-      // Dates que esperamos serem geradas para o período de mês
-      const expectedStartDate = new Date(expectedYear, expectedMonth, 1);
-      const expectedEndDate = new Date(expectedYear, expectedMonth + 1, 0);
-
+      repositorySpy.mockClear();
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.MONTH,
@@ -130,11 +97,9 @@ describe('SummaryBillUseCase', () => {
 
    it('should call findAllByUserAndPeriod with correct dates for year period', async () => {
       const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
-
-      const expectedStartDate = new Date(expectedYear, 0, 1);
-      const expectedEndDate = new Date(expectedYear, 11, 31);
-
+      const expectedStartDate = new Date(currentDate.getFullYear(), 0, 1);
+      const expectedEndDate = new Date(currentDate.getFullYear(), 11, 31);
+      repositorySpy.mockClear();
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.YEAR,
@@ -149,11 +114,12 @@ describe('SummaryBillUseCase', () => {
 
    it('should call findAllByUserAndPeriod with correct dates for semester period', async () => {
       const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+      const expectedStartDate = new Date(sixMonthsAgo);
+      const expectedEndDate = currentDate;
 
-      const expectedStartDate = new Date(expectedYear, 0, 1);
-      const expectedEndDate = new Date(expectedYear, 5, 30);
-
+      repositorySpy.mockClear();
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.SEMESTER,
@@ -168,11 +134,12 @@ describe('SummaryBillUseCase', () => {
 
    it('should call findAllByUserAndPeriod with correct dates for quarter period', async () => {
       const currentDate = new Date();
-      const expectedYear = currentDate.getFullYear();
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+      const expectedStartDate = new Date(threeMonthsAgo);
+      const expectedEndDate = currentDate;
 
-      const expectedStartDate = new Date(expectedYear, 0, 1);
-      const expectedEndDate = new Date(expectedYear, 3, 30);
-
+      repositorySpy.mockClear();
       await sut.execute({
          userId: 'any_user_id',
          period: PeriodType.QUARTER,

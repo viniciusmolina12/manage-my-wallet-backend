@@ -5,6 +5,9 @@ import BillModel from '@infrastructure/db/mongodb/model/bill.model';
 import token from './___mocks__/jsonwebtoken.mock';
 import itemModel from '@infrastructure/db/mongodb/model/item.model';
 import vendorModel from '@infrastructure/db/mongodb/model/vendor.model';
+import { PeriodType } from '@core/usecases/bill/summary/periods';
+import { BillBuilder } from './___mocks__/bill.builder.mock.';
+
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -78,25 +81,9 @@ describe('Bill e2e tests', () => {
          name: 'any_vendor_name',
          userId: 'any_user_id',
       });
-      const bill = await BillModel.create({
-         _id: 'any_hash_id',
-         name: 'Bill 1',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: 'Description 1',
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         total: 1000,
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
+      const bill = await new BillBuilder().buildAndCreateModel();
       const response = await request(app)
-         .put(`/api/bill/${bill._id}`)
+         .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
          .send({
             id: 'any_hash_id',
@@ -145,23 +132,7 @@ describe('Bill e2e tests', () => {
          name: 'any_vendor_name',
          userId: 'any_user_id',
       });
-      const bill = await BillModel.create({
-         _id: 'any_hash_id',
-         name: 'Bill 1',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: 'Description 1',
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         total: 1000,
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
+      const bill = await new BillBuilder().buildAndCreateModel();
       const response = await request(app)
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
@@ -177,25 +148,9 @@ describe('Bill e2e tests', () => {
    });
 
    it('should get a bill', async () => {
-      const bill = await BillModel.create({
-         _id: 'any_hash_id',
-         name: 'Bill 1',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         description: 'Description 1',
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         total: 1000,
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
+      const bill = await new BillBuilder().buildAndCreateModel();
       const response = await request(app)
-         .get(`/api/bill/${bill._id}`)
+         .get(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
@@ -203,68 +158,36 @@ describe('Bill e2e tests', () => {
          'message',
          'Bill founded successfully'
       );
-      expect(response.body.data).toHaveProperty('id', bill._id);
-      expect(response.body.data).toHaveProperty('name', 'Bill 1');
-      expect(response.body.data).toHaveProperty('date', '2021-01-01');
-      expect(response.body.data).toHaveProperty('description', 'Description 1');
+      expect(response.body.data).toHaveProperty('id', bill.id);
+      expect(response.body.data).toHaveProperty('name', bill.name);
+      expect(response.body.data).toHaveProperty(
+         'date',
+         bill.date.toISOString().split('T')[0]
+      );
+      expect(response.body.data).toHaveProperty(
+         'description',
+         bill.description
+      );
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
    });
 
    describe('/api/bills GET', () => {
       it('should get all bills by name', async () => {
-         const bill1 = await BillModel.create({
-            _id: 'any_hash_id',
-            name: 'Bill 1',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 1',
-            date: new Date('2021-01-01T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
-         const bill2 = await BillModel.create({
-            _id: 'any_hash_id_2',
-            name: 'Bill 2',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 2',
-            date: new Date('2021-01-02T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
+         const bill = await new BillBuilder()
+            .withName('Bill 1')
+            .buildAndCreateModel();
 
-         const bill3 = await BillModel.create({
-            _id: 'any_hash_id_3',
-            name: 'other_bill',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 2',
-            date: new Date('2021-01-02T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
+         await new BillBuilder()
+            .withName('Bill 2')
+            .withId('any_hash_id_2')
+            .createModel();
+
+         await new BillBuilder()
+            .withName('other_bill')
+            .withId('any_hash_id_3')
+            .createModel();
+
          const response = await request(app)
             .get('/api/bills')
             .set('Authorization', 'Bearer ' + token)
@@ -278,59 +201,31 @@ describe('Bill e2e tests', () => {
             'Bills listed successfully'
          );
          expect(response.body.data.bills).toHaveLength(1);
-         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
          expect(response.body.data.bills[0]).toHaveProperty(
             'date',
-            '2021-01-01'
+            bill.date.toISOString().split('T')[0]
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill1.vendorId
+            bill.vendorId
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
-            bill1.description
+            bill.description
          );
          expect(response.body.data.bills[0]).toHaveProperty('createdAt');
          expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by vendorId', async () => {
-         const bill1 = await BillModel.create({
-            _id: 'any_hash_id',
-            name: 'Bill 1',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 1',
-            date: new Date('2021-01-01T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
-         await BillModel.create({
-            _id: 'any_hash_id_2',
-            name: 'Bill 2',
-            userId: 'any_user_id',
-            vendorId: 'other_vendor_id',
-            description: 'Description 2',
-            date: new Date('2021-01-01T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
+         const bill = await new BillBuilder().buildAndCreateModel();
+         await new BillBuilder()
+            .withVendorId('other_vendor_id')
+            .withId('any_hash_id_2')
+            .createModel();
+
          const response = await request(app)
             .get('/api/bills')
             .set('Authorization', 'Bearer ' + token)
@@ -344,64 +239,37 @@ describe('Bill e2e tests', () => {
             'Bills listed successfully'
          );
          expect(response.body.data.bills).toHaveLength(1);
-         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
          expect(response.body.data.bills[0]).toHaveProperty(
             'date',
-            '2021-01-01'
+            bill.date.toISOString().split('T')[0]
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill1.vendorId
+            bill.vendorId
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
-            bill1.description
+            bill.description
          );
          expect(response.body.data.bills[0]).toHaveProperty('createdAt');
          expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by startDate', async () => {
-         const bill1 = await BillModel.create({
-            _id: 'any_hash_id',
-            name: 'Bill 1',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 1',
-            date: new Date('2021-01-01T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
-         await BillModel.create({
-            _id: 'any_hash_id_2',
-            name: 'Bill 2',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 2',
-            date: new Date('2020-01-02T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
+         const bill = await new BillBuilder().buildAndCreateModel();
+
+         await new BillBuilder()
+            .withId('any_hash_id_2')
+            .withDate(new Date('2021-01-01T00:00:00.000Z'))
+            .createModel();
+
          const response = await request(app)
             .get('/api/bills')
             .set('Authorization', 'Bearer ' + token)
             .query({
-               startDate: '2021-01-01',
+               startDate: '2021-01-02',
             });
          expect(response.status).toBe(200);
          expect(response.body).toHaveProperty('data');
@@ -410,59 +278,31 @@ describe('Bill e2e tests', () => {
             'Bills listed successfully'
          );
          expect(response.body.data.bills).toHaveLength(1);
-         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
          expect(response.body.data.bills[0]).toHaveProperty(
             'date',
-            '2021-01-01'
+            bill.date.toISOString().split('T')[0]
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill1.vendorId
+            bill.vendorId
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
-            bill1.description
+            bill.description
          );
          expect(response.body.data.bills[0]).toHaveProperty('createdAt');
          expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by endDate', async () => {
-         const bill1 = await BillModel.create({
-            _id: 'any_hash_id',
-            name: 'Bill 1',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 1',
-            date: new Date('2021-01-01T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
-         await BillModel.create({
-            _id: 'any_hash_id_2',
-            name: 'Bill 2',
-            userId: 'any_user_id',
-            vendorId: 'any_vendor_id',
-            description: 'Description 2',
-            date: new Date('2021-01-02T00:00:00.000Z'),
-            total: 1000,
-            items: [
-               {
-                  _id: 'any_item_id',
-                  quantity: 10,
-                  price: 100,
-                  itemId: 'any_item_id',
-               },
-            ],
-         });
+         await new BillBuilder().buildAndCreateModel();
+         const bill = await new BillBuilder()
+            .withId('any_hash_id_2')
+            .withDate(new Date('2021-01-01T00:00:00.000Z'))
+            .buildAndCreateModel();
+
          const response = await request(app)
             .get('/api/bills')
             .set('Authorization', 'Bearer ' + token)
@@ -476,44 +316,28 @@ describe('Bill e2e tests', () => {
             'Bills listed successfully'
          );
          expect(response.body.data.bills).toHaveLength(1);
-         expect(response.body.data.bills[0]).toHaveProperty('id', bill1._id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill1.name);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
+         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
          expect(response.body.data.bills[0]).toHaveProperty(
             'date',
-            '2021-01-01'
+            bill.date.toISOString().split('T')[0]
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill1.vendorId
+            bill.vendorId
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
-            bill1.description
+            bill.description
          );
          expect(response.body.data.bills[0]).toHaveProperty('createdAt');
          expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
    });
    it('should delete a bill', async () => {
-      const bill = await BillModel.create({
-         _id: 'any_hash_id',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
-         date: new Date('2021-01-01T00:00:00.000Z'),
-         name: 'Bill 1',
-         description: 'Description 1',
-         total: 1000,
-         items: [
-            {
-               _id: 'any_item_id',
-               quantity: 10,
-               price: 100,
-               itemId: 'any_item_id',
-            },
-         ],
-      });
+      const bill = await new BillBuilder().buildAndCreateModel();
       const response = await request(app)
-         .delete(`/api/bill/${bill._id}`)
+         .delete(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
@@ -521,7 +345,7 @@ describe('Bill e2e tests', () => {
          'Bill deleted successfully'
       );
       expect(response.body).not.toHaveProperty('data');
-      const billFound = await BillModel.findOne({ _id: bill._id });
+      const billFound = await BillModel.findOne({ _id: bill.id });
       expect(billFound).toBeFalsy();
    });
 
@@ -535,7 +359,7 @@ describe('Bill e2e tests', () => {
    });
 
    it('should throw an error when try create a bill with an invalid item', async () => {
-      const vendor = await vendorModel.create({
+      await vendorModel.create({
          _id: 'any_vendor_id',
          name: 'any_vendor_name',
          userId: 'any_user_id',
@@ -552,5 +376,96 @@ describe('Bill e2e tests', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');
+   });
+
+   it('should get the summary of the bills by period MONTH', async () => {
+      await new BillBuilder().createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_2')
+         .withDate(new Date('2021-01-01T00:00:00.000Z'))
+         .createModel();
+      const response = await request(app)
+         .get('/api/bill/summary')
+         .set('Authorization', 'Bearer ' + token)
+         .query({ period: PeriodType.MONTH });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('message', 'Summary of bills');
+      expect(response.body.data).toHaveProperty('bills');
+      expect(response.body.data.bills).toHaveLength(1);
+   });
+
+   it('should get the summary of the bills by period YEAR', async () => {
+      await new BillBuilder().createModel();
+      await new BillBuilder().withId('any_hash_id_2').createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_3')
+         .withDate(new Date('2021-01-01T00:00:00.000Z'))
+         .createModel();
+
+      const response = await request(app)
+         .get('/api/bill/summary')
+         .set('Authorization', 'Bearer ' + token)
+         .query({ period: PeriodType.YEAR });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('message', 'Summary of bills');
+      expect(response.body.data).toHaveProperty('bills');
+      expect(response.body.data.bills).toHaveLength(2);
+   });
+
+   it('should get the summary of the bills by period SEMESTER', async () => {
+      const todayMinusThreeMonths = new Date();
+      todayMinusThreeMonths.setMonth(todayMinusThreeMonths.getMonth() - 3);
+      await new BillBuilder().createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_3')
+         .withDate(todayMinusThreeMonths)
+         .createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_2')
+         .withDate(new Date('2021-01-01T00:00:00.000Z'))
+         .createModel();
+      const response = await request(app)
+         .get('/api/bill/summary')
+         .set('Authorization', 'Bearer ' + token)
+         .query({ period: PeriodType.SEMESTER });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('message', 'Summary of bills');
+      expect(response.body.data).toHaveProperty('bills');
+      expect(response.body.data.bills).toHaveLength(2);
+   });
+
+   it('should get the summary of the bills by period QUARTER', async () => {
+      const todayMinusOneMonth = new Date();
+      todayMinusOneMonth.setMonth(todayMinusOneMonth.getMonth() - 1);
+      await new BillBuilder().createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_2')
+         .withDate(todayMinusOneMonth)
+         .createModel();
+      await new BillBuilder()
+         .withId('any_hash_id_3')
+         .withDate(new Date('2021-01-01T00:00:00.000Z'))
+         .createModel();
+      const response = await request(app)
+         .get('/api/bill/summary')
+         .set('Authorization', 'Bearer ' + token)
+         .query({ period: PeriodType.QUARTER });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('message', 'Summary of bills');
+      expect(response.body.data).toHaveProperty('bills');
+      expect(response.body.data.bills).toHaveLength(2);
+   });
+
+   it('should throw an error when try get the summary of the bills with an invalid period', async () => {
+      const response = await request(app)
+         .get('/api/bill/summary')
+         .set('Authorization', 'Bearer ' + token)
+         .query({ period: 'invalid_period' });
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('message', 'Invalid period');
    });
 });
