@@ -1,3 +1,5 @@
+import EntityError from '@core/domain/@shared/error/entity.error';
+
 export enum PeriodType {
    MONTH = 'month',
    YEAR = 'year',
@@ -14,9 +16,9 @@ export class MonthPeriod implements Period {
    startDate: Date;
    endDate: Date;
 
-   constructor(year: number, month: number) {
-      this.startDate = new Date(year, month, 1);
-      this.endDate = new Date(year, month + 1, 0);
+   constructor(date: Date) {
+      this.startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+      this.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
    }
 }
 
@@ -24,9 +26,9 @@ export class YearPeriod implements Period {
    startDate: Date;
    endDate: Date;
 
-   constructor(year: number) {
-      this.startDate = new Date(year, 0, 1);
-      this.endDate = new Date(year, 11, 31);
+   constructor(date: Date) {
+      this.startDate = new Date(date.getFullYear(), 0, 1);
+      this.endDate = new Date(date.getFullYear(), 11, 31);
    }
 }
 
@@ -34,9 +36,11 @@ export class SemesterPeriod implements Period {
    startDate: Date;
    endDate: Date;
 
-   constructor(year: number) {
-      this.startDate = new Date(year, 0, 1);
-      this.endDate = new Date(year, 5, 30);
+   constructor(date: Date) {
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      this.startDate = new Date(sixMonthsAgo);
+      this.endDate = date;
    }
 }
 
@@ -44,25 +48,27 @@ export class QuarterPeriod implements Period {
    startDate: Date;
    endDate: Date;
 
-   constructor(year: number) {
-      this.startDate = new Date(year, 0, 1);
-      this.endDate = new Date(year, 3, 30);
+   constructor(date: Date) {
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      this.startDate = new Date(threeMonthsAgo);
+      this.endDate = date;
    }
 }
 
 export class PeriodFactory {
-   static create(period: PeriodType, year: number, month: number): Period {
+   static create(period: PeriodType, date: Date): Period {
       switch (period) {
          case PeriodType.MONTH:
-            return new MonthPeriod(year, month);
+            return new MonthPeriod(date);
          case PeriodType.YEAR:
-            return new YearPeriod(year);
+            return new YearPeriod(date);
          case PeriodType.SEMESTER:
-            return new SemesterPeriod(year);
+            return new SemesterPeriod(date);
          case PeriodType.QUARTER:
-            return new QuarterPeriod(year);
+            return new QuarterPeriod(date);
          default:
-            throw new Error('Invalid period');
+            throw new EntityError('Invalid period');
       }
    }
 }

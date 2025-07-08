@@ -14,9 +14,8 @@ export default class SummaryBillUseCase {
 
    async execute(input: InputSummaryBillDto): Promise<OutputSummaryBillDto> {
       const { userId, period } = input;
-      const actualMonth = new Date().getMonth();
-      const actualYear = new Date().getFullYear();
-      const interval = PeriodFactory.create(period, actualYear, actualMonth);
+      const today = new Date();
+      const interval = PeriodFactory.create(period, today);
 
       const result = await this.billRepository.findAllByUserAndPeriod(
          userId,
