@@ -31,7 +31,7 @@ interface OutputSummaryBillControllerDto {
    }[];
 }
 
-export class SummaryBillController {
+export default class SummaryBillController {
    constructor(private readonly summaryBillUseCase: SummaryBillUseCase) {
       this.summaryBillUseCase = summaryBillUseCase;
    }

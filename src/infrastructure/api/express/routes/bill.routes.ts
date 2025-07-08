@@ -11,9 +11,12 @@ import ListBillUseCase from '@core/usecases/bill/list/list.usecase';
 import ListBillController from '@controllers/bill/list.bill.controller';
 import DeleteBillUseCase from '@core/usecases/bill/delete/delete.usecase';
 import DeleteBillController from '@controllers/bill/delete.bill.controller';
+import SummaryBillUseCase from '@core/usecases/bill/summary/summary.usecase';
+import SummaryBillController from '@controllers/bill/summary.bill.controller';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/item.repository';
 import MongoDbVendorRepository from '@infrastructure/db/mongodb/repositories/vendor/vendor.repository';
+import { PeriodType } from '@core/usecases/bill/summary/periods';
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
@@ -31,6 +34,23 @@ route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
    });
    res.status(code).send(data);
 });
+
+route.get(
+   '/api/bill/summary',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbBillRepository = new MongoDbBillRepository();
+      const summaryBillUseCase = new SummaryBillUseCase(mongoDbBillRepository);
+      const controller = new SummaryBillController(summaryBillUseCase);
+      const { code, ...data } = await controller.handle({
+         data: {
+            userId: req.userId as string,
+            period: req.query.period as PeriodType,
+         },
+      });
+      res.status(code).send(data);
+   }
+);
 
 route.get(
    '/api/bill/:id',
@@ -106,4 +126,5 @@ route.delete(
       res.status(code).send(data);
    }
 );
+
 export default route;
