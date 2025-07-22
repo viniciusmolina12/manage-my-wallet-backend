@@ -6,7 +6,7 @@ import token from './___mocks__/jsonwebtoken.mock';
 import itemModel from '@infrastructure/db/mongodb/model/item.model';
 import vendorModel from '@infrastructure/db/mongodb/model/vendor.model';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
-import { BillBuilder } from './___mocks__/bill.builder.mock.';
+import { BillBuilder } from './___mocks__/bill.builder.mock';
 
 beforeAll(async () => {
    await mockDb.connect();
