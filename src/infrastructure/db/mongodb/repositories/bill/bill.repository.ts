@@ -7,6 +7,7 @@ import BillModel from '../../model/bill.model';
 import BillItem from '@core/domain/bill/entity/bill-item.entity';
 import { Filter, Pagination } from '@core/domain/@shared/filter/filter';
 import { BillMapper } from './bill.mapper';
+import Item from '@core/domain/item/entity/item.entity';
 
 export default class MongoDbBillRepository implements BillRepository {
    async create(entity: Bill): Promise<void> {
@@ -16,7 +17,11 @@ export default class MongoDbBillRepository implements BillRepository {
          date: entity.date,
          userId: entity.userId,
          vendorId: entity.vendorId,
-         items: entity.items,
+         items: entity.items.map((item) => ({
+            itemId: item.item.id,
+            price: item.price,
+            quantity: item.quantity,
+         })),
          description: entity.description,
          total: entity.total,
       });
@@ -27,7 +32,11 @@ export default class MongoDbBillRepository implements BillRepository {
          {
             name: entity.name,
             date: entity.date,
-            items: entity.items,
+            items: entity.items.map((item) => ({
+               itemId: item.item.id,
+               price: item.price,
+               quantity: item.quantity,
+            })),
             description: entity.description,
             vendorId: entity.vendorId,
             total: entity.total,
@@ -37,22 +46,55 @@ export default class MongoDbBillRepository implements BillRepository {
    }
 
    async find(id: string): Promise<Bill | null> {
-      const billFound = await BillModel.findOne({ _id: id }).populate(
-         'items.itemId',
-         'vendorId'
-      );
+      const billFound = await BillModel.findOne({ _id: id }).populate({
+         path: 'items.itemId',
+         select: 'name description categoryId userId',
+         transform: (doc) => {
+            return {
+               itemId: doc.id,
+               name: doc.name,
+               description: doc.description,
+               categoryId: doc.categoryId,
+               userId: doc.userId,
+            };
+         },
+      });
       if (!billFound) return null;
       const bill = BillMapper.toDomain(billFound);
       return bill;
    }
 
    async findAll(): Promise<Bill[]> {
-      const result = await BillModel.find();
+      const result = await BillModel.find().populate({
+         path: 'items.itemId',
+         select: 'name description categoryId userId',
+         transform: (doc) => {
+            return {
+               itemId: doc.id,
+               name: doc.name,
+               description: doc.description,
+               categoryId: doc.categoryId,
+               userId: doc.userId,
+            };
+         },
+      });
       return result.map((b) => {
-         const billItems = b.items.map(
-            (item) =>
-               new BillItem(item._id, item._id, item.price, item.quantity)
-         );
+         const billItems = b.items.map((item) => {
+            const populatedItem = item.itemId as any;
+            const itemDomain = new Item(
+               populatedItem._id ? populatedItem._id.toString() : item.itemId,
+               populatedItem.name || '',
+               populatedItem.categoryId || '',
+               populatedItem.userId || '',
+               populatedItem.description || ''
+            );
+            return new BillItem(
+               item._id,
+               itemDomain,
+               item.price,
+               item.quantity
+            );
+         });
          const bill = BillMapper.toDomain(b);
          bill.createdAt = b.createdAt;
          bill.updatedAt = b.updatedAt;
@@ -66,7 +108,16 @@ export default class MongoDbBillRepository implements BillRepository {
    async findByUser(id: string, userId: string): Promise<Bill | null> {
       const billFound = await BillModel.findOne({ _id: id, userId }).populate({
          path: 'items.itemId',
-         select: 'name description -_id _v',
+         select: 'name description categoryId userId',
+         transform: (doc) => {
+            return {
+               itemId: doc.id,
+               name: doc.name,
+               description: doc.description,
+               categoryId: doc.categoryId,
+               userId: doc.userId,
+            };
+         },
       });
       if (!billFound) return null;
       const bill = BillMapper.toDomain(billFound);
@@ -85,6 +136,18 @@ export default class MongoDbBillRepository implements BillRepository {
          date: {
             $gte: startDate,
             $lte: endDate,
+         },
+      }).populate({
+         path: 'items.itemId',
+         select: 'name description categoryId userId',
+         transform: (doc) => {
+            return {
+               itemId: doc.id,
+               name: doc.name,
+               description: doc.description,
+               categoryId: doc.categoryId,
+               userId: doc.userId,
+            };
          },
       });
       return BillMapper.toDomainList(result);
@@ -123,7 +186,20 @@ export default class MongoDbBillRepository implements BillRepository {
       const result = await BillModel.find(queryFilter)
          .sort({ date: filter.order === 'asc' ? 1 : -1 })
          .skip(filter.skip)
-         .limit(filter.limit);
+         .limit(filter.limit)
+         .populate({
+            path: 'items.itemId',
+            select: 'name description categoryId userId',
+            transform: (doc) => {
+               return {
+                  itemId: doc.id,
+                  name: doc.name,
+                  description: doc.description,
+                  categoryId: doc.categoryId,
+                  userId: doc.userId,
+               };
+            },
+         });
       const bills = BillMapper.toDomainList(result);
       const total = await BillModel.countDocuments(queryFilter);
       const hasNext = total > filter.skip + filter.limit;

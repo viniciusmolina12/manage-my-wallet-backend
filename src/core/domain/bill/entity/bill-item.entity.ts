@@ -1,16 +1,17 @@
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
+import Item from '@core/domain/item/entity/item.entity';
 
 export default class BillItem extends Entity {
    private _id: string;
-   public itemId: string;
+   public item: Item;
    public price: number;
    public quantity: number;
 
-   constructor(id: string, itemId: string, price: number, quantity: number) {
+   constructor(id: string, item: Item, price: number, quantity: number) {
       super();
       this._id = id;
-      this.itemId = itemId;
+      this.item = item;
       this.price = price;
       this.quantity = quantity;
       this.validate();
@@ -23,9 +24,9 @@ export default class BillItem extends Entity {
             source: 'billItem',
          });
       }
-      if (!this.itemId) {
+      if (!this.item) {
          this.notification.add({
-            message: 'ItemId is required',
+            message: 'Item is required',
             source: 'billItem',
          });
       }

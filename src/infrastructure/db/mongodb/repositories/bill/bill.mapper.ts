@@ -1,5 +1,6 @@
 import BillItem from '@core/domain/bill/entity/bill-item.entity';
 import Bill from '@core/domain/bill/entity/bill.entity';
+import Item from '@core/domain/item/entity/item.entity';
 export class BillMapper {
    static toDomain(model: any): Bill {
       return new Bill(
@@ -20,6 +21,12 @@ export class BillMapper {
 
 class BillItemMapper {
    static toDomain(model: any): BillItem {
-      return new BillItem(model._id, model.itemId, model.price, model.quantity);
+      const item = new Item(
+         model.itemId.itemId,
+         model.itemId.name,
+         model.itemId.categoryId,
+         model.itemId.userId
+      );
+      return new BillItem(model._id, item, model.price, model.quantity);
    }
 }
