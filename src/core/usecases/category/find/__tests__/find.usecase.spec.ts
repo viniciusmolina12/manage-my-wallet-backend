@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.category.mock';
-import FindCategoryUseCase from './find.usecase';
+import mockRepository from '../../__mocks__/repository.category.mock';
+import FindCategoryUseCase from '../find.usecase';
 describe('Find category usecase test', () => {
    it('should throw an error if category does not exist', async () => {
       const sut = new FindCategoryUseCase(mockRepository);

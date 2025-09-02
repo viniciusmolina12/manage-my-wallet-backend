@@ -1,7 +1,7 @@
 import User from '@core/domain/user/entity/user.entity';
-import mockRepository from '../__mocks__/repository.user.mock';
-import { EncryptStub } from '../__mocks__/stubs.user.mock';
-import ResetPasswordUserUseCase from './reset_password.usecase';
+import mockRepository from '../../__mocks__/repository.user.mock';
+import { EncryptStub } from '../../__mocks__/stubs.user.mock';
+import ResetPasswordUserUseCase from '../reset_password.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
 

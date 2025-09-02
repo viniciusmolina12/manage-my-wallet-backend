@@ -1,5 +1,5 @@
-import ListCategoryUseCase from './list.usecase';
-import mockRepository from '../__mocks__/repository.category.mock';
+import ListCategoryUseCase from '../list.usecase';
+import mockRepository from '../../__mocks__/repository.category.mock';
 
 describe('List category usecase test', () => {
    it('should list all categories', async () => {

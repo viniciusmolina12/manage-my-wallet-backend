@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.category.mock';
-import UpdateCategoryUseCase from './update.usecase';
+import mockRepository from '../../__mocks__/repository.category.mock';
+import UpdateCategoryUseCase from '../update.usecase';
 
 describe('Update category usecase', () => {
    it('should be able to update a new category', async () => {

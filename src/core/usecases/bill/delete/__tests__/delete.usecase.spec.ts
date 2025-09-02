@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.bill.mock';
-import DeleteBillUseCase from './delete.usecase';
+import mockRepository from '../../__mocks__/repository.bill.mock';
+import DeleteBillUseCase from '../delete.usecase';
 
 describe('Delete bill usecase test', () => {
    it('should delete a bill', async () => {

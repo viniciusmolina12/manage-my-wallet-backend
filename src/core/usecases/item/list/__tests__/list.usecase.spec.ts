@@ -1,5 +1,5 @@
-import ListItemUsecase from './list.usecase';
-import mockRepository from '../__mocks__/repository.item.mock';
+import ListItemUsecase from '../list.usecase';
+import mockRepository from '../../__mocks__/repository.item.mock';
 const mockItemList = [
    {
       id: 'any_id',

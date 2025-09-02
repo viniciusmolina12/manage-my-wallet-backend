@@ -1,5 +1,5 @@
-import DeleteItemUseCase from './delete.usecase';
-import mockRepository from '../__mocks__/repository.item.mock';
+import DeleteItemUseCase from '../delete.usecase';
+import mockRepository from '../../__mocks__/repository.item.mock';
 describe('Item delete usecase', () => {
    it('should delete an item', async () => {
       const sut = new DeleteItemUseCase(mockRepository);

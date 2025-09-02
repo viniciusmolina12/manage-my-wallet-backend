@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.vendor.mock';
-import DeleteVendorUseCase from './delete.usecase';
+import mockRepository from '../../__mocks__/repository.vendor.mock';
+import DeleteVendorUseCase from '../delete.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
 interface SutTypes {
    sut: DeleteVendorUseCase;

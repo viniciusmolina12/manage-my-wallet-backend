@@ -1,7 +1,7 @@
 import User from '@core/domain/user/entity/user.entity';
-import mockRepository from '../__mocks__/repository.user.mock';
-import { JwtGeneratorStub, MailerStub } from '../__mocks__/stubs.user.mock';
-import RecoverPasswordUserUseCase from './recover_password.usecase';
+import mockRepository from '../../__mocks__/repository.user.mock';
+import { JwtGeneratorStub, MailerStub } from '../../__mocks__/stubs.user.mock';
+import RecoverPasswordUserUseCase from '../recover_password.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import ENV from '@config/env';
 import { Email } from '@core/domain/@shared/value-object/email.vo';

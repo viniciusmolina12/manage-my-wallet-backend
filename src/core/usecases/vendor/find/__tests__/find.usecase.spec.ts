@@ -1,5 +1,5 @@
 import Vendor from '@core/domain/vendor/entity/vendor.entity';
-import { FindVendorUseCase } from './find.usecase';
+import { FindVendorUseCase } from '../find.usecase';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
 
 const mockRepository = {

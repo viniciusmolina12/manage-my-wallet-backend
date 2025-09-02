@@ -1,10 +1,10 @@
 import Encrypt from '@core/domain/interfaces/encrypt.interface';
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
-import LoginUserUseCase from './login.usecase';
+import LoginUserUseCase from '../login.usecase';
 import User from '@core/domain/user/entity/user.entity';
 import EntityError from '@core/domain/@shared/error/entity.error';
-import { EncryptStub, JwtGeneratorStub } from '../__mocks__/stubs.user.mock';
-import mockRepository from '../__mocks__/repository.user.mock';
+import { EncryptStub, JwtGeneratorStub } from '../../__mocks__/stubs.user.mock';
+import mockRepository from '../../__mocks__/repository.user.mock';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 interface SutTypes {

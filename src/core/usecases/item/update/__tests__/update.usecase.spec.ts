@@ -1,6 +1,6 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
-import UpdateItemUseCase from './update.usecase';
-import mockRepository from '../__mocks__/repository.item.mock';
+import UpdateItemUseCase from '../update.usecase';
+import mockRepository from '../../__mocks__/repository.item.mock';
 
 const input = {
    id: 'any_id',

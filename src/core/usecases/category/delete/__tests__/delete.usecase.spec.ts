@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.category.mock';
-import DeleteCategoryUseCase from './delete.usecase';
+import mockRepository from '../../__mocks__/repository.category.mock';
+import DeleteCategoryUseCase from '../delete.usecase';
 
 describe('Delete category usecase test', () => {
    it('should delete a category', async () => {

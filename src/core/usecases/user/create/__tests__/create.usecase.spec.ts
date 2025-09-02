@@ -1,9 +1,9 @@
 import Encrypt from '@core/domain/interfaces/encrypt.interface';
-import CreateUserUseCase from './create.usecase';
+import CreateUserUseCase from '../create.usecase';
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
 import User from '@core/domain/user/entity/user.entity';
-import mockRepository from '../__mocks__/repository.user.mock';
-import { EncryptStub, JwtGeneratorStub } from '../__mocks__/stubs.user.mock';
+import mockRepository from '../../__mocks__/repository.user.mock';
+import { EncryptStub, JwtGeneratorStub } from '../../__mocks__/stubs.user.mock';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 interface SutTypes {

@@ -1,6 +1,6 @@
 import Vendor from '@core/domain/vendor/entity/vendor.entity';
-import mockRepository from '../__mocks__/repository.vendor.mock';
-import { UpdateVendorUseCase } from './update.usecase';
+import mockRepository from '../../__mocks__/repository.vendor.mock';
+import { UpdateVendorUseCase } from '../update.usecase';
 import EntityError from '@core/domain/@shared/error/entity.error';
 interface SutTypes {
    sut: UpdateVendorUseCase;

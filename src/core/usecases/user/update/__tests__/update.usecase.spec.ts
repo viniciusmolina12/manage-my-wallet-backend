@@ -1,6 +1,6 @@
 import User from '@core/domain/user/entity/user.entity';
-import UpdateUserUseCase from './update.usecase';
-import mockRepository from '../__mocks__/repository.user.mock';
+import UpdateUserUseCase from '../update.usecase';
+import mockRepository from '../../__mocks__/repository.user.mock';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
 
 const input = {

@@ -1,5 +1,5 @@
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
-import { CreateVendorUseCase } from './create.usecase';
+import { CreateVendorUseCase } from '../create.usecase';
 import Vendor from '@core/domain/vendor/entity/vendor.entity';
 interface SutTypes {
    sut: CreateVendorUseCase;

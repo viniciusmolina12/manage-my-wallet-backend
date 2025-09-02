@@ -1,5 +1,5 @@
-import CreateCategoryUseCase from './create.usecase';
-import mockRepository from '../__mocks__/repository.category.mock';
+import CreateCategoryUseCase from '../create.usecase';
+import mockRepository from '../../__mocks__/repository.category.mock';
 
 describe('Create category usecase', () => {
    it('should be able to create a new category', async () => {

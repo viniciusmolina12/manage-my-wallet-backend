@@ -1,5 +1,5 @@
-import FindBillUseCase from './find.usecase';
-import mockRepository from '../__mocks__/repository.bill.mock';
+import FindBillUseCase from '../find.usecase';
+import mockRepository from '../../__mocks__/repository.bill.mock';
 describe('Find bill usecase', () => {
    it('should find a bill', async () => {
       mockRepository.findByUser.mockReturnValueOnce({

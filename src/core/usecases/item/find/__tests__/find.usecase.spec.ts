@@ -1,5 +1,5 @@
-import mockRepository from '../__mocks__/repository.item.mock';
-import FindItemUseCase from './find.usecase';
+import mockRepository from '../../__mocks__/repository.item.mock';
+import FindItemUseCase from '../find.usecase';
 
 describe('Find item create usecase test', () => {
    it('should find an item', async () => {
