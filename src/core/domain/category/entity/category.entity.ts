@@ -1,13 +1,21 @@
+import { Uuid } from '@core/domain/@shared/value-object/uuid.vo';
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
 
+export class CategoryId extends Uuid {}
+
 export default class Category extends Entity {
-   private _id: string;
+   private _id: CategoryId;
    private _name: string;
    private _description?: string;
    private _userId: string;
 
-   constructor(id: string, name: string, userId: string, description?: string) {
+   constructor(
+      id: CategoryId,
+      name: string,
+      userId: string,
+      description?: string
+   ) {
       super();
       this._id = id;
       this._name = name;
@@ -40,7 +48,7 @@ export default class Category extends Entity {
       }
    }
 
-   get id(): string {
+   get id(): CategoryId {
       return this._id;
    }
    get name(): string {
