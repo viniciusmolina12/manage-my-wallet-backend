@@ -1,9 +1,10 @@
-import Entity from '../entity.interface';
 import EntityError from '../error/entity.error';
+import { ValueObject } from '../value-object.interface';
 
-export class Email {
+export class Email extends ValueObject {
    private _value: string;
    constructor(value: string) {
+      super();
       this._value = value;
       this.validate();
    }
