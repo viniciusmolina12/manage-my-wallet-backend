@@ -1,6 +1,6 @@
-import SummaryBillUseCase from './summary.usecase';
-import mockRepository from '../__mocks__/repository.bill.mock';
-import { PeriodFactory, PeriodType } from './periods';
+import SummaryBillUseCase from '../summary.usecase';
+import mockRepository from '../../__mocks__/repository.bill.mock';
+import { PeriodFactory, PeriodType } from '../periods';
 
 describe('SummaryBillUseCase', () => {
    let sut: SummaryBillUseCase;

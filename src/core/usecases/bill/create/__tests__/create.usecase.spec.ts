@@ -46,7 +46,7 @@ describe('Create bill usecase', () => {
       expect(bill.description).toBe('any_description');
       expect(bill.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
       expect(bill.items.length).toBe(1);
-      expect(bill.items[0].itemId).toBe('any_item_id');
+      expect(bill.items[0].item.id).toBe('any_item_id');
       expect(bill.items[0].price).toBe(10);
       expect(bill.items[0].quantity).toBe(2);
       expect(bill.createdAt).toBeDefined();

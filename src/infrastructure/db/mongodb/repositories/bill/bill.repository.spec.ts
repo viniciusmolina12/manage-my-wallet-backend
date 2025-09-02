@@ -22,7 +22,13 @@ afterAll(async () => {
 describe('MongoDB Item Repository tests', () => {
    it('should create a bill', async () => {
       const sut = new MongoDbBillRepository();
-      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const item = new Item(
+         'any_item_id',
+         'any_item_name',
+         'any_category_id',
+         'any_user_id'
+      );
+      const billItem = new BillItem('any_id', item, 10, 2);
       const bill = new Bill(
          'any_id',
          'any_name',
@@ -43,7 +49,13 @@ describe('MongoDB Item Repository tests', () => {
    });
    it('should update a bill', async () => {
       const sut = new MongoDbBillRepository();
-      const oldBillItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const item = new Item(
+         'any_item_id',
+         'any_item_name',
+         'any_category_id',
+         'any_user_id'
+      );
+      const oldBillItem = new BillItem('any_id', item, 10, 2);
       const oldBill = new Bill(
          'any_id',
          'any_name',
@@ -73,7 +85,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(billCreated?.description).toBe(oldBill.description);
       expect(billCreated?.items).toHaveLength(1);
 
-      const updateBillItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const updateBillItem = new BillItem('any_id', item, 10, 2);
       const updateBill = new Bill(
          'any_id',
          'any_name_2',
@@ -111,7 +123,13 @@ describe('MongoDB Item Repository tests', () => {
          userId: oldItem.userId,
       });
 
-      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const itemDomain = new Item(
+         item._id,
+         item.name,
+         item.categoryId,
+         item.userId
+      );
+      const billItem = new BillItem('any_id', itemDomain, 10, 2);
       const bill = new Bill(
          'any_id',
          'any_name',
@@ -121,7 +139,6 @@ describe('MongoDB Item Repository tests', () => {
          'any_user_id',
          'any_description'
       );
-      billItem.itemId = item.id;
       await BillModel.create({
          _id: bill.id,
          name: bill.name,
@@ -144,7 +161,13 @@ describe('MongoDB Item Repository tests', () => {
    describe('findAllByUser', () => {
       it('should find all bills by name', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          await BillModel.create({
             _id: 'any_id_1',
@@ -185,7 +208,13 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should find all bills by date', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          await BillModel.create({
             _id: 'any_id_1',
@@ -238,7 +267,13 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should find all bills by vendorId', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          await BillModel.create({
             _id: 'any_id_1',
@@ -273,7 +308,13 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should find all bills by userId', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          await BillModel.create({
             _id: 'any_id_1',
@@ -306,7 +347,13 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should return total of bills', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          for (let i = 0; i < 20; i++) {
             await BillModel.create({
@@ -328,7 +375,13 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should return hasNext false when total is less than limit', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
 
          for (let i = 0; i < 10; i++) {
             await BillModel.create({
@@ -349,7 +402,20 @@ describe('MongoDB Item Repository tests', () => {
 
       it('should paginate bills', async () => {
          const sut = new MongoDbBillRepository();
-         const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+         const item = new Item(
+            'any_item_id',
+            'any_item_name',
+            'any_category_id',
+            'any_user_id'
+         );
+         const billItem = new BillItem('any_id', item, 10, 2);
+         await ItemModel.create({
+            _id: item.id,
+            name: item.name,
+            description: item.description,
+            categoryId: item.categoryId,
+            userId: item.userId,
+         });
 
          for (let i = 0; i < 25; i++) {
             await BillModel.create({
@@ -359,7 +425,14 @@ describe('MongoDB Item Repository tests', () => {
                userId: 'any_user_id',
                vendorId: 'any_vendor_id',
                description: 'any_description_1',
-               items: [billItem],
+               items: [
+                  {
+                     _id: `any_item_id_${i}`,
+                     itemId: item.id,
+                     price: 10,
+                     quantity: 2,
+                  },
+               ],
                total: 20,
             });
          }
@@ -375,7 +448,13 @@ describe('MongoDB Item Repository tests', () => {
 
    it('should delete a bill', async () => {
       const sut = new MongoDbBillRepository();
-      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const item = new Item(
+         'any_item_id',
+         'any_item_name',
+         'any_category_id',
+         'any_user_id'
+      );
+      const billItem = new BillItem('any_id', item, 10, 2);
       const bill = new Category('any_hash_id', 'Category 1', 'Description 1');
       await BillModel.create({
          _id: bill.id,
@@ -394,7 +473,13 @@ describe('MongoDB Item Repository tests', () => {
 
    it('should find all bills by user and period', async () => {
       const sut = new MongoDbBillRepository();
-      const billItem = new BillItem('any_id', 'any_item_id', 10, 2);
+      const item = new Item(
+         'any_item_id',
+         'any_item_name',
+         'any_category_id',
+         'any_user_id'
+      );
+      const billItem = new BillItem('any_id', item, 10, 2);
       const bill = new Bill(
          'any_id',
          'any_name',

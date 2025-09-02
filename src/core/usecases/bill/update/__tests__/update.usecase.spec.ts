@@ -1,8 +1,8 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
-import { InputUpdateBillDto } from './update.bill.dto';
-import UpdateBillUseCase from './update.usecase';
-import mockRepository from '../__mocks__/repository.bill.mock';
-import mockVendorRepository from '../../vendor/__mocks__/repository.vendor.mock';
+import { InputUpdateBillDto } from '../update.bill.dto';
+import UpdateBillUseCase from '../update.usecase';
+import mockRepository from '../../__mocks__/repository.bill.mock';
+import mockVendorRepository from '../../../vendor/__mocks__/repository.vendor.mock';
 
 describe('Update bill usecase', () => {
    let input: InputUpdateBillDto;
