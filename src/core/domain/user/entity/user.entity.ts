@@ -1,14 +1,17 @@
 import Entity from '@core/domain/@shared/entity.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
+import { Uuid } from '@core/domain/@shared/value-object/uuid.vo';
+
+export class UserId extends Uuid {}
 
 export default class User extends Entity {
-   public _id: string;
+   public _id: UserId;
    private _name: string;
    private _email: Email;
    private _password: string;
    constructor(
-      id: string,
+      id: UserId,
       name: string,
       email: Email,
       password: string,
@@ -16,7 +19,7 @@ export default class User extends Entity {
       updatedAt?: Date
    ) {
       super(createdAt, updatedAt);
-      this._id = id;
+      this._id = id || new UserId();
       this._name = name;
       this._email = email;
       this._password = password;
@@ -24,12 +27,6 @@ export default class User extends Entity {
    }
 
    validate() {
-      if (!this._id) {
-         this.notification.add({
-            message: 'Id is required',
-            source: 'user',
-         });
-      }
       if (!this._name) {
          this.notification.add({
             message: 'Name is required',
@@ -62,7 +59,7 @@ export default class User extends Entity {
    }
 
    get id(): string {
-      return this._id;
+      return this._id.id;
    }
 
    get email(): Email {
