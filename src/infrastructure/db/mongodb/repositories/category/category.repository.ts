@@ -1,4 +1,6 @@
-import Category from '@core/domain/category/entity/category.entity';
+import Category, {
+   CategoryId,
+} from '@core/domain/category/entity/category.entity';
 import { CategoryRepository } from '@core/domain/category/repository/category.repository';
 import CategoryModel from '../../model/category.model';
 
@@ -26,7 +28,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const result = await CategoryModel.findOne({ _id: id });
       if (!result) return null;
       const category = new Category(
-         result._id.toString(),
+         new CategoryId(result.id),
          result.name,
          result.userId,
          result?.description
@@ -40,7 +42,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const result = await CategoryModel.findOne({ _id: id, userId });
       if (!result) return null;
       const category = new Category(
-         result._id.toString(),
+         new CategoryId(result.id),
          result.name,
          result.userId,
          result?.description
@@ -54,7 +56,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const result = await CategoryModel.find();
       return result.map((c) => {
          const category = new Category(
-            c._id.toString(),
+            new CategoryId(c.id),
             c.name,
             c.userId,
             c?.description
@@ -69,7 +71,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const result = await CategoryModel.find({ userId });
       return result.map((c) => {
          const category = new Category(
-            c._id.toString(),
+            new CategoryId(c.id),
             c.name,
             c.userId,
             c?.description
@@ -95,7 +97,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const result = await CategoryModel.findOne({ name: name, userId });
       if (!result) return undefined;
       const category = new Category(
-         result._id.toString(),
+         new CategoryId(result.id),
          result.name,
          result.userId,
          result?.description
