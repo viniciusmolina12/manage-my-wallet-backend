@@ -1,6 +1,6 @@
-import EntityError from '../../@shared/error/entity.error';
-import BillItem from './bill-item.entity';
-import Bill from './bill.entity';
+import EntityError from '../../../@shared/error/entity.error';
+import BillItem from '../bill-item.entity';
+import Bill from '../bill.entity';
 
 const makeBillItem = (): BillItem => {
    return new BillItem('1', '1', 100, 2);

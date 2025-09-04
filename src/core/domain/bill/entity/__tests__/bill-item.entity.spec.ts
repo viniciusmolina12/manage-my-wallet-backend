@@ -1,6 +1,6 @@
 import Item from '@core/domain/item/entity/item.entity';
-import EntityError from '../../@shared/error/entity.error';
-import BillItem from './bill-item.entity';
+import EntityError from '../../../@shared/error/entity.error';
+import BillItem from '../bill-item.entity';
 
 describe('BillItem entity unit tests', () => {
    it('should throw a error if id is empty', () => {
