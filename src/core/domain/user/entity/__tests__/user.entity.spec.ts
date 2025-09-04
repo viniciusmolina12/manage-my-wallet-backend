@@ -1,55 +1,45 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
-import User from './user.entity';
-import { Email } from '../../../domain/@shared/value-object/email.vo';
+import User from '../user.entity';
+import { Email } from '@core/domain/@shared/value-object/email.vo';
+import { UserId } from '../user.entity';
 
 describe('User entity tests', () => {
-   it('should throw if id is empty', () => {
-      expect(() => {
-         const sut = new User(
-            '',
-            'any_name',
-            new Email('any_email@mail.com'),
-            'any_password'
-         );
-      }).toThrowError(new EntityError('user: Id is required, '));
-   });
-
    it('should throw if name is empty', () => {
       expect(() => {
          const sut = new User(
-            'any_id',
+            new UserId(),
             '',
             new Email('any_email@mail.com'),
             'any_password'
          );
-      }).toThrowError(new EntityError('user: Name is required, '));
+      }).toThrow(new EntityError('user: Name is required, '));
    });
 
    it('should throw if email is invalid', () => {
       expect(() => {
          const sut = new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email_invalid.invalid'),
             'any_password'
          );
-      }).toThrowError(new EntityError('Invalid email'));
+      }).toThrow(new EntityError('Invalid email'));
    });
 
    it('should throw if password is empty', () => {
       expect(() => {
          const sut = new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             ''
          );
-      }).toThrowError(new EntityError('user: Password is required, '));
+      }).toThrow(new EntityError('user: Password is required, '));
    });
 
    it('should change name', () => {
       const sut = new User(
-         'any_id',
+         new UserId(),
          'any_name',
          new Email('any_email@mail.com'),
          'any_password'
@@ -60,7 +50,7 @@ describe('User entity tests', () => {
 
    it('should change email', () => {
       const sut = new User(
-         'any_id',
+         new UserId(),
          'any_name',
          new Email('any_email@mail.com'),
          'any_password'
@@ -71,7 +61,7 @@ describe('User entity tests', () => {
 
    it('should change password', () => {
       const sut = new User(
-         'any_id',
+         new UserId(),
          'any_name',
          new Email('any_email@mail.com'),
          'any_password'
