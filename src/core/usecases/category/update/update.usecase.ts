@@ -3,7 +3,9 @@ import {
    InputUpdateCategoryDto,
    OutputUpdateCategoryDto,
 } from './update.category.dto';
-import Category from '@core/domain/category/entity/category.entity';
+import Category, {
+   CategoryId,
+} from '@core/domain/category/entity/category.entity';
 
 export default class UpdateCategoryUseCase {
    constructor(private categoryRepository: CategoryRepository) {
@@ -13,6 +15,7 @@ export default class UpdateCategoryUseCase {
    async execute(
       input: InputUpdateCategoryDto
    ): Promise<OutputUpdateCategoryDto> {
+      const categoryId = new CategoryId(input.id);
       const categoryAlreadyExists =
          await this.categoryRepository.findCategoryByName(
             input.name,
@@ -31,14 +34,14 @@ export default class UpdateCategoryUseCase {
       }
 
       const category = new Category(
-         input.id,
+         categoryId,
          input.name,
          input.userId,
          input?.description
       );
       await this.categoryRepository.update(category);
       return {
-         id: category.id,
+         id: category.id.toString(),
          name: category.name,
          description: category.description,
          createdAt: categoryFound.createdAt,

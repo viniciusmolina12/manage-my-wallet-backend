@@ -4,7 +4,9 @@ import {
    InputCreateCategoryDto,
    OutputCreateCategoryDto,
 } from './create.category.dto';
-import Category from '@core/domain/category/entity/category.entity';
+import Category, {
+   CategoryId,
+} from '@core/domain/category/entity/category.entity';
 
 export default class CreateCategoryUseCase {
    constructor(private categoryRepository: CategoryRepository) {
@@ -22,7 +24,7 @@ export default class CreateCategoryUseCase {
          throw new Error('Category already exists');
       }
       const category = new Category(
-         uuid(),
+         new CategoryId(),
          input.name,
          input.userId,
          input?.description
@@ -30,7 +32,7 @@ export default class CreateCategoryUseCase {
 
       await this.categoryRepository.create(category);
       return {
-         id: category.id,
+         id: category.id.toString(),
          name: category.name,
          description: category?.description,
          createdAt: category.createdAt,

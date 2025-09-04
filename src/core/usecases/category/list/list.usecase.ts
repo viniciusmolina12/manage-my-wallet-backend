@@ -16,7 +16,7 @@ export default class ListCategoryUseCase {
       );
       return {
          categories: categories.map((category) => ({
-            id: category.id,
+            id: category.id.toString(),
             name: category.name,
             description: category?.description,
             createdAt: category.createdAt,

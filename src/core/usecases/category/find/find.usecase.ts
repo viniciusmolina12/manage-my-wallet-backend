@@ -19,7 +19,7 @@ export default class FindCategoryUseCase {
          throw new EntityError('Category not found');
       }
       return {
-         id: category.id,
+         id: category.id.toString(),
          name: category.name,
          description: category?.description,
          createdAt: category.createdAt,
