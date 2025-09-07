@@ -1,12 +1,12 @@
 import { RepositoryInterface } from '../../@shared/repository.interface';
-import User from '../entity/user.entity';
+import User, { UserId } from '../entity/user.entity';
 import { Email } from '../../../domain/@shared/value-object/email.vo';
 
 export class UserWithResetToken extends User {
    constructor(
       public resetPasswordToken: string,
       public expiresIn: Date,
-      id: string,
+      id: UserId,
       name: string,
       email: Email,
       password: string

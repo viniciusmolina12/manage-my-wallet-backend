@@ -1,4 +1,4 @@
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import {
    UserRepository,
    UserWithResetToken,
@@ -32,7 +32,7 @@ export default class MongoDbUserRepository implements UserRepository {
       const user = await UserModel.findOne({ _id: id });
       if (!user) return null;
       const userFound = new User(
-         user.id,
+         new UserId(user.id),
          user.name,
          new Email(user.email),
          user.password
@@ -64,7 +64,7 @@ export default class MongoDbUserRepository implements UserRepository {
       return new UserWithResetToken(
          resetPasswordToken,
          userFound.resetPassword?.expiresIn as Date,
-         userFound.id,
+         new UserId(userFound.id),
          userFound.name,
          new Email(userFound.email),
          userFound.password
@@ -89,7 +89,7 @@ export default class MongoDbUserRepository implements UserRepository {
       const user = await UserModel.find(filter);
       const users = user.map((user) => {
          const userFound = new User(
-            user.id,
+            new UserId(user.id),
             user.name,
             new Email(user.email),
             user.password
