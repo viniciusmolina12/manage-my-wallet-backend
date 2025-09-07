@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import Encrypt from '@core/domain/interfaces/encrypt.interface';
 import CONSTANTS from '@config/constants';
 import { UserRepository } from '@core/domain/user/repository/user.repository';
@@ -25,7 +25,7 @@ export default class CreateUserUseCase {
 
       const email = new Email(input.email);
       const user = new User(
-         uuid(),
+         new UserId(),
          input.name,
          email,
          this.encrypt.encrypt(input.password, CONSTANTS.SALTS_ROUND) as string
