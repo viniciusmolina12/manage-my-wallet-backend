@@ -14,6 +14,7 @@ import RecoverPasswordUserUseCase from '@core/usecases/user/recover-password/rec
 import { NodeMailerMailer } from '@infrastructure/mailer/node-mailer';
 import ENV from '@config/env';
 import RecoverPasswordUserController from '@controllers/user/recover-password.user.controller';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const route = Router();
 
@@ -31,15 +32,19 @@ route.post('/api/user', async (req: Request, res: Response) => {
    res.status(code).send(data);
 });
 
-route.patch('/api/user/:id', async (req: Request, res: Response) => {
-   const mongoDbUserRepository = new MongoDbUserRepository();
-   const updateUserUseCase = new UpdateUserUseCase(mongoDbUserRepository);
-   const controller = new UpdateUserController(updateUserUseCase);
-   const { code, ...data } = await controller.handle({
-      data: { ...req.body, id: req.params.id },
-   });
-   res.status(code).send(data);
-});
+route.patch(
+   '/api/user/:id',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbUserRepository = new MongoDbUserRepository();
+      const updateUserUseCase = new UpdateUserUseCase(mongoDbUserRepository);
+      const controller = new UpdateUserController(updateUserUseCase);
+      const { code, ...data } = await controller.handle({
+         data: { ...req.body, id: req.params.id },
+      });
+      res.status(code).send(data);
+   }
+);
 
 route.post('/api/login', async (req: Request, res: Response) => {
    const mongoDbUserRepository = new MongoDbUserRepository();
@@ -55,17 +60,25 @@ route.post('/api/login', async (req: Request, res: Response) => {
    res.status(code).send(data);
 });
 
-route.post('/api/user/reset-password', async (req: Request, res: Response) => {
-   const mongoDbUserRepository = new MongoDbUserRepository();
-   const bcryptEncrypt = new BcryptEncrypt();
-   const resetPasswordUserUseCase = new ResetPasswordUserUseCase(
-      mongoDbUserRepository,
-      bcryptEncrypt
-   );
-   const controller = new ResetPasswordUserController(resetPasswordUserUseCase);
-   const { code, ...data } = await controller.handle({ data: { ...req.body } });
-   res.status(code).send(data);
-});
+route.post(
+   '/api/user/reset-password',
+   authMiddleware,
+   async (req: Request, res: Response) => {
+      const mongoDbUserRepository = new MongoDbUserRepository();
+      const bcryptEncrypt = new BcryptEncrypt();
+      const resetPasswordUserUseCase = new ResetPasswordUserUseCase(
+         mongoDbUserRepository,
+         bcryptEncrypt
+      );
+      const controller = new ResetPasswordUserController(
+         resetPasswordUserUseCase
+      );
+      const { code, ...data } = await controller.handle({
+         data: { ...req.body },
+      });
+      res.status(code).send(data);
+   }
+);
 
 route.post(
    '/api/user/recover-password',
