@@ -1,4 +1,4 @@
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import mockRepository from '../../__mocks__/repository.user.mock';
 import { EncryptStub } from '../../__mocks__/stubs.user.mock';
 import ResetPasswordUserUseCase from '../reset_password.usecase';
@@ -10,7 +10,7 @@ class UserWithResetToken extends User {
    expiresIn: Date = new Date();
 }
 const user = new UserWithResetToken(
-   'any_id',
+   new UserId(),
    'any_name',
    new Email('any_email@mail.com'),
    'any_password'

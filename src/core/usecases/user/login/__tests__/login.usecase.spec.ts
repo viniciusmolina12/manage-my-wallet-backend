@@ -1,7 +1,7 @@
 import Encrypt from '@core/domain/interfaces/encrypt.interface';
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
 import LoginUserUseCase from '../login.usecase';
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { EncryptStub, JwtGeneratorStub } from '../../__mocks__/stubs.user.mock';
 import mockRepository from '../../__mocks__/repository.user.mock';
@@ -29,10 +29,11 @@ const makeSut = (): SutTypes => {
 describe('Login usecase tests', () => {
    it('should login succesfully', async () => {
       const { sut } = makeSut();
+      const userId = new UserId();
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               userId,
                'any_name',
                new Email('any_email@mail.com'),
                'encrypted_password'
@@ -44,7 +45,7 @@ describe('Login usecase tests', () => {
          password: 'encrypted_password',
       });
       expect(result.token).toBe('any_token');
-      expect(result.user.id).toBe('any_id');
+      expect(result.user.id).toBe(userId.id);
       expect(result.user.name).toBe('any_name');
       expect(result.user.email).toBe('any_email@mail.com');
    });
@@ -65,7 +66,7 @@ describe('Login usecase tests', () => {
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               new UserId(),
                'any_name',
                new Email('any_email@mail.com'),
                'any_password'

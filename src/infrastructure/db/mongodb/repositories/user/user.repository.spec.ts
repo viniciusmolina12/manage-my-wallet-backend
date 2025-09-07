@@ -1,4 +1,4 @@
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import mockDb from '../__mocks__/mockDb';
 import UserModel from '../../model/user.model';
 import MongoDbUserRepository from './user.repository';
@@ -19,7 +19,7 @@ afterAll(async () => {
 describe('User repository tests', () => {
    it('should create an user', async () => {
       const user = new User(
-         'any_id',
+         new UserId(),
          'any_name',
          new Email('email@email.com'),
          'any_password'
@@ -35,15 +35,16 @@ describe('User repository tests', () => {
    });
 
    it('should update an user', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
       });
 
       const user = new User(
-         model._id,
+         userId,
          'other_name',
          new Email('other_email@email.com'),
          'other_password'
@@ -59,8 +60,9 @@ describe('User repository tests', () => {
    });
 
    it('should find an user', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
@@ -78,8 +80,9 @@ describe('User repository tests', () => {
    });
 
    it('should create a recovery data', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
@@ -95,8 +98,9 @@ describe('User repository tests', () => {
    });
 
    it('should find a user by reset password token', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
@@ -107,20 +111,21 @@ describe('User repository tests', () => {
       await sut.createRecoveryData(model.email, 'any_token', expiresIn);
       const user = await sut.findUserByResetPasswordToken('any_token');
       expect(user).toBeTruthy();
-      expect(user?.id).toBe(model._id);
+      expect(user?.id).toEqual(model._id);
       expect(user?.resetPasswordToken).toBe('any_token');
       expect(user?.expiresIn).toEqual(expiresIn);
    });
 
    it('should update a reset password token', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
       });
       const user = new User(
-         model._id,
+         new UserId(model._id),
          model.name,
          new Email(model.email),
          model.password
@@ -135,8 +140,9 @@ describe('User repository tests', () => {
    });
 
    it('should search an user', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
@@ -151,8 +157,9 @@ describe('User repository tests', () => {
    });
 
    it('should get a recovery data', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',
@@ -169,8 +176,9 @@ describe('User repository tests', () => {
    });
 
    it('should delete an user', async () => {
+      const userId = new UserId();
       const model = await UserModel.create({
-         _id: 'any_id',
+         _id: userId.id,
          name: 'any_name',
          email: 'email@email.com',
          password: 'any_password',

@@ -1,7 +1,7 @@
 import Encrypt from '@core/domain/interfaces/encrypt.interface';
 import CreateUserUseCase from '../create.usecase';
 import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import mockRepository from '../../__mocks__/repository.user.mock';
 import { EncryptStub, JwtGeneratorStub } from '../../__mocks__/stubs.user.mock';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
@@ -43,12 +43,12 @@ describe('Create user usecase tests', () => {
       expect(user.updatedAt).toBeTruthy();
    });
 
-   it.skip('should create user with encrypted password', async () => {
+   it('should create user with encrypted password', async () => {
       const { sut } = makeSut();
       const spy = jest.spyOn(mockRepository, 'create');
       const user = await sut.execute(input);
       const userCompare = new User(
-         user.id,
+         new UserId(user.id),
          user.name,
          new Email(user.email),
          'encrypted_password',

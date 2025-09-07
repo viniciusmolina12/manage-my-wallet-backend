@@ -3,7 +3,7 @@ import { app } from '../app';
 import mockDb from '@infrastructure/db/mongodb/repositories/__mocks__/mockDb';
 import UserModel from '@infrastructure/db/mongodb/model/user.model';
 import nodemailer from 'nodemailer';
-
+import token from './___mocks__/jsonwebtoken.mock';
 jest.mock('nodemailer');
 
 beforeAll(async () => {
@@ -83,15 +83,18 @@ describe('User e2e tests', () => {
    describe('Update', () => {
       it('should update an user', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
-         const response = await request(app).patch(`/api/user/any_id`).send({
-            name: 'User test updated',
-            email: 'any_mail_update@mail.com',
-         });
+         const response = await request(app)
+            .patch(`/api/user/123e4567-e89b-12d3-a456-426614174000`)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+               name: 'User test updated',
+               email: 'any_mail_update@mail.com',
+            });
          expect(response.status).toBe(200);
          expect(response.body).toEqual(
             expect.objectContaining({
@@ -106,13 +109,15 @@ describe('User e2e tests', () => {
       });
       it('should throw an error if user is not found', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
+         const otherUuid = '123e4567-e89b-12d3-a456-426614174001';
          const response = await request(app)
-            .patch('/api/user/any_other_id')
+            .patch(`/api/user/${otherUuid}`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                name: 'User test updated',
                email: 'any_email@mail.com',
@@ -124,15 +129,18 @@ describe('User e2e tests', () => {
       });
       it('should throw an error if email is invalid', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
-         const response = await request(app).patch(`/api/user/any_id`).send({
-            name: 'User test updated',
-            email: 'invalid_email',
-         });
+         const response = await request(app)
+            .patch(`/api/user/123e4567-e89b-12d3-a456-426614174000`)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+               name: 'User test updated',
+               email: 'invalid_email',
+            });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
          expect(response.body).toHaveProperty('message', 'Invalid email');
@@ -140,21 +148,24 @@ describe('User e2e tests', () => {
 
       it('should throw an error if email already exists', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
          await UserModel.create({
-            _id: 'any_other_id',
+            _id: '123e4567-e89b-12d3-a456-426614174001',
             email: 'email_testing@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
-         const response = await request(app).patch(`/api/user/any_id`).send({
-            name: 'User test updated',
-            email: 'email_testing@mail.com',
-         });
+         const response = await request(app)
+            .patch(`/api/user/123e4567-e89b-12d3-a456-426614174000`)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+               name: 'User test updated',
+               email: 'email_testing@mail.com',
+            });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
          expect(response.body).toHaveProperty(
@@ -165,14 +176,17 @@ describe('User e2e tests', () => {
 
       it('should throw an error if name is not provided', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_email@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
-         const response = await request(app).patch(`/api/user/any_id`).send({
-            email: 'any_email@mail.com',
-         });
+         const response = await request(app)
+            .patch(`/api/user/123e4567-e89b-12d3-a456-426614174000`)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+               email: 'any_email@mail.com',
+            });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
          expect(response.body).toHaveProperty(
@@ -183,13 +197,14 @@ describe('User e2e tests', () => {
 
       it('should throw an error if email is not provided', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_email@mail.com',
             name: 'any_name',
             password: 'any_password',
          });
          const response = await request(app)
-            .patch(`/api/user/any_id`)
+            .patch(`/api/user/123e4567-e89b-12d3-a456-426614174000`)
+            .set('Authorization', 'Bearer ' + token)
             .send({ name: 'any_other_name' });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
@@ -200,7 +215,7 @@ describe('User e2e tests', () => {
    describe('Login', () => {
       it('should login succesfully', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:
@@ -208,6 +223,7 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/login`)
+            .set('Authorization', 'Bearer ' + token)
             .send({ email: 'any_mail@mail.com', password: 'any_password' });
 
          expect(response.status).toBe(200);
@@ -215,7 +231,7 @@ describe('User e2e tests', () => {
             data: {
                token: expect.any(String),
                user: {
-                  id: 'any_id',
+                  id: '123e4567-e89b-12d3-a456-426614174000',
                   name: 'any_name',
                   email: 'any_mail@mail.com',
                },
@@ -225,16 +241,19 @@ describe('User e2e tests', () => {
 
       it('should throw an error if email is invalid', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:
                '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2',
          });
-         const response = await request(app).post(`/api/login`).send({
-            email: 'any_other_email@mail.com',
-            password: 'any_password',
-         });
+         const response = await request(app)
+            .post(`/api/login`)
+            .send({
+               email: 'any_other_email@mail.com',
+               password: 'any_password',
+            })
+            .set('Authorization', 'Bearer ' + token);
 
          expect(response.status).toBe(400);
          expect(response.body.message).toBe('Email or password is incorrect');
@@ -243,16 +262,19 @@ describe('User e2e tests', () => {
 
       it('should throw an error if password is invalid', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:
                '$2b$15$KvprO7kdKEFfQuVg4KJr8uLGLT1DYtBQ3Cb.EP.0Bo2CqrIJiNHR2',
          });
-         const response = await request(app).post(`/api/login`).send({
-            email: 'any_mail@mail.com',
-            password: 'wrong_password',
-         });
+         const response = await request(app)
+            .post(`/api/login`)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+               email: 'any_mail@mail.com',
+               password: 'wrong_password',
+            });
 
          expect(response.status).toBe(400);
          expect(response.body.message).toBe('Email or password is incorrect');
@@ -261,7 +283,7 @@ describe('User e2e tests', () => {
 
       it('should throw an error if email is not provided', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:
@@ -269,6 +291,7 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/login`)
+            .set('Authorization', 'Bearer ' + token)
             .send({ password: 'any_password' });
 
          expect(response.status).toBe(400);
@@ -278,7 +301,7 @@ describe('User e2e tests', () => {
 
       it('should throw an error if password is not provided', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:
@@ -286,6 +309,7 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/login`)
+            .set('Authorization', 'Bearer ' + token)
             .send({ email: 'any_mail@mail.com' });
 
          expect(response.status).toBe(400);
@@ -300,7 +324,7 @@ describe('User e2e tests', () => {
          const oldPassword = 'old_pasword';
          const newPassword = 'new_password';
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             resetPassword: {
@@ -311,13 +335,14 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                token,
                password: newPassword,
             });
 
          const userAfterChangePassword = await UserModel.findOne({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
          });
 
          expect(userAfterChangePassword?.password).not.toBe(oldPassword);
@@ -330,6 +355,7 @@ describe('User e2e tests', () => {
       it('should throw an error if token does not exist', async () => {
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                token: 'invalid_token',
                password: 'any_password',
@@ -343,7 +369,7 @@ describe('User e2e tests', () => {
       it('should throw an error if token is expired', async () => {
          const expired = new Date().setDate(new Date().getDate() - 1);
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             resetPassword: {
@@ -354,6 +380,7 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                token: 'any_token',
                password: 'any_password',
@@ -367,6 +394,7 @@ describe('User e2e tests', () => {
       it('should throw an error if token is not provided', async () => {
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                password: 'any_password',
             });
@@ -379,6 +407,7 @@ describe('User e2e tests', () => {
       it('should throw an error if password is not provided', async () => {
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                token: 'any_token',
             });
@@ -393,7 +422,7 @@ describe('User e2e tests', () => {
          const oldPassword = 'old_pasword';
          const newPassword = 'new_password';
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             resetPassword: {
@@ -404,6 +433,7 @@ describe('User e2e tests', () => {
          });
          const response = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
                token,
                password: newPassword,
@@ -426,7 +456,7 @@ describe('User e2e tests', () => {
    describe('recover-password', () => {
       it('should recover password successfully', async () => {
          await UserModel.create({
-            _id: 'any_id',
+            _id: '123e4567-e89b-12d3-a456-426614174000',
             email: 'any_mail@mail.com',
             name: 'any_name',
             password:

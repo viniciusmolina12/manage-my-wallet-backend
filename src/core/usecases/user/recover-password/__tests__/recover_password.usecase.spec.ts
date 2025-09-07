@@ -1,4 +1,4 @@
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import mockRepository from '../../__mocks__/repository.user.mock';
 import { JwtGeneratorStub, MailerStub } from '../../__mocks__/stubs.user.mock';
 import RecoverPasswordUserUseCase from '../recover_password.usecase';
@@ -31,7 +31,7 @@ describe('Recover user password usecase tests', () => {
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               new UserId(),
                'any_name',
                new Email('any_email@mail.com'),
                'any_password'
@@ -54,7 +54,7 @@ describe('Recover user password usecase tests', () => {
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               new UserId(),
                'any_name',
                new Email('any_email@mail.com'),
                'any_password'
@@ -82,7 +82,7 @@ describe('Recover user password usecase tests', () => {
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               new UserId(),
                'any_name',
                new Email('any_email@mail.com'),
                'any_password'
@@ -106,7 +106,7 @@ describe('Recover user password usecase tests', () => {
       mockRepository.search.mockReturnValueOnce(
          Promise.resolve([
             new User(
-               'any_id',
+               new UserId(),
                'any_name',
                new Email('any_email@mail.com'),
                'any_password'

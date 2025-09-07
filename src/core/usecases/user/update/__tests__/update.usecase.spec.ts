@@ -1,4 +1,4 @@
-import User from '@core/domain/user/entity/user.entity';
+import User, { UserId } from '@core/domain/user/entity/user.entity';
 import UpdateUserUseCase from '../update.usecase';
 import mockRepository from '../../__mocks__/repository.user.mock';
 import { Email } from '@core/domain/@shared/value-object/email.vo';
@@ -14,7 +14,7 @@ describe('Update user usecase tests', () => {
       const sut = new UpdateUserUseCase(mockRepository);
       mockRepository.find.mockReturnValueOnce(
          new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             'any_password'
@@ -35,7 +35,7 @@ describe('Update user usecase tests', () => {
       const sut = new UpdateUserUseCase(mockRepository);
       mockRepository.find.mockReturnValueOnce(
          new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             'any_password'
@@ -60,7 +60,7 @@ describe('Update user usecase tests', () => {
       const wrongInput = { ...input, name: '' };
       mockRepository.find.mockReturnValueOnce(
          new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             'any_password'
@@ -76,7 +76,7 @@ describe('Update user usecase tests', () => {
       const wrongInput = { ...input, email: '' };
       mockRepository.find.mockReturnValueOnce(
          new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             'any_password'
@@ -90,7 +90,7 @@ describe('Update user usecase tests', () => {
       const wrongInput = { ...input, email: 'invalid_email' };
       mockRepository.find.mockReturnValueOnce(
          new User(
-            'any_id',
+            new UserId(),
             'any_name',
             new Email('any_email@mail.com'),
             'any_password'
