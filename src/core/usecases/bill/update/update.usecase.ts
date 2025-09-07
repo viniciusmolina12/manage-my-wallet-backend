@@ -34,7 +34,7 @@ export default class UpdateBillUseCase {
       input?.items?.map((item) => {
          const billItem = new BillItem(
             uuid(),
-            item.itemId,
+            item.item.id,
             item.price,
             item.quantity
          );
@@ -62,7 +62,7 @@ export default class UpdateBillUseCase {
          updatedAt: bill.updatedAt,
          items: bill.items.map((item: BillItem) => ({
             id: item.id,
-            itemId: item.itemId,
+            itemId: item.item.id,
             price: item.price,
             quantity: item.quantity,
          })),

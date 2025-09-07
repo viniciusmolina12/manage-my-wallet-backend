@@ -1,22 +1,25 @@
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
+import { Uuid } from '../../@shared/value-object/uuid.vo';
+
+export class ItemId extends Uuid {}
 
 export default class Item extends Entity {
-   private _id: string;
+   private _id: ItemId;
    private _name: string;
    private _description?: string;
    private _categoryId: string;
    private _userId: string;
 
    constructor(
-      id: string,
+      id: ItemId,
       name: string,
       categoryId: string,
       userId: string,
       description?: string
    ) {
       super();
-      this._id = id;
+      this._id = id || new ItemId();
       this._name = name;
       this._categoryId = categoryId;
       this._description = description;
@@ -25,12 +28,6 @@ export default class Item extends Entity {
    }
 
    validate() {
-      if (!this._id) {
-         this.notification.add({
-            source: 'Item',
-            message: 'Id is required',
-         });
-      }
       if (!this._name) {
          this.notification.add({
             source: 'Item',
@@ -56,7 +53,7 @@ export default class Item extends Entity {
    }
 
    get id(): string {
-      return this._id;
+      return this._id.id;
    }
    get name(): string {
       return this._name;

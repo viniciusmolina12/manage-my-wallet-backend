@@ -1,4 +1,6 @@
-import Item from '../../../../../core/domain/item/entity/item.entity';
+import Item, {
+   ItemId,
+} from '../../../../../core/domain/item/entity/item.entity';
 import { ItemRepository } from '../../../../../core/domain/item/repository/item.repository';
 import ItemModel from '../../model/item.model';
 
@@ -28,7 +30,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       const result = await ItemModel.findOne({ _id: id });
       if (!result) return null;
       const item = new Item(
-         result._id.toString(),
+         new ItemId(result._id.toString()),
          result.name,
          result.categoryId,
          result.userId,
@@ -43,7 +45,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       const result = await ItemModel.findOne({ _id: id, userId });
       if (!result) return null;
       const item = new Item(
-         result._id.toString(),
+         new ItemId(result._id.toString()),
          result.name,
          result.categoryId,
          result.userId,
@@ -58,7 +60,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       const result = await ItemModel.findOne({ name, userId });
       if (!result) return null;
       return new Item(
-         result._id.toString(),
+         new ItemId(result._id.toString()),
          result.name,
          result.categoryId,
          result.userId,
@@ -70,7 +72,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       const result = await ItemModel.find();
       return result.map((i) => {
          const item = new Item(
-            i._id.toString(),
+            new ItemId(i._id.toString()),
             i.name,
             i.categoryId,
             i.userId,
@@ -86,7 +88,7 @@ export default class MongoDbItemRepository implements ItemRepository {
       const result = await ItemModel.find({ userId });
       return result.map((i) => {
          const item = new Item(
-            i._id.toString(),
+            new ItemId(i._id.toString()),
             i.name,
             i.categoryId,
             i.userId,

@@ -1,4 +1,4 @@
-import Item from '@core/domain/item/entity/item.entity';
+import Item, { ItemId } from '@core/domain/item/entity/item.entity';
 import { ItemRepository } from '@core/domain/item/repository/item.repository';
 import { InputCreateItemDto, OutputCreateItemDto } from './create.item.dto';
 import { v4 as uuid } from 'uuid';
@@ -11,7 +11,7 @@ export default class CreateItemUseCase {
 
    async execute(input: InputCreateItemDto): Promise<OutputCreateItemDto> {
       const item = new Item(
-         uuid(),
+         new ItemId(),
          input.name,
          input.categoryId,
          input.userId,

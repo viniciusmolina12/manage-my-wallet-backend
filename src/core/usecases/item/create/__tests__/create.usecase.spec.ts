@@ -1,6 +1,6 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
-import CreateItemUseCase from './create.usecase';
-import mockRepository from '../__mocks__/repository.item.mock';
+import CreateItemUseCase from '../create.usecase';
+import mockRepository from '../../__mocks__/repository.item.mock';
 
 const input = {
    name: 'Item 1',

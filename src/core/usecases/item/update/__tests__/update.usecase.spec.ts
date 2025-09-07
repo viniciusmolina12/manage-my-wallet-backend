@@ -1,9 +1,10 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
 import UpdateItemUseCase from '../update.usecase';
 import mockRepository from '../../__mocks__/repository.item.mock';
+import { ItemId } from '@core/domain/item/entity/item.entity';
 
 const input = {
-   id: 'any_id',
+   id: new ItemId().id,
    name: 'Item 1',
    description: 'any description',
    categoryId: 'category_id_hash',
@@ -12,8 +13,9 @@ const input = {
 describe('Item update usecase test', () => {
    it('should update an item', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
+      const id = new ItemId();
       mockRepository.findByUser = jest.fn().mockReturnValue({
-         id: 'any_id',
+         id: id.id,
          name: 'Item 2',
          description: 'other_description',
          categoryId: 'other_category_id_hash',
@@ -36,8 +38,9 @@ describe('Item update usecase test', () => {
 
    it('should throw an error if required properties is not provided', async () => {
       const sut = new UpdateItemUseCase(mockRepository);
+      const id = new ItemId();
       mockRepository.findByUser.mockReturnValue({
-         id: 'any_id',
+         id: id.id,
          name: 'Item 2',
          description: 'other_description',
          userId: 'any_user_id',

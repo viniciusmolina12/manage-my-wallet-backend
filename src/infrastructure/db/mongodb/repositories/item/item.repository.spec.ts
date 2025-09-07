@@ -1,10 +1,30 @@
-import Item from '../../../../../core/domain/item/entity/item.entity';
+import Item, {
+   ItemId,
+} from '../../../../../core/domain/item/entity/item.entity';
 import ItemModel from '../../model/item.model';
+import BillModel from '../../model/bill.model';
 import mockDb from '../__mocks__/mockDb';
 import MongoDbItemRepository from './item.repository';
 
 beforeAll(async () => {
    await mockDb.connect();
+   //create a bill just to register the schema for Item pre hook
+   await BillModel.create({
+      _id: 'any_bill_id',
+      name: 'any_bill_name',
+      date: new Date(),
+      userId: 'any_user_id',
+      vendorId: 'any_vendor_id',
+      items: [
+         {
+            _id: 'any_item_id',
+            itemId: 'any_item_id',
+            price: 10,
+            quantity: 2,
+         },
+      ],
+      total: 20,
+   });
 });
 
 beforeEach(async () => {
@@ -17,8 +37,9 @@ afterAll(async () => {
 describe('MongoDB Item Repository tests', () => {
    it('should create an item', async () => {
       const sut = new MongoDbItemRepository();
+      const id = new ItemId();
       const item = new Item(
-         'any_hash_id',
+         id,
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -37,7 +58,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should update an item', async () => {
       const sut = new MongoDbItemRepository();
       const oldItem = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -59,7 +80,7 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemCreated?.categoryId).toBe(oldItem.categoryId);
       expect(itemCreated?.userId).toBe(oldItem.userId);
       const updateItem = new Item(
-         'any_hash_id',
+         new ItemId(oldItem.id),
          'Item 2',
          'Category 2',
          'any_user_id',
@@ -76,7 +97,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should find an item', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -100,7 +121,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should find all items', async () => {
       const sut = new MongoDbItemRepository();
       const item1 = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -114,7 +135,7 @@ describe('MongoDB Item Repository tests', () => {
          userId: item1.userId,
       });
       const item2 = new Item(
-         'any_hash_id_2',
+         new ItemId(),
          'Item 2',
          'Category 2',
          'any_user_id',
@@ -146,7 +167,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should find an item by name', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -181,7 +202,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should delete an item', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -202,7 +223,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should delete an item by user', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -223,7 +244,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should find an item by user', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -249,7 +270,7 @@ describe('MongoDB Item Repository tests', () => {
    it('should find all items by user', async () => {
       const sut = new MongoDbItemRepository();
       const item1 = new Item(
-         'any_hash_id',
+         new ItemId(),
          'Item 1',
          'Category 1',
          'any_user_id',
@@ -263,7 +284,7 @@ describe('MongoDB Item Repository tests', () => {
          userId: item1.userId,
       });
       const item2 = new Item(
-         'any_hash_id_2',
+         new ItemId(),
          'Item 2',
          'Category 2',
          'any_user_id',

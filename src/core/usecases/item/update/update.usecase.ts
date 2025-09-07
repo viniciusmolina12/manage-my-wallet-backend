@@ -1,5 +1,5 @@
 import EntityError from '@core/domain/@shared/error/entity.error';
-import Item from '@core/domain/item/entity/item.entity';
+import Item, { ItemId } from '@core/domain/item/entity/item.entity';
 import { ItemRepository } from '@core/domain/item/repository/item.repository';
 import { InputUpdateItemDto, OutputUpdateItemDto } from './update.item.dto';
 
@@ -12,7 +12,7 @@ export default class UpdateItemUseCase {
       const item = await this.itemRepository.findByUser(input.id, input.userId);
       if (!item) throw new EntityError('Item not found');
       const updatedItem = new Item(
-         input.id,
+         new ItemId(input.id),
          input.name,
          input.categoryId,
          input.userId,

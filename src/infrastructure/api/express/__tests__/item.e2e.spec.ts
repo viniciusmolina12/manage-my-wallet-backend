@@ -59,7 +59,7 @@ describe('Item e2e tests', () => {
 
    it('should return an error when creating an item with an existing name', async () => {
       await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
@@ -79,7 +79,7 @@ describe('Item e2e tests', () => {
 
    it('should update an item', async () => {
       const item = await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          userId: 'any_user_id',
          description: 'Description 1',
@@ -124,7 +124,7 @@ describe('Item e2e tests', () => {
 
    it('should return an error when updating an item with invalid data', async () => {
       const item = await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
@@ -169,14 +169,14 @@ describe('Item e2e tests', () => {
 
    it('should get all items', async () => {
       const item1 = await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
          userId: 'any_user_id',
       });
       const item2 = await ItemModel.create({
-         _id: 'any_hash_id_2',
+         _id: '123e4567-e89b-12d3-a456-426614174001',
          name: 'Item 2',
          description: 'Description 2',
          categoryId: 'Category 2',
@@ -220,7 +220,7 @@ describe('Item e2e tests', () => {
 
    it('should delete an item', async () => {
       const item = await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
          categoryId: 'Category 1',
