@@ -1,73 +1,63 @@
+import { ItemId } from '@core/domain/item/entity/item.entity';
 import EntityError from '../../../@shared/error/entity.error';
-import BillItem from '../bill-item.entity';
-import Bill from '../bill.entity';
+import BillItem from '../bill-item.vo';
+import Bill, { BillId } from '../bill.entity';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 const makeBillItem = (): BillItem => {
-   return new BillItem('1', '1', 100, 2);
+   return new BillItem(new ItemId(), 100, 2);
 };
 
 describe('Bill entity unit tests', () => {
-   it('should throw a error if id is empty ', () => {
-      expect(() => {
-         const bill = new Bill(
-            '',
-            'Bill 1',
-            new Date(),
-            [makeBillItem()],
-            'vendorId',
-            'any_user_id'
-         );
-      }).toThrow(new EntityError('bill: Id is required, '));
-   });
-
    it('should throw a error if name is empty ', () => {
-      const item = new BillItem('1', '1', 100, 2);
-      expect(() => {
-         const bill = new Bill(
-            '1',
+      const item = new BillItem(new ItemId(), 100, 2);
+      const bill = expect(() => {
+         new Bill(
+            new BillId(),
             '',
             new Date(),
             [item],
-            'vendorId',
-            'any_user_id'
+            new VendorId(),
+            new UserId()
          );
       }).toThrow(new EntityError('bill: Name is required, '));
    });
 
    it('should throw a error if items is empty ', () => {
       expect(() => {
-         const bill = new Bill(
-            '1',
+         new Bill(
+            new BillId(),
             'Bill 1',
             new Date(),
             [],
-            'vendorId',
-            'any_user_id'
+            new VendorId(),
+            new UserId()
          );
       }).toThrow(new EntityError('bill: Items is required, '));
    });
 
-   it('should throw a error if vendorId is empty ', () => {
+   it('should throw an error if vendorId is invalid ', () => {
       expect(() => {
-         const bill = new Bill(
-            '1',
+         new Bill(
+            new BillId(),
             'Bill 1',
             new Date(),
             [makeBillItem()],
-            '',
-            'any_user_id'
+            'invalid_vendor_id' as any,
+            new UserId()
          );
       }).toThrow(new EntityError('bill: VendorId is required, '));
    });
 
    it('should change name', () => {
       const bill = new Bill(
-         '1',
+         new BillId(),
          'Bill 1',
          new Date(),
          [makeBillItem()],
-         'vendorId',
-         'any_user_id'
+         new VendorId(),
+         new UserId()
       );
       expect(bill.name).toBe('Bill 1');
       bill.changeName('Bill 2');
@@ -76,12 +66,12 @@ describe('Bill entity unit tests', () => {
 
    it('should change description', () => {
       const bill = new Bill(
-         '1',
+         new BillId(),
          'Bill 1',
          new Date(),
          [makeBillItem()],
-         'vendorId',
-         'any_user_id',
+         new VendorId(),
+         new UserId(),
          'Description'
       );
       expect(bill.description).toBe('Description');
@@ -91,22 +81,22 @@ describe('Bill entity unit tests', () => {
 
    it('should calculate total correctly', () => {
       const bill1 = new Bill(
-         '1',
+         new BillId(),
          'Bill 1',
          new Date(),
          [makeBillItem(), makeBillItem()],
-         'vendorId',
-         'any_user_id',
+         new VendorId(),
+         new UserId(),
          'Description'
       );
       expect(bill1.total).toBe(400);
       const bill2 = new Bill(
-         '1',
+         new BillId(),
          'Bill 1',
          new Date(),
          [makeBillItem()],
-         'vendorId',
-         'any_user_id',
+         new VendorId(),
+         new UserId(),
          'Description'
       );
       expect(bill2.total).toBe(200);
@@ -115,12 +105,12 @@ describe('Bill entity unit tests', () => {
    it('should change date', () => {
       const date = new Date('2021-01-01T00:00:00.000Z');
       const bill = new Bill(
-         '1',
+         new BillId(),
          'Bill 1',
          new Date(),
          [makeBillItem()],
-         'vendorId',
-         'any_user_id'
+         new VendorId(),
+         new UserId()
       );
       bill.changeDate(date);
       expect(bill.date).toEqual(date);

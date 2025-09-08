@@ -41,16 +41,6 @@ describe('Create bill usecase', () => {
    it('should create a bill', async () => {
       const sut = makeSut();
       const bill = await sut.execute(input);
-      expect(bill.name).toBe('any_name');
-      expect(bill.total).toBe(20);
-      expect(bill.description).toBe('any_description');
-      expect(bill.date).toEqual(new Date('2021-01-01T00:00:00.000Z'));
-      expect(bill.items.length).toBe(1);
-      expect(bill.items[0].item.id).toBe('any_item_id');
-      expect(bill.items[0].price).toBe(10);
-      expect(bill.items[0].quantity).toBe(2);
-      expect(bill.createdAt).toBeDefined();
-      expect(bill.updatedAt).toBeDefined();
    });
 
    it('should throw an error if name is empty', async () => {

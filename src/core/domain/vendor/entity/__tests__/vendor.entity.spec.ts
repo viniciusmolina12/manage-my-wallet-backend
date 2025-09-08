@@ -1,30 +1,27 @@
-import EntityError from '../../@shared/error/entity.error';
-import Vendor from './vendor.entity';
+import EntityError from '../../../@shared/error/entity.error';
+import Vendor, { VendorId } from '../vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 describe('Vendor entity unit tests', () => {
-   it('should throw if id is empty', () => {
-      expect(() => {
-         const vendor = new Vendor('', 'Vendor 1', 'any_user_id');
-      }).toThrowError('Id is required');
-   });
    it('should throw if name is empty', () => {
       expect(() => {
-         const vendor = new Vendor('1', '', 'any_user_id');
-      }).toThrowError(new EntityError('vendor: Name is required, '));
+         const vendor = new Vendor(new VendorId(), '', new UserId());
+      }).toThrow(new EntityError('vendor: Name is required, '));
    });
 
    it('should change name', () => {
-      const vendor = new Vendor('1', 'Vendor', 'any_user_id');
+      const id = new VendorId();
+      const vendor = new Vendor(id, 'Vendor', new UserId());
       expect(vendor.name).toBe('Vendor');
       vendor.changeName('Vendor 2');
       expect(vendor.name).toBe('Vendor 2');
-      expect(vendor.id).toBe('1');
+      expect(vendor.id).toBe(id.id);
    });
 
    it('should throw a error if new name is empty', () => {
-      const vendor = new Vendor('1', 'Vendor', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor', new UserId());
       expect(() => {
          vendor.changeName('');
-      }).toThrowError(new EntityError('vendor: Name is required, '));
+      }).toThrow(new EntityError('vendor: Name is required, '));
    });
 });
