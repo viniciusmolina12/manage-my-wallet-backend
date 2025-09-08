@@ -1,30 +1,22 @@
-import Entity from '../../@shared/entity.interface';
+import { ValueObject } from '@core/domain/@shared/value-object.interface';
 import EntityError from '../../@shared/error/entity.error';
-import Item from '@core/domain/item/entity/item.entity';
+import { ItemId } from '@core/domain/item/entity/item.entity';
 
-export default class BillItem extends Entity {
-   private _id: string;
-   public item: Item;
+export default class BillItem extends ValueObject {
+   public itemId: ItemId;
    public price: number;
    public quantity: number;
 
-   constructor(id: string, item: Item, price: number, quantity: number) {
+   constructor(item: ItemId, price: number, quantity: number) {
       super();
-      this._id = id;
-      this.item = item;
+      this.itemId = item;
       this.price = price;
       this.quantity = quantity;
       this.validate();
    }
 
    validate(): void {
-      if (!this._id) {
-         this.notification.add({
-            message: 'Id is required',
-            source: 'billItem',
-         });
-      }
-      if (!this.item) {
+      if (!this.itemId) {
          this.notification.add({
             message: 'Item is required',
             source: 'billItem',
@@ -46,9 +38,6 @@ export default class BillItem extends Entity {
       if (this.notification.hasErrors()) {
          throw new EntityError(this.notification.getNotifications());
       }
-   }
-   get id(): string {
-      return this._id;
    }
 
    get total(): number {

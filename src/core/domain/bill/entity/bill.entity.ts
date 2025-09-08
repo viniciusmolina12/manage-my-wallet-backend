@@ -1,43 +1,47 @@
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
-import BillItem from './bill-item.entity';
+import BillItem from './bill-item.vo';
+import { Uuid } from '../../@shared/value-object/uuid.vo';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
+import { BillBuilder } from './bill.builder';
+
+export class BillId extends Uuid {}
 
 export default class Bill extends Entity {
-   public id: string;
+   private _id: BillId;
    public name: string;
-   public items: BillItem[];
+   private _items: BillItem[];
    public date: Date;
    public description?: string;
-   public userId: string;
-   public vendorId: string;
+   public userId: UserId;
+   public vendorId: VendorId;
 
    constructor(
-      id: string,
+      id: BillId,
       name: string,
       date: Date,
       items: BillItem[],
-      vendorId: string,
-      userId: string,
+      vendorId: VendorId,
+      userId: UserId,
       description?: string
    ) {
       super();
-      this.id = id;
+      this._id = id || new BillId();
       this.name = name;
       this.date = new Date(date);
-      this.items = items;
+      this._items = items;
       this.vendorId = vendorId;
       this.description = description;
       this.userId = userId;
       this.validate();
    }
 
+   get items(): ReadonlyArray<BillItem> {
+      return this._items;
+   }
+
    validate() {
-      if (!this.id) {
-         this.notification.add({
-            message: 'Id is required',
-            source: 'bill',
-         });
-      }
       if (!this.name) {
          this.notification.add({
             message: 'Name is required',
@@ -57,7 +61,7 @@ export default class Bill extends Entity {
          });
       }
 
-      if (!this.vendorId) {
+      if (!this.vendorId?.id) {
          this.notification.add({
             message: 'VendorId is required',
             source: 'bill',
@@ -69,11 +73,18 @@ export default class Bill extends Entity {
    }
 
    get total(): number {
-      return this.items.reduce((acc, item) => acc + item.total, 0);
+      return Array.from(this.items.values()).reduce(
+         (acc, item) => acc + item.total,
+         0
+      );
    }
 
    get vendor(): string {
-      return this.vendorId;
+      return this.vendorId.id;
+   }
+
+   get id(): string {
+      return this._id.id;
    }
 
    changeName(name: string): void {
@@ -88,5 +99,19 @@ export default class Bill extends Entity {
 
    changeDescription(description: string): void {
       this.description = description;
+   }
+
+   changeVendor(vendorId: VendorId) {
+      this.vendorId = vendorId;
+      this.validate();
+   }
+
+   replaceItems(items: BillItem[]): void {
+      this._items = items;
+      this.validate();
+   }
+
+   static fake(): BillBuilder {
+      return new BillBuilder();
    }
 }
