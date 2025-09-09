@@ -1,9 +1,7 @@
-import Category from '@core/domain/category/entity/category.entity';
-import { CategoryRepository } from '@core/domain/category/repository/category.repository';
-import CategoryModel from '../../model/category.model';
 import VendorModel from '../../model/vendor.model';
-import Vendor from '@core/domain/vendor/entity/vendor.entity';
+import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class MongoDbVendorRepository implements VendorRepository {
    async create(entity: Vendor): Promise<void> {
@@ -28,9 +26,9 @@ export default class MongoDbVendorRepository implements VendorRepository {
       const result = await VendorModel.findOne({ _id: id });
       if (!result) return null;
       const vendor = new Vendor(
-         result._id.toString(),
+         new VendorId(result._id.toString()),
          result.name,
-         result.userId
+         new UserId(result.userId)
       );
       vendor.createdAt = result.createdAt;
       vendor.updatedAt = result.updatedAt;
@@ -41,9 +39,9 @@ export default class MongoDbVendorRepository implements VendorRepository {
       const result = await VendorModel.findOne({ _id: id, userId });
       if (!result) return null;
       const vendor = new Vendor(
-         result._id.toString(),
+         new VendorId(result._id.toString()),
          result.name,
-         result.userId
+         new UserId(result.userId)
       );
       vendor.createdAt = result.createdAt;
       vendor.updatedAt = result.updatedAt;
@@ -53,7 +51,11 @@ export default class MongoDbVendorRepository implements VendorRepository {
    async findAll(): Promise<Vendor[]> {
       const result = await VendorModel.find();
       return result.map((v) => {
-         const vendor = new Vendor(v._id.toString(), v.name, v.userId);
+         const vendor = new Vendor(
+            new VendorId(v._id.toString()),
+            v.name,
+            new UserId(v.userId)
+         );
          vendor.createdAt = v.createdAt;
          vendor.updatedAt = v.updatedAt;
          return vendor;
@@ -63,7 +65,11 @@ export default class MongoDbVendorRepository implements VendorRepository {
    async findAllByUser(userId: string): Promise<Vendor[]> {
       const result = await VendorModel.find({ userId });
       return result.map((v) => {
-         const vendor = new Vendor(v._id.toString(), v.name, v.userId);
+         const vendor = new Vendor(
+            new VendorId(v._id),
+            v.name,
+            new UserId(v.userId)
+         );
          vendor.createdAt = v.createdAt;
          vendor.updatedAt = v.updatedAt;
          return vendor;
@@ -85,9 +91,9 @@ export default class MongoDbVendorRepository implements VendorRepository {
       const result = await VendorModel.findOne({ name: name, userId });
       if (!result) return null;
       const vendor = new Vendor(
-         result._id.toString(),
+         new VendorId(result._id),
          result.name,
-         result.userId
+         new UserId(result.userId)
       );
       vendor.createdAt = result.createdAt;
       vendor.updatedAt = result.updatedAt;
