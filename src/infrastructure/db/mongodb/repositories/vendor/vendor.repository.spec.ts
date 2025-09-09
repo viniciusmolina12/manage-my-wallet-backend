@@ -1,7 +1,8 @@
 import mockDb from '../__mocks__/mockDb';
 import VendorModel from '../../model/vendor.model';
 import MongoDbVendorRepository from './vendor.repository';
-import Vendor from '@core/domain/vendor/entity/vendor.entity';
+import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -18,7 +19,7 @@ afterAll(async () => {
 describe('MongoDB Vendor Repository tests', () => {
    it('should create a vendor', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendorCreated = await VendorModel.findOne({ _id: vendor.id });
       expect(vendorCreated).toBeTruthy();
@@ -30,7 +31,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should update a vendor', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       vendor.changeName('Vendor 2');
       await sut.update(vendor);
@@ -44,7 +45,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find a vendor', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendorFound = await sut.find(vendor.id);
       expect(vendorFound).toBeTruthy();
@@ -56,7 +57,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find a vendor by user', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendorFound = await sut.findByUser(vendor.id, vendor.userId);
       expect(vendorFound).toBeTruthy();
@@ -68,22 +69,24 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find all vendors', async () => {
       const sut = new MongoDbVendorRepository();
+      const vendor1 = new Vendor(new VendorId(), 'Vendor 1', new UserId());
+      const vendor2 = new Vendor(new VendorId(), 'Vendor 2', new UserId());
       await VendorModel.create({
-         _id: 'any_hash_id',
+         _id: vendor1.id,
          name: 'Vendor 1',
-         userId: 'any_user_id',
+         userId: vendor1.userId,
       });
       await VendorModel.create({
-         _id: 'any_hash_id_2',
+         _id: vendor2.id,
          name: 'Vendor 2',
-         userId: 'any_user_id',
+         userId: vendor2.userId,
       });
       const vendors = await sut.findAll();
       expect(vendors).toBeTruthy();
       expect(vendors.length).toBe(2);
-      expect(vendors[0].id).toBe('any_hash_id');
+      expect(vendors[0].id).toBe(vendor1.id);
       expect(vendors[0].name).toBe('Vendor 1');
-      expect(vendors[1].id).toBe('any_hash_id_2');
+      expect(vendors[1].id).toBe(vendor2.id);
       expect(vendors[1].name).toBe('Vendor 2');
       expect(vendors[0].createdAt).toBeDefined();
       expect(vendors[0].updatedAt).toBeDefined();
@@ -93,7 +96,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find all vendors by user', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendors = await sut.findAllByUser(vendor.userId);
       expect(vendors).toBeTruthy();
@@ -106,7 +109,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should delete a vendor', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       await sut.delete(vendor.id);
       const vendorDeleted = await VendorModel.findOne({ _id: vendor.id });
@@ -115,7 +118,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should delete a vendor by user', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       await sut.deleteByUser(vendor.id, vendor.userId);
       const vendorDeleted = await VendorModel.findOne({ _id: vendor.id });
@@ -124,7 +127,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find a vendor by name', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendorFound = await sut.findVendorByName(
          vendor.name,
@@ -139,7 +142,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should find a vendor by name and user', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       const vendorFound = await sut.findVendorByName(
          vendor.name,
@@ -154,7 +157,7 @@ describe('MongoDB Vendor Repository tests', () => {
 
    it('should update a vendor by user', async () => {
       const sut = new MongoDbVendorRepository();
-      const vendor = new Vendor('any_hash_id', 'Vendor 1', 'any_user_id');
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
       vendor.changeName('Vendor 2');
       await sut.update(vendor);
