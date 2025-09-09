@@ -5,7 +5,7 @@ import BillItem from '@core/domain/bill/entity/bill-item.vo';
 import BillModel from '../../model/bill.model';
 import ItemModel from '../../model/item.model';
 import MongoDbBillRepository from './bill.repository';
-import Item, { ItemId } from '@core/domain/item/entity/item.entity';
+import { ItemId } from '@core/domain/item/entity/item.entity';
 import { Filter } from '@core/domain/@shared/filter/filter';
 import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { UserId } from '@core/domain/user/entity/user.entity';

@@ -107,7 +107,7 @@ describe('MongoDB Item Repository tests', () => {
          userId: category1.userId,
       });
       const category2 = new Category(
-         new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
+         new CategoryId('123e4567-e89b-12d3-a456-426614174001'),
          'Category 2',
          'any_user_id',
          'Description 2'
