@@ -1,13 +1,13 @@
-import { v4 as uuid } from 'uuid';
-
-import BillItem from '@core/domain/bill/entity/bill-item.entity';
-import Bill from '@core/domain/bill/entity/bill.entity';
-import CreateBillUseCaseMapper from './create.usecase.mapper';
+import BillItem from '@core/domain/bill/entity/bill-item.vo';
+import Bill, { BillId } from '@core/domain/bill/entity/bill.entity';
 import { ItemRepository } from '@core/domain/item/repository/item.repository';
 import { BillRepository } from '@core/domain/bill/repository/bill.repository';
 import { InputCreateBillDto, OutputCreateBillDto } from './create.bill.dto';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { ItemId } from '@core/domain/item/entity/item.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class CreateBillUseCase {
    private readonly billRepository: BillRepository;
@@ -35,16 +35,16 @@ export default class CreateBillUseCase {
 
       const billItems = await this.addItems(input?.items, input.userId);
       const bill = new Bill(
-         uuid(),
+         new BillId(),
          input.name,
          input.date,
          billItems,
-         input.vendorId,
-         input.userId,
+         new VendorId(input.vendorId),
+         new UserId(input.userId),
          input.description
       );
       await this.billRepository.create(bill);
-      return CreateBillUseCaseMapper.toOutput(bill);
+      return { id: bill.id };
    }
 
    private async addItems(
@@ -64,8 +64,7 @@ export default class CreateBillUseCase {
             throw new EntityError('Item not found');
          }
          const billItem = new BillItem(
-            uuid(),
-            item.itemId,
+            new ItemId(item.itemId),
             item.price,
             item.quantity
          );

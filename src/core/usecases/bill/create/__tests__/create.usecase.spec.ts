@@ -4,11 +4,14 @@ import CreateBillUseCase from '../create.usecase';
 import mockItemRepository from '../../../item/__mocks__/repository.item.mock';
 import mockRepository from '../../__mocks__/repository.bill.mock';
 import mockVendorRepository from '../../../vendor/__mocks__/repository.vendor.mock';
+import { ItemId } from '@core/domain/item/entity/item.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 mockItemRepository.findByUser.mockResolvedValue({
-   id: 'any_item_id',
+   id: new ItemId().id,
    name: 'any_name',
    description: 'any_description',
-   userId: 'any_user_id',
+   userId: new UserId().id,
 });
 
 const makeSut = () => {
@@ -23,18 +26,18 @@ let input: InputCreateBillDto;
 
 describe('Create bill usecase', () => {
    mockVendorRepository.findByUser.mockResolvedValue({
-      id: 'any_vendor_id',
+      id: new VendorId().id,
       name: 'any_vendor_name',
-      userId: 'any_user_id',
+      userId: new UserId().id,
    });
    beforeEach(() => {
       input = {
          description: 'any_description',
-         userId: 'any_user_id',
-         vendorId: 'any_vendor_id',
+         userId: new UserId().id,
+         vendorId: new VendorId().id,
          name: 'any_name',
          date: new Date('2021-01-01T00:00:00.000Z'),
-         items: [{ itemId: 'any_item_id', price: 10, quantity: 2 }],
+         items: [{ itemId: new ItemId().id, price: 10, quantity: 2 }],
       };
    });
 
