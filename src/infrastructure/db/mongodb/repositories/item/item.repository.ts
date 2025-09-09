@@ -1,8 +1,10 @@
+import { CategoryId } from '@core/domain/category/entity/category.entity';
 import Item, {
    ItemId,
 } from '../../../../../core/domain/item/entity/item.entity';
 import { ItemRepository } from '../../../../../core/domain/item/repository/item.repository';
 import ItemModel from '../../model/item.model';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class MongoDbItemRepository implements ItemRepository {
    async create(entity: Item): Promise<void> {
@@ -32,8 +34,8 @@ export default class MongoDbItemRepository implements ItemRepository {
       const item = new Item(
          new ItemId(result._id.toString()),
          result.name,
-         result.categoryId,
-         result.userId,
+         new CategoryId(result.categoryId),
+         new UserId(result.userId),
          result?.description
       );
       item.createdAt = result.createdAt;
@@ -47,8 +49,8 @@ export default class MongoDbItemRepository implements ItemRepository {
       const item = new Item(
          new ItemId(result._id.toString()),
          result.name,
-         result.categoryId,
-         result.userId,
+         new CategoryId(result.categoryId),
+         new UserId(result.userId),
          result?.description
       );
       item.createdAt = result.createdAt;
@@ -62,8 +64,8 @@ export default class MongoDbItemRepository implements ItemRepository {
       return new Item(
          new ItemId(result._id.toString()),
          result.name,
-         result.categoryId,
-         result.userId,
+         new CategoryId(result.categoryId),
+         new UserId(result.userId),
          result?.description
       );
    }
@@ -74,8 +76,8 @@ export default class MongoDbItemRepository implements ItemRepository {
          const item = new Item(
             new ItemId(i._id.toString()),
             i.name,
-            i.categoryId,
-            i.userId,
+            new CategoryId(i.categoryId),
+            new UserId(i.userId),
             i?.description
          );
          item.createdAt = i.createdAt;
@@ -90,8 +92,8 @@ export default class MongoDbItemRepository implements ItemRepository {
          const item = new Item(
             new ItemId(i._id.toString()),
             i.name,
-            i.categoryId,
-            i.userId,
+            new CategoryId(i.categoryId),
+            new UserId(i.userId),
             i?.description
          );
          item.createdAt = i.createdAt;
