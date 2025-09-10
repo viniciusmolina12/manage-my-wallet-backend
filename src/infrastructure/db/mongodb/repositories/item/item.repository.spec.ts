@@ -166,6 +166,35 @@ describe('MongoDB Item Repository tests', () => {
       expect(itemsFound[1].updatedAt).toBeDefined();
    });
 
+   it('should find items by ids', async () => {
+      const sut = new MongoDbItemRepository();
+      const userId = new UserId();
+      const categoryId = new CategoryId();
+      await ItemModel.create({
+         _id: '123e4567-e89b-12d3-a456-426614174000',
+         name: 'Item 1',
+         description: 'Description 1',
+         categoryId: categoryId.id,
+         userId: userId.id,
+      });
+      await ItemModel.create({
+         _id: '123e4567-e89b-12d3-a456-426614174001',
+         name: 'Item 2',
+         description: 'Description 2',
+         categoryId: categoryId.id,
+         userId: userId.id,
+      });
+      const itemsFound = await sut.findItemsByIds(
+         [
+            '123e4567-e89b-12d3-a456-426614174000',
+            '123e4567-e89b-12d3-a456-426614174001',
+         ],
+         userId.id
+      );
+      expect(itemsFound).toHaveLength(2);
+      expect(itemsFound[0].id).toBe('123e4567-e89b-12d3-a456-426614174000');
+      expect(itemsFound[1].id).toBe('123e4567-e89b-12d3-a456-426614174001');
+   });
    it('should find an item by name', async () => {
       const sut = new MongoDbItemRepository();
       const item = new Item(
