@@ -7,8 +7,8 @@ const input = {
    id: new ItemId().id,
    name: 'Item 1',
    description: 'any description',
-   categoryId: 'category_id_hash',
-   userId: 'any_user_id',
+   categoryId: '123e4567-e89b-12d3-a456-426614174000',
+   userId: '123e4567-e89b-12d3-a456-426614174000',
 };
 describe('Item update usecase test', () => {
    it('should update an item', async () => {
@@ -18,8 +18,8 @@ describe('Item update usecase test', () => {
          id: id.id,
          name: 'Item 2',
          description: 'other_description',
-         categoryId: 'other_category_id_hash',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174001',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          createdAt: new Date(),
          updatedAt: new Date(),
       });
@@ -43,8 +43,8 @@ describe('Item update usecase test', () => {
          id: id.id,
          name: 'Item 2',
          description: 'other_description',
-         userId: 'any_user_id',
-         categoryId: 'other_category_id_hash',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
          createdAt: new Date(),
          updatedAt: new Date(),
       });
