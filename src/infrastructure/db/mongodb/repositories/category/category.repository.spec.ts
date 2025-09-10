@@ -180,4 +180,40 @@ describe('MongoDB Item Repository tests', () => {
       );
       expect(categoryFound).toBeUndefined();
    });
+
+   it('should find categories by ids', async () => {
+      const sut = new MongoDbCategoryRepository();
+
+      await CategoryModel.create({
+         _id: '123e4567-e89b-12d3-a456-426614174000',
+         name: 'Category 1',
+         description: 'Description 1',
+         userId: 'any_user_id',
+      });
+      await CategoryModel.create({
+         _id: '123e4567-e89b-12d3-a456-426614174001',
+         name: 'Category 2',
+         description: 'Description 2',
+         userId: 'any_user_id',
+      });
+
+      const categories = await sut.findCategoriesByIds(
+         [
+            '123e4567-e89b-12d3-a456-426614174000',
+            '123e4567-e89b-12d3-a456-426614174001',
+         ],
+         'any_user_id'
+      );
+      expect(categories).toHaveLength(2);
+      expect(categories[0].id.id).toEqual(
+         '123e4567-e89b-12d3-a456-426614174000'
+      );
+      expect(categories[0].name).toBe('Category 1');
+      expect(categories[0].description).toBe('Description 1');
+      expect(categories[1].id.id).toEqual(
+         '123e4567-e89b-12d3-a456-426614174001'
+      );
+      expect(categories[1].name).toBe('Category 2');
+      expect(categories[1].description).toBe('Description 2');
+   });
 });
