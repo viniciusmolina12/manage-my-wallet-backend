@@ -1,6 +1,7 @@
 import { Uuid } from '@core/domain/@shared/value-object/uuid.vo';
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export class CategoryId extends Uuid {}
 
@@ -8,12 +9,12 @@ export default class Category extends Entity {
    private _id: CategoryId;
    private _name: string;
    private _description?: string;
-   private _userId: string;
+   private _userId: UserId;
 
    constructor(
       id: CategoryId,
       name: string,
-      userId: string,
+      userId: UserId,
       description?: string
    ) {
       super();
@@ -37,7 +38,7 @@ export default class Category extends Entity {
             source: 'category',
          });
       }
-      if (!this._userId) {
+      if (!(this._userId instanceof UserId)) {
          this.notification.add({
             message: 'User is required',
             source: 'category',
@@ -58,6 +59,6 @@ export default class Category extends Entity {
       return this._description;
    }
    get userId(): string {
-      return this._userId;
+      return this._userId.id;
    }
 }

@@ -7,7 +7,7 @@ describe('Create category usecase', () => {
       const input = {
          name: 'any_name',
          description: 'any_description',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       };
       const category = await sut.execute(input);
       expect(category).toBeTruthy();
@@ -21,7 +21,7 @@ describe('Create category usecase', () => {
       const input = {
          name: 'any_name',
          description: 'any_description',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       };
       mockRepository.findCategoryByName.mockReturnValueOnce(
          Promise.resolve(true)
@@ -34,7 +34,7 @@ describe('Create category usecase', () => {
       const input = {
          name: '',
          description: 'any_description',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       };
       expect(sut.execute(input)).rejects.toThrow('category: Name is required');
    });

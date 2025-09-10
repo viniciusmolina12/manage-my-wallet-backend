@@ -8,6 +8,7 @@ const mockRepository = {
    findByUser: jest.fn(),
    findAllByUser: jest.fn(),
    deleteByUser: jest.fn(),
+   findCategoriesByIds: jest.fn(),
 };
 
 export default mockRepository;

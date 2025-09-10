@@ -9,4 +9,5 @@ export interface CategoryRepository extends RepositoryInterface<Category> {
    deleteByUser(id: string, userId: string): Promise<void>;
    findByUser(id: string, userId: string): Promise<Category | null>;
    findAllByUser(userId: string): Promise<Category[]>;
+   findCategoriesByIds(ids: string[], userId: string): Promise<Category[]>;
 }

@@ -1,10 +1,16 @@
+import { UserId } from '@core/domain/user/entity/user.entity';
 import EntityError from '../../../@shared/error/entity.error';
 import Category, { CategoryId } from '../category.entity';
 
 describe('Category entity tests', () => {
    it('Should create a category', () => {
       const id = new CategoryId();
-      const category = new Category(id, 'Category', '123', 'Description');
+      const category = new Category(
+         id,
+         'Category',
+         new UserId(),
+         'Description'
+      );
       expect(category.id).toBe(id);
       expect(category.name).toBe('Category');
       expect(category.description).toBe('Description');
@@ -14,7 +20,7 @@ describe('Category entity tests', () => {
          const category = new Category(
             null as any,
             'Category',
-            '123',
+            new UserId(),
             'Description'
          );
       }).toThrow(new EntityError('category: Id is required, '));
@@ -24,7 +30,7 @@ describe('Category entity tests', () => {
          const category = new Category(
             new CategoryId(),
             '',
-            '123',
+            new UserId(),
             'Description'
          );
       }).toThrow(new EntityError('category: Name is required, '));
@@ -34,7 +40,7 @@ describe('Category entity tests', () => {
          const category = new Category(
             new CategoryId(),
             'Category',
-            '',
+            '' as any,
             'Description'
          );
       }).toThrow(new EntityError('category: User is required, '));

@@ -3,6 +3,7 @@ import Category, {
 } from '@core/domain/category/entity/category.entity';
 import { CategoryRepository } from '@core/domain/category/repository/category.repository';
 import CategoryModel from '../../model/category.model';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class MongoDbCategoryRepository implements CategoryRepository {
    async create(entity: Category): Promise<void> {
@@ -30,7 +31,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const category = new Category(
          new CategoryId(result.id),
          result.name,
-         result.userId,
+         new UserId(result.userId),
          result?.description
       );
       category.createdAt = result.createdAt;
@@ -44,7 +45,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const category = new Category(
          new CategoryId(result.id),
          result.name,
-         result.userId,
+         new UserId(result.userId),
          result?.description
       );
       category.createdAt = result.createdAt;
@@ -58,7 +59,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          const category = new Category(
             new CategoryId(c.id),
             c.name,
-            c.userId,
+            new UserId(c.userId),
             c?.description
          );
          category.createdAt = c.createdAt;
@@ -73,7 +74,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          const category = new Category(
             new CategoryId(c.id),
             c.name,
-            c.userId,
+            new UserId(c.userId),
             c?.description
          );
          category.createdAt = c.createdAt;
@@ -91,7 +92,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          const category = new Category(
             new CategoryId(c.id),
             c.name,
-            c.userId,
+            new UserId(c.userId),
             c?.description
          );
          category.createdAt = c.createdAt;
@@ -117,7 +118,7 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       const category = new Category(
          new CategoryId(result.id),
          result.name,
-         result.userId,
+         new UserId(result.userId),
          result?.description
       );
       category.createdAt = result.createdAt;

@@ -6,6 +6,7 @@ import {
 import Category, {
    CategoryId,
 } from '@core/domain/category/entity/category.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class UpdateCategoryUseCase {
    constructor(private categoryRepository: CategoryRepository) {
@@ -36,7 +37,7 @@ export default class UpdateCategoryUseCase {
       const category = new Category(
          categoryId,
          input.name,
-         input.userId,
+         new UserId(input.userId),
          input?.description
       );
       await this.categoryRepository.update(category);

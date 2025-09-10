@@ -7,6 +7,7 @@ import {
 import Category, {
    CategoryId,
 } from '@core/domain/category/entity/category.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export default class CreateCategoryUseCase {
    constructor(private categoryRepository: CategoryRepository) {
@@ -26,7 +27,7 @@ export default class CreateCategoryUseCase {
       const category = new Category(
          new CategoryId(),
          input.name,
-         input.userId,
+         new UserId(input.userId),
          input?.description
       );
 

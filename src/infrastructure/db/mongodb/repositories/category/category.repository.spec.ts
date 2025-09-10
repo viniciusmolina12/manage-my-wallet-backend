@@ -4,6 +4,7 @@ import Category, {
 import mockDb from '../__mocks__/mockDb';
 import CategoryModel from '../../model/category.model';
 import MongoDbCategoryRepository from './category.repository';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -22,7 +23,7 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await sut.create(category);
@@ -39,7 +40,7 @@ describe('MongoDB Item Repository tests', () => {
       const oldCategory = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await CategoryModel.create({
@@ -60,7 +61,7 @@ describe('MongoDB Item Repository tests', () => {
       const updateCategory = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 2',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 2'
       );
       await sut.update(updateCategory);
@@ -77,7 +78,7 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await CategoryModel.create({
@@ -97,7 +98,7 @@ describe('MongoDB Item Repository tests', () => {
       const category1 = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await CategoryModel.create({
@@ -109,7 +110,7 @@ describe('MongoDB Item Repository tests', () => {
       const category2 = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174001'),
          'Category 2',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 2'
       );
       await CategoryModel.create({
@@ -133,7 +134,7 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await CategoryModel.create({
@@ -154,7 +155,7 @@ describe('MongoDB Item Repository tests', () => {
       const category = new Category(
          new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
          'Category 1',
-         'any_user_id',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'Description 1'
       );
       await CategoryModel.create({
@@ -188,13 +189,13 @@ describe('MongoDB Item Repository tests', () => {
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
          description: 'Description 1',
-         userId: 'any_user_id',
+         userId: new UserId('123e4567-e89b-12d3-a456-426614174000'),
       });
       await CategoryModel.create({
          _id: '123e4567-e89b-12d3-a456-426614174001',
          name: 'Category 2',
          description: 'Description 2',
-         userId: 'any_user_id',
+         userId: new UserId('123e4567-e89b-12d3-a456-426614174000'),
       });
 
       const categories = await sut.findCategoriesByIds(
@@ -202,7 +203,7 @@ describe('MongoDB Item Repository tests', () => {
             '123e4567-e89b-12d3-a456-426614174000',
             '123e4567-e89b-12d3-a456-426614174001',
          ],
-         'any_user_id'
+         '123e4567-e89b-12d3-a456-426614174000'
       );
       expect(categories).toHaveLength(2);
       expect(categories[0].id.id).toEqual(
