@@ -22,6 +22,8 @@ export default class FindBillUseCase {
    async execute(input: InputFindBillDto): Promise<OutputFindBillDto> {
       const { id, userId } = input;
       const bill = await this.billRepository.findByUser(id, userId);
+      if (!bill) throw new EntityError('Bill not found');
+
       const items = await this.itemRepository.findItemsByIds(
          [...new Set(bill?.items.map((item) => item.itemId.id))],
          userId
@@ -34,7 +36,6 @@ export default class FindBillUseCase {
          bill?.vendorId.id || '',
          userId
       );
-
       const billItemsMapped = bill?.items.map((item) => {
          const itemFound = items.find((i: Item) => i.id === item.itemId.id);
          const categoryFound = categories.find(
@@ -51,7 +52,6 @@ export default class FindBillUseCase {
          };
       });
 
-      if (!bill) throw new EntityError('Bill not found');
       return {
          id: bill.id,
          name: bill.name,

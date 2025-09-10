@@ -8,14 +8,18 @@ export interface OutputFindBillDto {
    description?: string;
    name: string;
    vendorId: string;
+   vendorName: string;
    total: number;
    createdAt: Date;
    updatedAt: Date;
    date: Date;
    items: {
       id: string;
-      itemId: string;
+      name: string;
+      description?: string;
       price: number;
       quantity: number;
+      categoryId: string;
+      categoryName: string;
    }[];
 }
