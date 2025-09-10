@@ -82,6 +82,24 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       });
    }
 
+   async findCategoriesByIds(
+      ids: string[],
+      userId: string
+   ): Promise<Category[]> {
+      const result = await CategoryModel.find({ _id: { $in: ids }, userId });
+      return result.map((c) => {
+         const category = new Category(
+            new CategoryId(c.id),
+            c.name,
+            c.userId,
+            c?.description
+         );
+         category.createdAt = c.createdAt;
+         category.updatedAt = c.updatedAt;
+         return category;
+      });
+   }
+
    async delete(id: string): Promise<void> {
       await CategoryModel.findByIdAndDelete({ _id: id });
    }
