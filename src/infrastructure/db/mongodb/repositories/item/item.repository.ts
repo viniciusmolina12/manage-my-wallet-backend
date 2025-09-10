@@ -86,6 +86,22 @@ export default class MongoDbItemRepository implements ItemRepository {
       });
    }
 
+   async findItemsByIds(ids: string[], userId: string): Promise<Item[]> {
+      const result = await ItemModel.find({ _id: { $in: ids }, userId });
+      return result.map((i) => {
+         const item = new Item(
+            new ItemId(i._id.toString()),
+            i.name,
+            new CategoryId(i.categoryId),
+            new UserId(i.userId),
+            i?.description
+         );
+         item.createdAt = i.createdAt;
+         item.updatedAt = i.updatedAt;
+         return item;
+      });
+   }
+
    async findAllByUserId(userId: string): Promise<Item[]> {
       const result = await ItemModel.find({ userId });
       return result.map((i) => {
