@@ -53,10 +53,10 @@ describe('Category e2e tests', () => {
 
    it('should update an category', async () => {
       const category = await CategoryModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
          description: 'Description 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .put(`/api/category/${category._id}`)
@@ -82,7 +82,7 @@ describe('Category e2e tests', () => {
 
    it('should return an error when try update a non-existent category', async () => {
       const response = await request(app)
-         .put('/api/category/any_hash_id')
+         .put('/api/category/123e4567-e89b-12d3-a456-426614174000')
          .set('Authorization', 'Bearer ' + token)
          .send({ name: 'other_hash_id' });
       expect(response.status).toBe(500);
@@ -92,9 +92,9 @@ describe('Category e2e tests', () => {
 
    it('should return an error when updating an category with invalid data', async () => {
       const category = await CategoryModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          description: 'Description 1',
       });
       const response = await request(app)
@@ -111,10 +111,10 @@ describe('Category e2e tests', () => {
 
    it('should get a category', async () => {
       const category = await CategoryModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
          description: 'Description 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          createdAt: new Date(),
          updatedAt: new Date(),
       });
@@ -136,18 +136,18 @@ describe('Category e2e tests', () => {
 
    it('should get all categories', async () => {
       const category1 = await CategoryModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
          description: 'Description 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          createdAt: new Date(),
          updatedAt: new Date(),
       });
       const category2 = await CategoryModel.create({
-         _id: 'any_hash_id_2',
+         _id: '123e4567-e89b-12d3-a456-426614174001',
          name: 'Category 2',
          description: 'Description 2',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          createdAt: new Date(),
          updatedAt: new Date(),
       });
@@ -193,10 +193,10 @@ describe('Category e2e tests', () => {
 
    it('should delete a category', async () => {
       const category = await CategoryModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Category 1',
          description: 'Description 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .delete(`/api/category/${category._id}`)
