@@ -85,7 +85,6 @@ describe('Bill e2e tests', () => {
       });
       const bill = await new BillBuilder().buildAndCreateModel();
       const bills = await BillModel.find({});
-      console.log(bills[0]._id);
       const response = await request(app)
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
@@ -103,7 +102,6 @@ describe('Bill e2e tests', () => {
                },
             ],
          });
-      console.log(response.body);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty(
          'message',
@@ -230,11 +228,10 @@ describe('Bill e2e tests', () => {
       });
 
       it('should get all bills by vendorId', async () => {
-         const bill = await new BillBuilder().buildAndCreateModel();
-         await new BillBuilder()
-            .withVendorId(new VendorId())
-            .withId('123e4567-e89b-12d3-a456-426614174000')
-            .createModel();
+         const bill = await new BillBuilder()
+            .withVendorId(new VendorId('123e4567-e89b-12d3-a456-426614174000'))
+            .buildAndCreateModel();
+         await new BillBuilder().createModel();
 
          const response = await request(app)
             .get('/api/bills')
@@ -257,7 +254,7 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill.vendorId
+            bill.vendorId.id
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
@@ -296,7 +293,7 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill.vendorId
+            bill.vendorId.id
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
@@ -334,7 +331,7 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill.vendorId
+            bill.vendorId.id
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',

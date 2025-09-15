@@ -5,8 +5,8 @@ import mockRepository from '../../__mocks__/repository.item.mock';
 const input = {
    name: 'Item 1',
    description: 'any description',
-   categoryId: 'category_id_hash',
-   userId: 'any_user_id',
+   categoryId: '123e4567-e89b-12d3-a456-426614174000',
+   userId: '123e4567-e89b-12d3-a456-426614174000',
 };
 describe('Item create usecase test', () => {
    it('should create an item', async () => {

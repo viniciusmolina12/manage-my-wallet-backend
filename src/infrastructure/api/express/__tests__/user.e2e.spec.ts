@@ -339,7 +339,6 @@ describe('User e2e tests', () => {
                token,
                password: newPassword,
             });
-         console.log('response', response.body);
          const userAfterChangePassword = await UserModel.findOne({
             _id: '123e4567-e89b-12d3-a456-426614174000',
          });

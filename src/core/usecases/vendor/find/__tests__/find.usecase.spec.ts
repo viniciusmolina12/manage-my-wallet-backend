@@ -1,6 +1,7 @@
-import Vendor from '@core/domain/vendor/entity/vendor.entity';
+import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { FindVendorUseCase } from '../find.usecase';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 const mockRepository = {
    create: jest.fn(),
@@ -29,11 +30,17 @@ describe('FindVendorUseCase', () => {
    it('should find a vendor', async () => {
       const { sut } = makeSut();
       const input = {
-         id: 'any_id',
-         userId: 'any_user_id',
+         id: new VendorId().id,
+         userId: new UserId().id,
       };
       mockRepository.findByUser.mockReturnValueOnce(
-         Promise.resolve(new Vendor('any_id', 'any_name', 'any_user_id'))
+         Promise.resolve(
+            new Vendor(
+               new VendorId(input.id),
+               'any_name',
+               new UserId(input.userId)
+            )
+         )
       );
       const output = await sut.execute(input);
       expect(output).toBeTruthy();

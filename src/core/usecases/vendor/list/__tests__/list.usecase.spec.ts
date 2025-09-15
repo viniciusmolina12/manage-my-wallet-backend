@@ -1,6 +1,7 @@
-import Vendor from '@core/domain/vendor/entity/vendor.entity';
+import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { ListVendorUseCase } from '../list.usecase';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 const mockRepository = {
    create: jest.fn(),
@@ -27,22 +28,25 @@ const makeSut = (): SutTypes => {
 
 describe('ListVendorUseCase', () => {
    it('should list all vendors', async () => {
+      const vendorId = new VendorId();
+      const vendorId2 = new VendorId();
+      const userId = new UserId();
       mockRepository.findAllByUser.mockResolvedValueOnce([
-         new Vendor('any_vendor_id', 'any_vendor_name', 'any_user_id'),
-         new Vendor('any_vendor_id_2', 'any_vendor_name_2', 'any_user_id'),
+         new Vendor(vendorId, 'any_vendor_name', userId),
+         new Vendor(vendorId2, 'any_vendor_name_2', userId),
       ]);
       const { sut } = makeSut();
       const input = {
-         userId: 'any_user_id',
+         userId: userId.id,
       };
       const output = await sut.execute(input);
       expect(output).toBeDefined();
       expect(output.vendors).toBeDefined();
       expect(output.vendors.length).toBe(2);
-      expect(output.vendors[0].id).toBe('any_vendor_id');
+      expect(output.vendors[0].id).toBe(vendorId.id);
       expect(output.vendors[0].name).toBe('any_vendor_name');
       expect(output.vendors[0].createdAt).toBeDefined();
-      expect(output.vendors[1].id).toBe('any_vendor_id_2');
+      expect(output.vendors[1].id).toBe(vendorId2.id);
       expect(output.vendors[1].name).toBe('any_vendor_name_2');
       expect(output.vendors[1].createdAt).toBeDefined();
    });
@@ -51,7 +55,7 @@ describe('ListVendorUseCase', () => {
       mockRepository.findAllByUser.mockResolvedValueOnce([]);
       const { sut } = makeSut();
       const input = {
-         userId: 'any_user_id',
+         userId: new UserId().id,
       };
       const output = await sut.execute(input);
       expect(output).toBeDefined();
