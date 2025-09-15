@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import FindBillUseCase from '@core/usecases/bill/find/find.usecase';
 
 interface InputCreateBillControllerDto {
    name: string;
@@ -28,21 +29,32 @@ interface OutputCreateBillControllerDto {
    createdAt: Date;
    updatedAt: Date;
    items: {
-      quantity: number;
+      id: string;
+      name: string;
+      description?: string;
       price: number;
-      itemId: string;
+      quantity: number;
+      categoryId: string;
+      categoryName: string;
    }[];
 }
 
 export default class CreateBillController {
-   constructor(private readonly createBillUseCase: CreateBillUseCase) {
+   constructor(
+      private readonly createBillUseCase: CreateBillUseCase,
+      private readonly findBillUseCase: FindBillUseCase
+   ) {
       this.createBillUseCase = createBillUseCase;
    }
    public async handle(
       input: InputControllerDto<InputCreateBillControllerDto>
    ): Promise<OutputControllerDto<OutputCreateBillControllerDto>> {
       try {
-         const bill = await this.createBillUseCase.execute(input.data);
+         const { id } = await this.createBillUseCase.execute(input.data);
+         const bill = await this.findBillUseCase.execute({
+            id,
+            userId: input.data.userId,
+         });
          const output = {
             id: bill.id,
             name: bill.name,
@@ -52,9 +64,13 @@ export default class CreateBillController {
             createdAt: bill.createdAt,
             updatedAt: bill.updatedAt,
             items: bill.items.map((item) => ({
-               quantity: item.quantity,
+               id: item.id,
+               name: item.name,
+               description: item.description,
                price: item.price,
-               itemId: item.itemId,
+               quantity: item.quantity,
+               categoryId: item.categoryId,
+               categoryName: item.categoryName,
             })),
          };
          return response<OutputCreateBillControllerDto>(

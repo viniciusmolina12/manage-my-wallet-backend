@@ -7,7 +7,8 @@ import itemModel from '@infrastructure/db/mongodb/model/item.model';
 import vendorModel from '@infrastructure/db/mongodb/model/vendor.model';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import { BillBuilder } from './___mocks__/bill.builder.mock';
-
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -15,11 +16,11 @@ beforeAll(async () => {
 beforeEach(async () => {
    await mockDb.clear();
    const item = await itemModel.create({
-      _id: 'any_item_id',
+      _id: '123e4567-e89b-12d3-a456-426614174000',
       name: 'any_item_name',
-      categoryId: 'any_category_id',
+      categoryId: '123e4567-e89b-12d3-a456-426614174000',
       description: 'any_item_description',
-      userId: 'any_user_id',
+      userId: '123e4567-e89b-12d3-a456-426614174000',
    });
 });
 
@@ -28,10 +29,11 @@ afterAll(async () => {
 });
 describe('Bill e2e tests', () => {
    it('should create a bill', async () => {
+      const vendorId = new VendorId();
       const vendor = await vendorModel.create({
-         _id: 'any_vendor_id',
+         _id: vendorId.id,
          name: 'any_vendor_name',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .post('/api/bill')
@@ -39,13 +41,13 @@ describe('Bill e2e tests', () => {
          .send({
             name: 'any_bill_name',
             description: 'any_bill_description',
-            vendorId: 'any_vendor_id',
+            vendorId: vendorId.id,
             date: new Date('2021-01-01T00:00:00.000Z'),
             items: [
                {
                   quantity: 10,
                   price: 100,
-                  itemId: 'any_item_id',
+                  itemId: '123e4567-e89b-12d3-a456-426614174000',
                },
             ],
          });
@@ -77,30 +79,38 @@ describe('Bill e2e tests', () => {
 
    it('should update a bill', async () => {
       const vendor = await vendorModel.create({
-         _id: 'any_other_vendor_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'any_vendor_name',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const bill = await new BillBuilder().buildAndCreateModel();
+      const bills = await BillModel.find({});
+      console.log(bills[0]._id);
       const response = await request(app)
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
          .send({
-            id: 'any_hash_id',
+            id: bill.id,
             name: 'any_bill_name',
             description: 'any_bill_description',
-            vendorId: 'any_other_vendor_id',
+            vendorId: '123e4567-e89b-12d3-a456-426614174000',
             date: new Date('2021-01-02T00:00:00.000Z'),
             items: [
                {
-                  id: 'any_item_id',
                   quantity: 10,
                   price: 100,
-                  itemId: 'any_item_id',
+                  itemId: '123e4567-e89b-12d3-a456-426614174000',
                },
             ],
          });
+      console.log(response.body);
       expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty(
+         'message',
+         'Bill updated successfully'
+      );
+      expect(response.body.data).toHaveProperty('id', bill.id);
+      expect(response.body.data).toHaveProperty('name', 'any_bill_name');
       expect(response.body).toHaveProperty('data');
       expect(response.body).toHaveProperty(
          'message',
@@ -128,16 +138,16 @@ describe('Bill e2e tests', () => {
 
    it('should return an error when updating a bill with invalid data', async () => {
       const vendor = await vendorModel.create({
-         _id: 'any_vendor_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'any_vendor_name',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const bill = await new BillBuilder().buildAndCreateModel();
       const response = await request(app)
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
          .send({
-            vendorId: 'any_vendor_id',
+            vendorId: '123e4567-e89b-12d3-a456-426614174000',
          });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
@@ -180,12 +190,12 @@ describe('Bill e2e tests', () => {
 
          await new BillBuilder()
             .withName('Bill 2')
-            .withId('any_hash_id_2')
+            .withId('123e4567-e89b-12d3-a456-426614174000')
             .createModel();
 
          await new BillBuilder()
             .withName('other_bill')
-            .withId('any_hash_id_3')
+            .withId('123e4567-e89b-12d3-a456-426614174001')
             .createModel();
 
          const response = await request(app)
@@ -209,7 +219,7 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill.vendorId
+            bill.vendorId.id
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'description',
@@ -222,15 +232,15 @@ describe('Bill e2e tests', () => {
       it('should get all bills by vendorId', async () => {
          const bill = await new BillBuilder().buildAndCreateModel();
          await new BillBuilder()
-            .withVendorId('other_vendor_id')
-            .withId('any_hash_id_2')
+            .withVendorId(new VendorId())
+            .withId('123e4567-e89b-12d3-a456-426614174000')
             .createModel();
 
          const response = await request(app)
             .get('/api/bills')
             .set('Authorization', 'Bearer ' + token)
             .query({
-               vendorId: 'any_vendor_id',
+               vendorId: '123e4567-e89b-12d3-a456-426614174000',
             });
          expect(response.status).toBe(200);
          expect(response.body).toHaveProperty('data');
@@ -261,7 +271,7 @@ describe('Bill e2e tests', () => {
          const bill = await new BillBuilder().buildAndCreateModel();
 
          await new BillBuilder()
-            .withId('any_hash_id_2')
+            .withId('123e4567-e89b-12d3-a456-426614174000')
             .withDate(new Date('2021-01-01T00:00:00.000Z'))
             .createModel();
 
@@ -299,7 +309,7 @@ describe('Bill e2e tests', () => {
       it('should get all bills by endDate', async () => {
          await new BillBuilder().buildAndCreateModel();
          const bill = await new BillBuilder()
-            .withId('any_hash_id_2')
+            .withId('123e4567-e89b-12d3-a456-426614174000')
             .withDate(new Date('2021-01-01T00:00:00.000Z'))
             .buildAndCreateModel();
 
@@ -360,9 +370,9 @@ describe('Bill e2e tests', () => {
 
    it('should throw an error when try create a bill with an invalid item', async () => {
       await vendorModel.create({
-         _id: 'any_vendor_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'any_vendor_name',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .post('/api/bill')
@@ -370,7 +380,7 @@ describe('Bill e2e tests', () => {
          .send({
             name: 'any_bill_name',
             description: 'any_bill_description',
-            vendorId: 'any_vendor_id',
+            vendorId: '123e4567-e89b-12d3-a456-426614174000',
             items: [{ itemId: 'non-existent-id', price: 10, quantity: 1 }],
          });
       expect(response.status).toBe(400);
@@ -381,7 +391,7 @@ describe('Bill e2e tests', () => {
    it('should get the summary of the bills by period MONTH', async () => {
       await new BillBuilder().createModel();
       await new BillBuilder()
-         .withId('any_hash_id_2')
+         .withId('123e4567-e89b-12d3-a456-426614174000')
          .withDate(new Date('2021-01-01T00:00:00.000Z'))
          .createModel();
       const response = await request(app)
@@ -397,9 +407,11 @@ describe('Bill e2e tests', () => {
 
    it('should get the summary of the bills by period YEAR', async () => {
       await new BillBuilder().createModel();
-      await new BillBuilder().withId('any_hash_id_2').createModel();
       await new BillBuilder()
-         .withId('any_hash_id_3')
+         .withId('123e4567-e89b-12d3-a456-426614174001')
+         .createModel();
+      await new BillBuilder()
+         .withId('123e4567-e89b-12d3-a456-426614174002')
          .withDate(new Date('2021-01-01T00:00:00.000Z'))
          .createModel();
 
@@ -419,11 +431,11 @@ describe('Bill e2e tests', () => {
       todayMinusThreeMonths.setMonth(todayMinusThreeMonths.getMonth() - 3);
       await new BillBuilder().createModel();
       await new BillBuilder()
-         .withId('any_hash_id_3')
+         .withId('123e4567-e89b-12d3-a456-426614174001')
          .withDate(todayMinusThreeMonths)
          .createModel();
       await new BillBuilder()
-         .withId('any_hash_id_2')
+         .withId('123e4567-e89b-12d3-a456-426614174000')
          .withDate(new Date('2021-01-01T00:00:00.000Z'))
          .createModel();
       const response = await request(app)
@@ -442,11 +454,11 @@ describe('Bill e2e tests', () => {
       todayMinusOneMonth.setMonth(todayMinusOneMonth.getMonth() - 1);
       await new BillBuilder().createModel();
       await new BillBuilder()
-         .withId('any_hash_id_2')
+         .withId('123e4567-e89b-12d3-a456-426614174000')
          .withDate(todayMinusOneMonth)
          .createModel();
       await new BillBuilder()
-         .withId('any_hash_id_3')
+         .withId('123e4567-e89b-12d3-a456-426614174001')
          .withDate(new Date('2021-01-01T00:00:00.000Z'))
          .createModel();
       const response = await request(app)

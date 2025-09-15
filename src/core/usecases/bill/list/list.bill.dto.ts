@@ -13,7 +13,6 @@ export interface OutputListBillDto {
       updatedAt: Date;
       date: Date;
       items: {
-         id: string;
          itemId: string;
          price: number;
          quantity: number;

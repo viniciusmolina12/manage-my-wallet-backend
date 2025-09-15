@@ -17,18 +17,29 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/item.repository';
 import MongoDbVendorRepository from '@infrastructure/db/mongodb/repositories/vendor/vendor.repository';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
+import MongoDbCategoryRepository from '@infrastructure/db/mongodb/repositories/category/category.repository';
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const mongoDbItemRepository = new MongoDbItemRepository();
    const mongoDbVendorRepository = new MongoDbVendorRepository();
+   const mongoDbCategoryRepository = new MongoDbCategoryRepository();
    const createItemUseCase = new CreateBillUseCase(
       mongoDbBillRepository,
       mongoDbItemRepository,
       mongoDbVendorRepository
    );
-   const controller = new CreateBillController(createItemUseCase);
+   const findBillUseCase = new FindBillUseCase(
+      mongoDbBillRepository,
+      mongoDbItemRepository,
+      mongoDbVendorRepository,
+      mongoDbCategoryRepository
+   );
+   const controller = new CreateBillController(
+      createItemUseCase,
+      findBillUseCase
+   );
    const { code, ...data } = await controller.handle({
       data: { ...req.body, userId: req.userId },
    });
@@ -57,7 +68,15 @@ route.get(
    authMiddleware,
    async (req: Request, res: Response) => {
       const mongoDbBillRepository = new MongoDbBillRepository();
-      const findBillUseCase = new FindBillUseCase(mongoDbBillRepository);
+      const mongoDbItemRepository = new MongoDbItemRepository();
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const mongoDbCategoryRepository = new MongoDbCategoryRepository();
+      const findBillUseCase = new FindBillUseCase(
+         mongoDbBillRepository,
+         mongoDbItemRepository,
+         mongoDbVendorRepository,
+         mongoDbCategoryRepository
+      );
       const controller = new FindBillController(findBillUseCase);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },

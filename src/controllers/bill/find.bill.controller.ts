@@ -49,7 +49,7 @@ export default class FindBillController {
             items: bill.items.map((item) => ({
                quantity: item.quantity,
                price: item.price,
-               itemId: item.itemId,
+               itemId: item.id,
             })),
          };
          return response<OutputFindBillControllerDto>(

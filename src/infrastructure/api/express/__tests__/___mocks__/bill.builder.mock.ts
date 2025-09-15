@@ -14,7 +14,7 @@ export class BillBuilder {
          new Date(),
          [new BillItem(new ItemId(), 10, 1)],
          new VendorId(),
-         new UserId(),
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
          'any_description'
       );
    }
@@ -59,8 +59,8 @@ export class BillBuilder {
       await BillModel.create({
          _id: this.bill.id,
          name: this.bill.name,
-         userId: this.bill.userId,
-         vendorId: this.bill.vendorId,
+         userId: this.bill.userId.id,
+         vendorId: this.bill.vendorId.id,
          description: this.bill.description,
          date: this.bill.date,
          total: this.bill.total,

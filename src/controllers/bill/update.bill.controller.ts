@@ -22,6 +22,7 @@ interface InputUpdateBillControllerDto {
 }
 
 interface OutputUpdateBillControllerDto {
+   id: string;
    name: string;
    description?: string;
    total: number;
@@ -46,6 +47,7 @@ export default class UpdateBillController {
       try {
          const bill = await this.updateBillUseCase.execute(input.data);
          const output = {
+            id: bill.id,
             name: bill.name,
             description: bill.description,
             total: bill.total,
