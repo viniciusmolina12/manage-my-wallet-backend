@@ -1,22 +1,25 @@
-import BillItem from '@core/domain/bill/entity/bill-item.entity';
-import Bill from '@core/domain/bill/entity/bill.entity';
+import BillItem from '@core/domain/bill/entity/bill-item.vo';
+import Bill, { BillId } from '@core/domain/bill/entity/bill.entity';
+import { ItemId } from '@core/domain/item/entity/item.entity';
 import BillModel from '@infrastructure/db/mongodb/model/bill.model';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 
 export class BillBuilder {
    private bill: Bill;
    constructor() {
       this.bill = new Bill(
-         'any_hash_id',
+         new BillId(),
          'any_name',
          new Date(),
-         [new BillItem('any_item_id', 'any_item_id', 10, 1)],
-         'any_vendor_id',
-         'any_user_id',
+         [new BillItem(new ItemId(), 10, 1)],
+         new VendorId(),
+         new UserId(),
          'any_description'
       );
    }
    public withId(id: string): BillBuilder {
-      this.bill.id = id;
+      this.bill['_id'] = new BillId(id);
       return this;
    }
    public withName(name: string): BillBuilder {
@@ -27,11 +30,11 @@ export class BillBuilder {
       this.bill.description = description;
       return this;
    }
-   public withVendorId(vendorId: string): BillBuilder {
+   public withVendorId(vendorId: VendorId): BillBuilder {
       this.bill.vendorId = vendorId;
       return this;
    }
-   public withUserId(userId: string): BillBuilder {
+   public withUserId(userId: UserId): BillBuilder {
       this.bill.userId = userId;
       return this;
    }
@@ -40,7 +43,7 @@ export class BillBuilder {
       return this;
    }
    public withItems(items: BillItem[]): BillBuilder {
-      this.bill.items = items;
+      this.bill['_items'] = items;
       return this;
    }
    public build(): Bill {
@@ -62,7 +65,6 @@ export class BillBuilder {
          date: this.bill.date,
          total: this.bill.total,
          items: this.bill.items.map((item) => ({
-            _id: item.id,
             quantity: item.quantity,
             price: item.price,
             itemId: item.itemId,
