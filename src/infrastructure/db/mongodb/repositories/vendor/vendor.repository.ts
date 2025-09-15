@@ -75,6 +75,19 @@ export default class MongoDbVendorRepository implements VendorRepository {
          return vendor;
       });
    }
+   async findVendorsByIds(ids: string[], userId: string): Promise<Vendor[]> {
+      const result = await VendorModel.find({ _id: { $in: ids }, userId });
+      return result.map((v) => {
+         const vendor = new Vendor(
+            new VendorId(v._id),
+            v.name,
+            new UserId(v.userId)
+         );
+         vendor.createdAt = v.createdAt;
+         vendor.updatedAt = v.updatedAt;
+         return vendor;
+      });
+   }
 
    async delete(id: string): Promise<void> {
       await VendorModel.findByIdAndDelete({ _id: id });
