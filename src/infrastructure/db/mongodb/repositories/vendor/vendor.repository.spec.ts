@@ -168,4 +168,18 @@ describe('MongoDB Vendor Repository tests', () => {
       expect(vendorUpdated?.createdAt).toBeDefined();
       expect(vendorUpdated?.updatedAt).toBeDefined();
    });
+   it('should find vendors by ids', async () => {
+      const sut = new MongoDbVendorRepository();
+      const userId = new UserId();
+      const vendor = new Vendor(new VendorId(), 'Vendor 1', userId);
+      const vendor2 = new Vendor(new VendorId(), 'Vendor 2', userId);
+      await sut.create(vendor);
+      await sut.create(vendor2);
+      const vendors = await sut.findVendorsByIds(
+         [vendor.id, vendor2.id],
+         userId.id
+      );
+      expect(vendors).toBeTruthy();
+      expect(vendors.length).toBe(2);
+   });
 });
