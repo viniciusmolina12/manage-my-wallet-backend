@@ -22,7 +22,7 @@ describe('Item e2e tests', () => {
          .send({
             name: 'any_item_name',
             description: 'any_item_description',
-            categoryId: 'any_category_id',
+            categoryId: '123e4567-e89b-12d3-a456-426614174000',
          });
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('data');
@@ -38,7 +38,7 @@ describe('Item e2e tests', () => {
       );
       expect(response.body.data).toHaveProperty(
          'categoryId',
-         'any_category_id'
+         '123e4567-e89b-12d3-a456-426614174000'
       );
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
@@ -52,7 +52,7 @@ describe('Item e2e tests', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
-         'Item: Name is required, Item: Category is required, '
+         'Item: Name is required, '
       );
       expect(response.body).not.toHaveProperty('data');
    });
@@ -62,8 +62,8 @@ describe('Item e2e tests', () => {
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
-         categoryId: 'Category 1',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .post('/api/item')
@@ -71,7 +71,7 @@ describe('Item e2e tests', () => {
          .send({
             name: 'Item 1',
             description: 'any_item_description',
-            categoryId: 'any_category_id',
+            categoryId: '123e4567-e89b-12d3-a456-426614174000',
          });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item already exists');
@@ -81,9 +81,9 @@ describe('Item e2e tests', () => {
       const item = await ItemModel.create({
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
-         userId: 'any_user_id',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
          description: 'Description 1',
-         categoryId: 'Category 1',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .put(`/api/item/${item._id}`)
@@ -91,7 +91,7 @@ describe('Item e2e tests', () => {
          .send({
             name: 'any_item_name',
             description: 'any_item_description',
-            categoryId: 'any_category_id',
+            categoryId: '123e4567-e89b-12d3-a456-426614174000',
          });
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
@@ -106,7 +106,7 @@ describe('Item e2e tests', () => {
       );
       expect(response.body.data).toHaveProperty(
          'categoryId',
-         'any_category_id'
+         '123e4567-e89b-12d3-a456-426614174000'
       );
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
@@ -127,8 +127,8 @@ describe('Item e2e tests', () => {
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
-         categoryId: 'Category 1',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .put(`/api/item/${item.id}`)
@@ -137,18 +137,18 @@ describe('Item e2e tests', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
          'message',
-         'Item: Name is required, Item: Category is required, '
+         'Item: Name is required, '
       );
       expect(response.body).not.toHaveProperty('data');
    });
 
    it('should get an item', async () => {
       const item = await ItemModel.create({
-         _id: 'any_hash_id',
+         _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
-         categoryId: 'Category 1',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .get(`/api/item/${item._id}`)
@@ -162,7 +162,10 @@ describe('Item e2e tests', () => {
       expect(response.body.data).toHaveProperty('id', item._id);
       expect(response.body.data).toHaveProperty('name', 'Item 1');
       expect(response.body.data).toHaveProperty('description', 'Description 1');
-      expect(response.body.data).toHaveProperty('categoryId', 'Category 1');
+      expect(response.body.data).toHaveProperty(
+         'categoryId',
+         '123e4567-e89b-12d3-a456-426614174000'
+      );
       expect(response.body.data).toHaveProperty('createdAt');
       expect(response.body.data).toHaveProperty('updatedAt');
    });
@@ -172,15 +175,15 @@ describe('Item e2e tests', () => {
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
-         categoryId: 'Category 1',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const item2 = await ItemModel.create({
          _id: '123e4567-e89b-12d3-a456-426614174001',
          name: 'Item 2',
          description: 'Description 2',
-         categoryId: 'Category 2',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .get('/api/items')
@@ -223,8 +226,8 @@ describe('Item e2e tests', () => {
          _id: '123e4567-e89b-12d3-a456-426614174000',
          name: 'Item 1',
          description: 'Description 1',
-         categoryId: 'Category 1',
-         userId: 'any_user_id',
+         categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         userId: '123e4567-e89b-12d3-a456-426614174000',
       });
       const response = await request(app)
          .delete(`/api/item/${item._id}`)
