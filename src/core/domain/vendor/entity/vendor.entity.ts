@@ -1,33 +1,31 @@
+import { UserId } from '@core/domain/user/entity/user.entity';
 import Entity from '../../@shared/entity.interface';
 import EntityError from '../../@shared/error/entity.error';
+import { Uuid } from '../../@shared/value-object/uuid.vo';
+
+export class VendorId extends Uuid {}
 
 export default class Vendor extends Entity {
-   private _id: string;
+   private _id: VendorId;
    private _name: string;
-   private _userId: string;
+   private _userId: UserId;
 
-   constructor(id: string, name: string, userId: string) {
+   constructor(id: VendorId, name: string, userId: UserId) {
       super();
-      this._id = id;
+      this._id = id || new VendorId();
       this._name = name;
       this._userId = userId;
       this.validate();
    }
 
    validate() {
-      if (this._id.length === 0) {
-         this.notification.add({
-            message: 'Id is required',
-            source: 'vendor',
-         });
-      }
       if (this._name.length === 0) {
          this.notification.add({
             message: 'Name is required',
             source: 'vendor',
          });
       }
-      if (this._userId.length === 0) {
+      if (!(this._userId instanceof UserId)) {
          this.notification.add({
             message: 'User ID is required',
             source: 'vendor',
@@ -44,12 +42,12 @@ export default class Vendor extends Entity {
    }
 
    get id(): string {
-      return this._id;
+      return this._id.id;
    }
    get name(): string {
       return this._name;
    }
    get userId(): string {
-      return this._userId;
+      return this._userId.id;
    }
 }

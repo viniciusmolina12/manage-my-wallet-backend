@@ -6,4 +6,5 @@ export interface ItemRepository extends RepositoryInterface<Item> {
    findAllByUserId(userId: string): Promise<Item[]>;
    deleteByUser(id: string, userId: string): Promise<void>;
    findByName(name: string, userId: string): Promise<Item | null>;
+   findItemsByIds(ids: string[], userId: string): Promise<Item[]>;
 }

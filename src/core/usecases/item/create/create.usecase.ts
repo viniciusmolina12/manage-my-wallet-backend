@@ -1,7 +1,8 @@
 import Item, { ItemId } from '@core/domain/item/entity/item.entity';
 import { ItemRepository } from '@core/domain/item/repository/item.repository';
 import { InputCreateItemDto, OutputCreateItemDto } from './create.item.dto';
-import { v4 as uuid } from 'uuid';
+import { CategoryId } from '@core/domain/category/entity/category.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 import EntityError from '@core/domain/@shared/error/entity.error';
 export default class CreateItemUseCase {
    private readonly itemRepository: ItemRepository;
@@ -13,13 +14,13 @@ export default class CreateItemUseCase {
       const item = new Item(
          new ItemId(),
          input.name,
-         input.categoryId,
-         input.userId,
+         new CategoryId(input.categoryId),
+         new UserId(input.userId),
          input.description
       );
       const itemExists = await this.itemRepository.findByName(
          item.name,
-         item.userId
+         item.userId.id
       );
       if (itemExists) throw new EntityError('Item already exists');
       await this.itemRepository.create(item);

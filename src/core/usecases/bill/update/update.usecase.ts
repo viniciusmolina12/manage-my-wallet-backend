@@ -1,10 +1,13 @@
 import { v4 as uuid } from 'uuid';
 import { BillRepository } from '@core/domain/bill/repository/bill.repository';
 import { InputUpdateBillDto, OutputUpdateBillDto } from './update.bill.dto';
-import BillItem from '@core/domain/bill/entity/bill-item.entity';
-import Bill from '@core/domain/bill/entity/bill.entity';
+import BillItem from '@core/domain/bill/entity/bill-item.vo';
+import Bill, { BillId } from '@core/domain/bill/entity/bill.entity';
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
 import EntityError from '@core/domain/@shared/error/entity.error';
+import { ItemId } from '@core/domain/item/entity/item.entity';
+import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 export default class UpdateBillUseCase {
    private readonly billRepository: BillRepository;
    private readonly vendorRepository: VendorRepository;
@@ -33,8 +36,7 @@ export default class UpdateBillUseCase {
       const billItems: BillItem[] = [];
       input?.items?.map((item) => {
          const billItem = new BillItem(
-            uuid(),
-            item.item.id,
+            new ItemId(item.itemId),
             item.price,
             item.quantity
          );
@@ -42,12 +44,12 @@ export default class UpdateBillUseCase {
       });
 
       const bill = new Bill(
-         input.id,
+         new BillId(input.id),
          input.name,
          input.date,
          billItems,
-         input.vendorId,
-         input.userId,
+         new VendorId(input.vendorId),
+         new UserId(input.userId),
          input.description
       );
       (await this.billRepository.update(bill)) as Bill;
@@ -55,14 +57,14 @@ export default class UpdateBillUseCase {
          id: bill.id,
          name: bill.name,
          description: bill.description,
-         vendorId: bill.vendorId,
+         vendorId: bill.vendorId.id,
          total: bill.total,
          date: bill.date,
          createdAt: billExists.createdAt,
          updatedAt: bill.updatedAt,
          items: bill.items.map((item: BillItem) => ({
-            id: item.id,
-            itemId: item.item.id,
+            id: item.itemId.id,
+            itemId: item.itemId.id,
             price: item.price,
             quantity: item.quantity,
          })),
