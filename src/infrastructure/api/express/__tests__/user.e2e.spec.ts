@@ -320,7 +320,6 @@ describe('User e2e tests', () => {
 
    describe('reset-password', () => {
       it('should reset password succesfully', async () => {
-         const token = 'any_valid_token';
          const oldPassword = 'old_pasword';
          const newPassword = 'new_password';
          await UserModel.create({
@@ -340,7 +339,7 @@ describe('User e2e tests', () => {
                token,
                password: newPassword,
             });
-
+         console.log('response', response.body);
          const userAfterChangePassword = await UserModel.findOne({
             _id: '123e4567-e89b-12d3-a456-426614174000',
          });
@@ -418,7 +417,7 @@ describe('User e2e tests', () => {
       });
 
       it('should throw an error if tries to use the same token more than 1 time', async () => {
-         const token = 'any_valid_token';
+         const resetPasswordToken = 'any_valid_token';
          const oldPassword = 'old_pasword';
          const newPassword = 'new_password';
          await UserModel.create({
@@ -426,7 +425,7 @@ describe('User e2e tests', () => {
             email: 'any_mail@mail.com',
             name: 'any_name',
             resetPassword: {
-               token,
+               token: resetPasswordToken,
                expiresIn: new Date().setDate(new Date().getDate() + 1),
             },
             password: oldPassword,
@@ -435,15 +434,16 @@ describe('User e2e tests', () => {
             .post(`/api/user/reset-password`)
             .set('Authorization', 'Bearer ' + token)
             .send({
-               token,
+               token: resetPasswordToken,
                password: newPassword,
             });
          expect(response.status).toBe(200);
          //Retry to use the same token
          const retryResponse = await request(app)
             .post(`/api/user/reset-password`)
+            .set('Authorization', 'Bearer ' + token)
             .send({
-               token,
+               token: resetPasswordToken,
                password: newPassword,
             });
          expect(retryResponse.status).toBe(400);
