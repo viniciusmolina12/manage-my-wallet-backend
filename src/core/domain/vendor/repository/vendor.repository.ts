@@ -6,4 +6,5 @@ export interface VendorRepository extends RepositoryInterface<Vendor> {
    findByUser(id: string, userId: string): Promise<Vendor | null>;
    deleteByUser(id: string, userId: string): Promise<void>;
    findAllByUser(userId: string): Promise<Vendor[]>;
+   findVendorsByIds(ids: string[], userId: string): Promise<Vendor[]>;
 }

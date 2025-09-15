@@ -8,17 +8,21 @@ export interface InputSummaryBillDto {
 export interface OutputSummaryBillDto {
    bills: {
       id: string;
-      description?: string;
       name: string;
-      vendorId: string;
+      description?: string;
       total: number;
+      vendorId: string;
+      vendorName: string;
+      date: string;
       createdAt: Date;
       updatedAt: Date;
-      date: Date;
       items: {
-         itemId: string;
-         price: number;
          quantity: number;
+         price: number;
+         categoryId: string;
+         categoryName: string;
+         itemId: string;
+         description?: string;
       }[];
    }[];
 }

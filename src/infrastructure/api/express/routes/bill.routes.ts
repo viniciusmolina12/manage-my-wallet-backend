@@ -51,7 +51,15 @@ route.get(
    authMiddleware,
    async (req: Request, res: Response) => {
       const mongoDbBillRepository = new MongoDbBillRepository();
-      const summaryBillUseCase = new SummaryBillUseCase(mongoDbBillRepository);
+      const mongoDbItemRepository = new MongoDbItemRepository();
+      const mongoDbVendorRepository = new MongoDbVendorRepository();
+      const mongoDbCategoryRepository = new MongoDbCategoryRepository();
+      const summaryBillUseCase = new SummaryBillUseCase(
+         mongoDbBillRepository,
+         mongoDbVendorRepository,
+         mongoDbItemRepository,
+         mongoDbCategoryRepository
+      );
       const controller = new SummaryBillController(summaryBillUseCase);
       const { code, ...data } = await controller.handle({
          data: {
