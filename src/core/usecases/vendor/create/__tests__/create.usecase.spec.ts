@@ -1,6 +1,7 @@
 import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
 import { CreateVendorUseCase } from '../create.usecase';
-import Vendor from '@core/domain/vendor/entity/vendor.entity';
+import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
+import { UserId } from '@core/domain/user/entity/user.entity';
 interface SutTypes {
    sut: CreateVendorUseCase;
 }
@@ -29,7 +30,7 @@ describe('CreateVendorUseCase', () => {
       const { sut } = makeSut();
       const input = {
          name: 'any_name',
-         userId: 'any_user_id',
+         userId: new UserId().id,
       };
       const output = await sut.execute(input);
       expect(output).toBeTruthy();
@@ -41,12 +42,15 @@ describe('CreateVendorUseCase', () => {
 
    it('should throw an error if the vendor already exists', async () => {
       const { sut } = makeSut();
+      const userId = new UserId();
       const input = {
          name: 'any_name',
-         userId: 'any_user_id',
+         userId: userId.id,
       };
       mockRepository.findVendorByName.mockReturnValueOnce(
-         Promise.resolve(new Vendor('any_id', 'any_name', 'any_user_id'))
+         Promise.resolve(
+            new Vendor(new VendorId(), 'any_name', new UserId(userId.id))
+         )
       );
       await expect(sut.execute(input)).rejects.toThrow('Vendor already exists');
    });
@@ -55,21 +59,10 @@ describe('CreateVendorUseCase', () => {
       const { sut } = makeSut();
       const input = {
          name: '',
-         userId: 'any_user_id',
+         userId: new UserId().id,
       };
       await expect(sut.execute(input)).rejects.toThrow(
          'vendor: Name is required, '
-      );
-   });
-
-   it('should throw an error if the vendor user id is not provided', async () => {
-      const { sut } = makeSut();
-      const input = {
-         name: 'any_name',
-         userId: '',
-      };
-      await expect(sut.execute(input)).rejects.toThrow(
-         'vendor: User ID is required, '
       );
    });
 });
