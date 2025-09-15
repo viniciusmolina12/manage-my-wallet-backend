@@ -1,5 +1,8 @@
 import SummaryBillUseCase from '../summary.usecase';
 import mockRepository from '../../__mocks__/repository.bill.mock';
+import mockVendorRepository from '../../../vendor/__mocks__/repository.vendor.mock';
+import mockItemRepository from '../../../item/__mocks__/repository.item.mock';
+import mockCategoryRepository from '../../../category/__mocks__/repository.category.mock';
 import { PeriodFactory, PeriodType } from '../periods';
 
 describe('SummaryBillUseCase', () => {
@@ -8,10 +11,18 @@ describe('SummaryBillUseCase', () => {
    let repositorySpy: jest.SpyInstance;
 
    beforeEach(() => {
-      sut = new SummaryBillUseCase(mockRepository);
+      sut = new SummaryBillUseCase(
+         mockRepository,
+         mockVendorRepository,
+         mockItemRepository,
+         mockCategoryRepository
+      );
       periodFactorySpy = jest.spyOn(PeriodFactory, 'create');
       repositorySpy = jest.spyOn(mockRepository, 'findAllByUserAndPeriod');
       mockRepository.findAllByUserAndPeriod.mockResolvedValue([]);
+      mockVendorRepository.findVendorsByIds.mockResolvedValue([]);
+      mockItemRepository.findItemsByIds.mockResolvedValue([]);
+      mockCategoryRepository.findCategoriesByIds.mockResolvedValue([]);
    });
 
    afterEach(() => {

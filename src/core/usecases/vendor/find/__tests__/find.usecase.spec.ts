@@ -8,6 +8,7 @@ const mockRepository = {
    update: jest.fn(),
    find: jest.fn(),
    findAll: jest.fn(),
+   findVendorsByIds: jest.fn(),
    delete: jest.fn(),
    findVendorByName: jest.fn(),
    findByUser: jest.fn(),

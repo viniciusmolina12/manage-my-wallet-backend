@@ -14,6 +14,7 @@ const mockRepository = {
    delete: jest.fn(),
    findVendorByName: jest.fn(),
    findByUser: jest.fn(),
+   findVendorsByIds: jest.fn(),
    findAllByUser: jest.fn(),
    deleteByUser: jest.fn(),
 };
