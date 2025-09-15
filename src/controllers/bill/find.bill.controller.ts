@@ -17,13 +17,17 @@ interface OutputFindBillControllerDto {
    description?: string;
    total: number;
    vendorId: string;
+   vendorName: string;
    date: string;
    createdAt: Date;
    updatedAt: Date;
    items: {
       quantity: number;
       price: number;
+      categoryId: string;
+      categoryName: string;
       itemId: string;
+      description?: string;
    }[];
 }
 
@@ -43,6 +47,7 @@ export default class FindBillController {
             description: bill.description,
             total: bill.total,
             vendorId: bill.vendorId,
+            vendorName: bill.vendorName,
             date: bill.date.toISOString().split('T')[0],
             createdAt: bill.createdAt,
             updatedAt: bill.updatedAt,
@@ -50,6 +55,9 @@ export default class FindBillController {
                quantity: item.quantity,
                price: item.price,
                itemId: item.id,
+               categoryId: item.categoryId,
+               categoryName: item.categoryName,
+               description: item.description,
             })),
          };
          return response<OutputFindBillControllerDto>(

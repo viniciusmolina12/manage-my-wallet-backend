@@ -25,6 +25,8 @@ interface OutputCreateBillControllerDto {
    name: string;
    description?: string;
    total: number;
+   vendorId: string;
+   vendorName: string;
    date: string;
    createdAt: Date;
    updatedAt: Date;
@@ -60,6 +62,8 @@ export default class CreateBillController {
             name: bill.name,
             description: bill.description,
             total: bill.total,
+            vendorId: bill.vendorId,
+            vendorName: bill.vendorName,
             date: bill.date.toISOString().split('T')[0],
             createdAt: bill.createdAt,
             updatedAt: bill.updatedAt,
