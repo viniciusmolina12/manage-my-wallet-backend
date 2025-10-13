@@ -5,6 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import UpdateBillUseCase from '@core/usecases/bill/update/update.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputUpdateBillControllerDto {
    id: string;
@@ -38,13 +39,18 @@ interface OutputUpdateBillControllerDto {
 }
 
 export default class UpdateBillController {
-   constructor(private readonly updateBillUseCase: UpdateBillUseCase) {
+   constructor(
+      private readonly updateBillUseCase: UpdateBillUseCase,
+      private readonly validator: Validator
+   ) {
       this.updateBillUseCase = updateBillUseCase;
    }
    public async handle(
       input: InputControllerDto<InputUpdateBillControllerDto>
    ): Promise<OutputControllerDto<OutputUpdateBillControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const bill = await this.updateBillUseCase.execute(input.data);
          const output = {
             id: bill.id,

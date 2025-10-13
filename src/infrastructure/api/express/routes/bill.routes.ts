@@ -25,6 +25,7 @@ import {
    deleteBillControllerSchema,
    listBillControllerSchema,
    summaryBillControllerSchema,
+   updateBillControllerSchema,
 } from '../schemas/bill';
 const route = Router();
 
@@ -118,7 +119,8 @@ route.put(
          mongoDbBillRepository,
          mongoDbVendorRepository
       );
-      const controller = new UpdateBillController(updateBillUseCase);
+      const validator = new ZodValidator(updateBillControllerSchema);
+      const controller = new UpdateBillController(updateBillUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: {
             ...req.body,
