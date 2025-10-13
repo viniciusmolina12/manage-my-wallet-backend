@@ -24,6 +24,7 @@ import {
    findBillControllerSchema,
    deleteBillControllerSchema,
    listBillControllerSchema,
+   summaryBillControllerSchema,
 } from '../schemas/bill';
 const route = Router();
 
@@ -69,7 +70,11 @@ route.get(
          mongoDbItemRepository,
          mongoDbCategoryRepository
       );
-      const controller = new SummaryBillController(summaryBillUseCase);
+      const validator = new ZodValidator(summaryBillControllerSchema);
+      const controller = new SummaryBillController(
+         summaryBillUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: {
             userId: req.userId as string,

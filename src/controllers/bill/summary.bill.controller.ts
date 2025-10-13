@@ -6,6 +6,7 @@ import { response } from '@controllers/@shared/protocols/response';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import SummaryBillUseCase from '@core/usecases/bill/summary/summary.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputSummaryBillControllerDto {
    userId: string;
@@ -35,13 +36,19 @@ interface OutputSummaryBillControllerDto {
 }
 
 export default class SummaryBillController {
-   constructor(private readonly summaryBillUseCase: SummaryBillUseCase) {
+   constructor(
+      private readonly summaryBillUseCase: SummaryBillUseCase,
+      private readonly validator: Validator
+   ) {
       this.summaryBillUseCase = summaryBillUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputSummaryBillControllerDto>
    ): Promise<OutputControllerDto<OutputSummaryBillControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const summary = await this.summaryBillUseCase.execute(input.data);
          return response<OutputSummaryBillControllerDto>(
             200,
