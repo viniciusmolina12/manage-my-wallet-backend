@@ -5,6 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import DeleteBillUseCase from '@core/usecases/bill/delete/delete.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputDeleteBillControllerDto {
    id: string;
@@ -14,13 +15,19 @@ interface InputDeleteBillControllerDto {
 type OutputDeleteBillControllerDto = null;
 
 export default class DeleteBillController {
-   constructor(private readonly deleteBillUseCase: DeleteBillUseCase) {
+   constructor(
+      private readonly deleteBillUseCase: DeleteBillUseCase,
+      private readonly validator: Validator
+   ) {
       this.deleteBillUseCase = deleteBillUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputDeleteBillControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteBillControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          await this.deleteBillUseCase.execute({
             id: input.data.id,
             userId: input.data.userId,
