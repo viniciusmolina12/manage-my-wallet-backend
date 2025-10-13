@@ -53,6 +53,7 @@
       "module-alias": "^2.2.3",
       "mongoose": "^7.5.2",
       "nodemailer": "^6.10.0",
-      "uuid": "^9.0.0"
+      "uuid": "^9.0.0",
+      "zod": "^4.1.12"
    }
 }
