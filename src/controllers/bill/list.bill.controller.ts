@@ -7,6 +7,7 @@ import { response } from '@controllers/@shared/protocols';
 import ListBillUseCase from '@core/usecases/bill/list/list.usecase';
 import { Filter } from '@core/domain/@shared/filter/filter';
 import { SearchBill } from '@core/domain/bill/repository/bill.repository';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 interface InputListBillControllerDto {
    userId: string;
    page: number;
@@ -34,13 +35,19 @@ interface OutputListBillControllerDto {
 }
 
 export default class ListBillController {
-   constructor(private readonly listBillUseCase: ListBillUseCase) {
+   constructor(
+      private readonly listBillUseCase: ListBillUseCase,
+      private readonly validator: Validator
+   ) {
       this.listBillUseCase = listBillUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputListBillControllerDto>
    ): Promise<OutputControllerDto<OutputListBillControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const filter = new Filter(
             input.data.page,
             input.data.perPage,

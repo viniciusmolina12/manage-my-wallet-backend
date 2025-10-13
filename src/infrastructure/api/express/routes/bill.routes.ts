@@ -23,6 +23,7 @@ import {
    createBillControllerSchema,
    findBillControllerSchema,
    deleteBillControllerSchema,
+   listBillControllerSchema,
 } from '../schemas/bill';
 const route = Router();
 
@@ -126,7 +127,8 @@ route.put(
 route.get('/api/bills', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const listBillUseCase = new ListBillUseCase(mongoDbBillRepository);
-   const controller = new ListBillController(listBillUseCase);
+   const validator = new ZodValidator(listBillControllerSchema);
+   const controller = new ListBillController(listBillUseCase, validator);
    const search = {
       name: req.query.name as string,
       vendorId: req.query.vendorId as string,
