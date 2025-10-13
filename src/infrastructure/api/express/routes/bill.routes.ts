@@ -18,6 +18,8 @@ import MongoDbItemRepository from '@infrastructure/db/mongodb/repositories/item/
 import MongoDbVendorRepository from '@infrastructure/db/mongodb/repositories/vendor/vendor.repository';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import MongoDbCategoryRepository from '@infrastructure/db/mongodb/repositories/category/category.repository';
+import { createBillControllerSchema } from '../schemas/bill/create.bill.controller.schema';
+import ZodValidator from '@infrastructure/validation/zod.validator';
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
@@ -36,9 +38,11 @@ route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
       mongoDbVendorRepository,
       mongoDbCategoryRepository
    );
+   const validator = new ZodValidator(createBillControllerSchema);
    const controller = new CreateBillController(
       createItemUseCase,
-      findBillUseCase
+      findBillUseCase,
+      validator
    );
    const { code, ...data } = await controller.handle({
       data: { ...req.body, userId: req.userId },
