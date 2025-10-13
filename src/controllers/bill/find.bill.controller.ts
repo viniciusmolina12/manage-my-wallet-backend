@@ -5,6 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import FindBillUseCase from '@core/usecases/bill/find/find.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputFindBillControllerDto {
    id: string;
@@ -32,13 +33,19 @@ interface OutputFindBillControllerDto {
 }
 
 export default class FindBillController {
-   constructor(private readonly findBillUseCase: FindBillUseCase) {
+   constructor(
+      private readonly findBillUseCase: FindBillUseCase,
+      private readonly validator: Validator
+   ) {
       this.findBillUseCase = findBillUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputFindBillControllerDto>
    ): Promise<OutputControllerDto<OutputFindBillControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          const bill = await this.findBillUseCase.execute({ id, userId });
          const output = {
