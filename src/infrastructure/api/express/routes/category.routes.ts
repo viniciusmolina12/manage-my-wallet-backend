@@ -64,7 +64,11 @@ route.put(
       const updateCategoryUseCase = new UpdateCategoryUseCase(
          mongoDbCategoryRepository
       );
-      const controller = new UpdateCategoryController(updateCategoryUseCase);
+      const validator = new ZodValidator(CATEGORY_CONTROLLER_SCHEMAS.UPDATE);
+      const controller = new UpdateCategoryController(
+         updateCategoryUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: {
             ...req.body,
