@@ -11,9 +11,9 @@ describe('ZodValidator', () => {
 
    it('should return an invalid result when the data is invalid', () => {
       const sut = new ZodValidator(
-         z.object({ name: z.string('Nome é obrigatório') })
+         z.object({ name: z.string().min(1, 'Nome é obrigatório') })
       );
-      const result = sut.validate({ name: 123 });
+      const result = sut.validate({ name: '' });
       expect(result.success).toBe(false);
       expect(result.errors).toEqual(['Nome é obrigatório']);
    });
