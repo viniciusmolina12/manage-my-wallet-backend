@@ -5,6 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import FindCategoryUseCase from '@core/usecases/category/find/find.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputFindCategoryControllerDto {
    id: string;
@@ -20,13 +21,19 @@ interface OutputFindCategoryControllerDto {
 }
 
 export default class FindCategoryController {
-   constructor(private readonly findCategoryUseCase: FindCategoryUseCase) {
+   constructor(
+      private readonly findCategoryUseCase: FindCategoryUseCase,
+      private readonly validator: Validator
+   ) {
       this.findCategoryUseCase = findCategoryUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputFindCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputFindCategoryControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          const category = await this.findCategoryUseCase.execute({
             id,

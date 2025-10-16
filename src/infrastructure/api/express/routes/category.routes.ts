@@ -44,7 +44,11 @@ route.get(
       const findCategoryUseCase = new FindCategoryUseCase(
          mongoDbCategoryRepository
       );
-      const controller = new FindCategoryController(findCategoryUseCase);
+      const validator = new ZodValidator(CATEGORY_CONTROLLER_SCHEMAS.FIND);
+      const controller = new FindCategoryController(
+         findCategoryUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
       });
