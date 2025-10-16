@@ -5,6 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import CreateCategoryUseCase from '@core/usecases/category/create/create.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputCreateCategoryControllerDto {
    name: string;
@@ -21,13 +22,19 @@ interface OutputCreateCategoryControllerDto {
 }
 
 export default class CreateCategoryController {
-   constructor(private readonly createCategoryUseCase: CreateCategoryUseCase) {
+   constructor(
+      private readonly createCategoryUseCase: CreateCategoryUseCase,
+      private readonly validator: Validator
+   ) {
       this.createCategoryUseCase = createCategoryUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputCreateCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputCreateCategoryControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { name, description, userId } = input.data;
          const category = await this.createCategoryUseCase.execute({
             name,
