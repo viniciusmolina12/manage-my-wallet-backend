@@ -19,14 +19,7 @@ import MongoDbVendorRepository from '@infrastructure/db/mongodb/repositories/ven
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import MongoDbCategoryRepository from '@infrastructure/db/mongodb/repositories/category/category.repository';
 import ZodValidator from '@infrastructure/validation/zod.validator';
-import {
-   createBillControllerSchema,
-   findBillControllerSchema,
-   deleteBillControllerSchema,
-   listBillControllerSchema,
-   summaryBillControllerSchema,
-   updateBillControllerSchema,
-} from '../schemas/bill';
+import { BILL_CONTROLLER_SCHEMAS } from '@infrastructure/api/express/schemas/bill';
 const route = Router();
 
 route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
@@ -45,7 +38,7 @@ route.post('/api/bill', authMiddleware, async (req: Request, res: Response) => {
       mongoDbVendorRepository,
       mongoDbCategoryRepository
    );
-   const validator = new ZodValidator(createBillControllerSchema);
+   const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.CREATE);
    const controller = new CreateBillController(
       createItemUseCase,
       findBillUseCase,
@@ -71,7 +64,7 @@ route.get(
          mongoDbItemRepository,
          mongoDbCategoryRepository
       );
-      const validator = new ZodValidator(summaryBillControllerSchema);
+      const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.SUMMARY);
       const controller = new SummaryBillController(
          summaryBillUseCase,
          validator
@@ -100,7 +93,7 @@ route.get(
          mongoDbVendorRepository,
          mongoDbCategoryRepository
       );
-      const validator = new ZodValidator(findBillControllerSchema);
+      const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.FIND);
       const controller = new FindBillController(findBillUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
@@ -119,7 +112,7 @@ route.put(
          mongoDbBillRepository,
          mongoDbVendorRepository
       );
-      const validator = new ZodValidator(updateBillControllerSchema);
+      const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.UPDATE);
       const controller = new UpdateBillController(updateBillUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: {
@@ -134,7 +127,7 @@ route.put(
 route.get('/api/bills', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
    const listBillUseCase = new ListBillUseCase(mongoDbBillRepository);
-   const validator = new ZodValidator(listBillControllerSchema);
+   const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.LIST);
    const controller = new ListBillController(listBillUseCase, validator);
    const search = {
       name: req.query.name as string,
@@ -164,7 +157,7 @@ route.delete(
    async (req: Request, res: Response) => {
       const mongoDbBillRepository = new MongoDbBillRepository();
       const deleteBillUseCase = new DeleteBillUseCase(mongoDbBillRepository);
-      const validator = new ZodValidator(deleteBillControllerSchema);
+      const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.DELETE);
       const controller = new DeleteBillController(deleteBillUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
