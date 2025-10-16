@@ -3,6 +3,7 @@ import { ListVendorUseCase } from '@core/usecases/vendor/list/list.usecase';
 import { InputControllerDto } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputListVendorControllerDto {
    userId: string;
@@ -18,12 +19,20 @@ interface OutputListVendorControllerDto {
 }
 
 export default class ListVendorController {
-   constructor(private readonly listVendorUseCase: ListVendorUseCase) {}
+   constructor(
+      private readonly listVendorUseCase: ListVendorUseCase,
+      private readonly validator: Validator
+   ) {
+      this.listVendorUseCase = listVendorUseCase;
+      this.validator = validator;
+   }
 
    async handle(
       input: InputControllerDto<InputListVendorControllerDto>
    ): Promise<OutputControllerDto<OutputListVendorControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { userId } = input.data;
          const vendor = await this.listVendorUseCase.execute({
             userId,

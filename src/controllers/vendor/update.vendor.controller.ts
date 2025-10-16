@@ -3,6 +3,7 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { OutputControllerDto } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 interface InputUpdateVendorControllerDto {
    id: string;
    name: string;
@@ -17,12 +18,20 @@ interface OutputUpdateVendorControllerDto {
 }
 
 export default class UpdateVendorController {
-   constructor(private readonly updateVendorUseCase: UpdateVendorUseCase) {}
+   constructor(
+      private readonly updateVendorUseCase: UpdateVendorUseCase,
+      private readonly validator: Validator
+   ) {
+      this.updateVendorUseCase = updateVendorUseCase;
+      this.validator = validator;
+   }
 
    async handle(
       input: InputControllerDto<InputUpdateVendorControllerDto>
    ): Promise<OutputControllerDto<OutputUpdateVendorControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, name, userId } = input.data;
          const vendor = await this.updateVendorUseCase.execute({
             id,

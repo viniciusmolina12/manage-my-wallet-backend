@@ -11,6 +11,8 @@ import DeleteVendorController from '@controllers/vendor/delete.vendor.controller
 import DeleteVendorUseCase from '@core/usecases/vendor/delete/delete.usecase';
 import UpdateVendorController from '@controllers/vendor/update.vendor.controller';
 import { UpdateVendorUseCase } from '@core/usecases/vendor/update/update.usecase';
+import ZodValidator from '@infrastructure/validation/zod.validator';
+import { VENDOR_CONTROLLER_SCHEMAS } from '@infrastructure/api/express/schemas/vendor';
 const route = Router();
 
 route.post(
@@ -21,7 +23,11 @@ route.post(
       const createVendorUseCase = new CreateVendorUseCase(
          mongoDbVendorRepository
       );
-      const controller = new CreateVendorController(createVendorUseCase);
+      const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.CREATE);
+      const controller = new CreateVendorController(
+         createVendorUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: { ...req.body, userId: req.userId },
       });
@@ -35,7 +41,8 @@ route.get(
    async (req: Request, res: Response) => {
       const mongoDbVendorRepository = new MongoDbVendorRepository();
       const findVendorUseCase = new FindVendorUseCase(mongoDbVendorRepository);
-      const controller = new FindVendorController(findVendorUseCase);
+      const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.FIND);
+      const controller = new FindVendorController(findVendorUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id, userId: req.userId as string },
       });
@@ -49,7 +56,8 @@ route.get(
    async (req: Request, res: Response) => {
       const mongoDbVendorRepository = new MongoDbVendorRepository();
       const listVendorUseCase = new ListVendorUseCase(mongoDbVendorRepository);
-      const controller = new ListVendorController(listVendorUseCase);
+      const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.LIST);
+      const controller = new ListVendorController(listVendorUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { userId: req.userId as string },
       });
@@ -65,7 +73,11 @@ route.delete(
       const deleteVendorUseCase = new DeleteVendorUseCase(
          mongoDbVendorRepository
       );
-      const controller = new DeleteVendorController(deleteVendorUseCase);
+      const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.DELETE);
+      const controller = new DeleteVendorController(
+         deleteVendorUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id, userId: req.userId as string },
       });
@@ -81,7 +93,11 @@ route.put(
       const updateVendorUseCase = new UpdateVendorUseCase(
          mongoDbVendorRepository
       );
-      const controller = new UpdateVendorController(updateVendorUseCase);
+      const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.UPDATE);
+      const controller = new UpdateVendorController(
+         updateVendorUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: {
             id: req.params.id,

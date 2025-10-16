@@ -3,6 +3,7 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import DeleteVendorUseCase from '@core/usecases/vendor/delete/delete.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputDeleteVendorControllerDto {
    id: string;
@@ -12,12 +13,20 @@ interface InputDeleteVendorControllerDto {
 type OutputDeleteVendorControllerDto = void;
 
 export default class DeleteVendorController {
-   constructor(private readonly deleteVendorUseCase: DeleteVendorUseCase) {}
+   constructor(
+      private readonly deleteVendorUseCase: DeleteVendorUseCase,
+      private readonly validator: Validator
+   ) {
+      this.deleteVendorUseCase = deleteVendorUseCase;
+      this.validator = validator;
+   }
 
    async handle(
       input: InputControllerDto<InputDeleteVendorControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteVendorControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          await this.deleteVendorUseCase.execute({
             id,

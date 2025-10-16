@@ -3,6 +3,7 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { FindVendorUseCase } from '@core/usecases/vendor/find/find.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputFindVendorControllerDto {
    id: string;
@@ -17,12 +18,20 @@ interface OutputFindVendorControllerDto {
 }
 
 export default class FindVendorController {
-   constructor(private readonly findVendorUseCase: FindVendorUseCase) {}
+   constructor(
+      private readonly findVendorUseCase: FindVendorUseCase,
+      private readonly validator: Validator
+   ) {
+      this.findVendorUseCase = findVendorUseCase;
+      this.validator = validator;
+   }
 
    async handle(
       input: InputControllerDto<InputFindVendorControllerDto>
    ): Promise<OutputControllerDto<OutputFindVendorControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          const vendor = await this.findVendorUseCase.execute({
             id,
