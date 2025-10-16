@@ -13,7 +13,7 @@ import DeleteCategoryUseCase from '@core/usecases/category/delete/delete.usecase
 import DeleteCategoryController from '@controllers/category/delete.category.controller';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import ZodValidator from '@infrastructure/validation/zod.validator';
-import { createCategoryControllerSchema } from '@infrastructure/api/express/schemas/category';
+import { CATEGORY_CONTROLLER_SCHEMAS } from '@infrastructure/api/express/schemas/category';
 
 const route = Router();
 route.post(
@@ -24,7 +24,7 @@ route.post(
       const createItemUseCase = new CreateCategoryUseCase(
          mongoDbCategoryRepository
       );
-      const validator = new ZodValidator(createCategoryControllerSchema);
+      const validator = new ZodValidator(CATEGORY_CONTROLLER_SCHEMAS.CREATE);
       const controller = new CreateCategoryController(
          createItemUseCase,
          validator
@@ -95,7 +95,11 @@ route.delete(
       const deleteCategoryUseCase = new DeleteCategoryUseCase(
          mongoDbCategoryRepository
       );
-      const controller = new DeleteCategoryController(deleteCategoryUseCase);
+      const validator = new ZodValidator(CATEGORY_CONTROLLER_SCHEMAS.DELETE);
+      const controller = new DeleteCategoryController(
+         deleteCategoryUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
       });
