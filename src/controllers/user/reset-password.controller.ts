@@ -9,15 +9,22 @@ import {
    InputResetPasswordUserDto,
    OutputResetPasswordUserDto,
 } from '@core/usecases/user/reset-password/reset_password.user.dto';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 export default class ResetPasswordUserController {
    constructor(
-      private readonly resetPasswordUseCase: ResetPasswordUserUseCase
-   ) {}
+      private readonly resetPasswordUseCase: ResetPasswordUserUseCase,
+      private readonly validator: Validator
+   ) {
+      this.resetPasswordUseCase = resetPasswordUseCase;
+      this.validator = validator;
+   }
    public async handle(
       input: InputControllerDto<InputResetPasswordUserDto>
    ): Promise<OutputControllerDto<OutputResetPasswordUserDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const output = await this.resetPasswordUseCase.execute(input.data);
          return response<OutputResetPasswordUserDto>(
             200,

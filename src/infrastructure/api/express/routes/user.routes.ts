@@ -15,6 +15,8 @@ import { NodeMailerMailer } from '@infrastructure/mailer/node-mailer';
 import ENV from '@config/env';
 import RecoverPasswordUserController from '@controllers/user/recover-password.user.controller';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import ZodValidator from '@infrastructure/validation/zod.validator';
+import { USER_CONTROLLER_SCHEMAS } from '../schemas/user';
 
 const route = Router();
 
@@ -27,7 +29,8 @@ route.post('/api/user', async (req: Request, res: Response) => {
       bcryptEncrypt,
       jsonWebTokenJwtGenerator
    );
-   const controller = new CreateUserController(createItemUseCase);
+   const validator = new ZodValidator(USER_CONTROLLER_SCHEMAS.CREATE);
+   const controller = new CreateUserController(createItemUseCase, validator);
    const { code, ...data } = await controller.handle({ data: req.body });
    res.status(code).send(data);
 });
@@ -38,7 +41,8 @@ route.patch(
    async (req: Request, res: Response) => {
       const mongoDbUserRepository = new MongoDbUserRepository();
       const updateUserUseCase = new UpdateUserUseCase(mongoDbUserRepository);
-      const controller = new UpdateUserController(updateUserUseCase);
+      const validator = new ZodValidator(USER_CONTROLLER_SCHEMAS.UPDATE);
+      const controller = new UpdateUserController(updateUserUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { ...req.body, id: req.params.id },
       });
@@ -55,7 +59,8 @@ route.post('/api/login', async (req: Request, res: Response) => {
       bcryptEncrypt,
       jsonWebTokenJwtGenerator
    );
-   const controller = new LoginUserController(loginUserUseCase);
+   const validator = new ZodValidator(USER_CONTROLLER_SCHEMAS.LOGIN);
+   const controller = new LoginUserController(loginUserUseCase, validator);
    const { code, ...data } = await controller.handle({ data: { ...req.body } });
    res.status(code).send(data);
 });
@@ -70,8 +75,12 @@ route.post(
          mongoDbUserRepository,
          bcryptEncrypt
       );
+      const validator = new ZodValidator(
+         USER_CONTROLLER_SCHEMAS.RESET_PASSWORD
+      );
       const controller = new ResetPasswordUserController(
-         resetPasswordUserUseCase
+         resetPasswordUserUseCase,
+         validator
       );
       const { code, ...data } = await controller.handle({
          data: { ...req.body },
@@ -95,8 +104,12 @@ route.post(
          nodemailerMailer,
          jsonWebTokenJwtGenerator
       );
+      const validator = new ZodValidator(
+         USER_CONTROLLER_SCHEMAS.RECOVER_PASSWORD
+      );
       const controller = new RecoverPasswordUserController(
-         recoverPasswordUserUseCase
+         recoverPasswordUserUseCase,
+         validator
       );
       const { code, ...data } = await controller.handle({
          data: { ...req.body },

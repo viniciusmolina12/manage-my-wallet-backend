@@ -9,14 +9,21 @@ import {
    OutputRecoverPasswordUserDto,
 } from '@core/usecases/user/recover-password/recover_password.user.dto';
 import RecoverPasswordUserUseCase from '@core/usecases/user/recover-password/recover_password.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 export default class RecoverPasswordUserController {
    constructor(
-      private readonly recoverPasswordUserUseCase: RecoverPasswordUserUseCase
-   ) {}
+      private readonly recoverPasswordUserUseCase: RecoverPasswordUserUseCase,
+      private readonly validator: Validator
+   ) {
+      this.recoverPasswordUserUseCase = recoverPasswordUserUseCase;
+      this.validator = validator;
+   }
    public async handle(
       input: InputControllerDto<InputRecoverPasswordUserDto>
    ): Promise<OutputControllerDto<OutputRecoverPasswordUserDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const output = await this.recoverPasswordUserUseCase.execute(
             input.data
          );

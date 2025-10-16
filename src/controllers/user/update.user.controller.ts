@@ -9,13 +9,22 @@ import {
    InputUpdateUserDto,
    OutputUpdateUserDto,
 } from '@core/usecases/user/update/update.user.dto';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 export default class UpdateUserController {
-   constructor(private readonly updateUserUseCase: UpdateUserUseCase) {}
+   constructor(
+      private readonly updateUserUseCase: UpdateUserUseCase,
+      private readonly validator: Validator
+   ) {
+      this.updateUserUseCase = updateUserUseCase;
+      this.validator = validator;
+   }
    public async handle(
       input: InputControllerDto<InputUpdateUserDto>
    ): Promise<OutputControllerDto<OutputUpdateUserDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const output = await this.updateUserUseCase.execute(input.data);
          return response<OutputUpdateUserDto>(
             200,

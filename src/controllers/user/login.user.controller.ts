@@ -9,12 +9,21 @@ import {
    OutputLoginUserDto,
 } from '@core/usecases/user/login/login.user.dto';
 import LoginUserUseCase from '@core/usecases/user/login/login.usecase';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 export default class LoginUserController {
-   constructor(private readonly loginUserUseCase: LoginUserUseCase) {}
+   constructor(
+      private readonly loginUserUseCase: LoginUserUseCase,
+      private readonly validator: Validator
+   ) {
+      this.loginUserUseCase = loginUserUseCase;
+      this.validator = validator;
+   }
    public async handle(
       input: InputControllerDto<InputLoginUserDto>
    ): Promise<OutputControllerDto<OutputLoginUserDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const output = await this.loginUserUseCase.execute(input.data);
          return response<OutputLoginUserDto>(
             200,

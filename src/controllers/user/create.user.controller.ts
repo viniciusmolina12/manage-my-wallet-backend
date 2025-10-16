@@ -9,12 +9,21 @@ import {
    OutputCreateUserDto,
 } from '@core/usecases/user/create/create.user.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 export default class CreateUserController {
-   constructor(private readonly createUserUseCase: CreateUserUseCase) {}
+   constructor(
+      private readonly createUserUseCase: CreateUserUseCase,
+      private readonly validator: Validator
+   ) {
+      this.createUserUseCase = createUserUseCase;
+      this.validator = validator;
+   }
    public async handle(
       input: InputControllerDto<InputCreateUserDto>
    ): Promise<OutputControllerDto<OutputCreateUserDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const output = await this.createUserUseCase.execute(input.data);
          return response<OutputCreateUserDto>(
             201,
