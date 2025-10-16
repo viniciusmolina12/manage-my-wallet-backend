@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputListCategoryControllerDto {
    userId: string;
@@ -21,13 +22,19 @@ interface OutputListCategoryControllerDto {
 }
 
 export default class ListCategoryController {
-   constructor(private readonly listCategoryUseCase: ListCategoryUseCase) {
+   constructor(
+      private readonly listCategoryUseCase: ListCategoryUseCase,
+      private readonly validator: Validator
+   ) {
       this.listCategoryUseCase = listCategoryUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputListCategoryControllerDto>
    ): Promise<OutputControllerDto<OutputListCategoryControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { userId } = input.data;
          const categories = await this.listCategoryUseCase.execute({
             userId,

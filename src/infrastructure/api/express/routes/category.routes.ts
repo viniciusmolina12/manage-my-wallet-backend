@@ -83,7 +83,11 @@ route.get(
       const listCategoryUseCase = new ListCategoryUseCase(
          mongoDbCategoryRepository
       );
-      const controller = new ListCategoryController(listCategoryUseCase);
+      const validator = new ZodValidator(CATEGORY_CONTROLLER_SCHEMAS.LIST);
+      const controller = new ListCategoryController(
+         listCategoryUseCase,
+         validator
+      );
       const { code, ...data } = await controller.handle({
          data: { userId: req.userId as string },
       });
