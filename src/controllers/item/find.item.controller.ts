@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputFindItemControllerDto {
    id: string;
@@ -21,13 +22,19 @@ interface OutputFindItemControllerDto {
 }
 
 export default class FindItemController {
-   constructor(private readonly findItemUseCase: FindItemUseCase) {
+   constructor(
+      private readonly findItemUseCase: FindItemUseCase,
+      private readonly validator: Validator
+   ) {
       this.findItemUseCase = findItemUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputFindItemControllerDto>
    ): Promise<OutputControllerDto<OutputFindItemControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          const item = await this.findItemUseCase.execute({ id, userId });
          const output = {

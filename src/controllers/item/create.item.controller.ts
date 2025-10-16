@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputCreateItemControllerDto {
    name: string;
@@ -23,13 +24,19 @@ interface OutputCreateItemControllerDto {
 }
 
 export default class CreateItemController {
-   constructor(private readonly createItemUseCase: CreateItemUseCase) {
+   constructor(
+      private readonly createItemUseCase: CreateItemUseCase,
+      private readonly validator: Validator
+   ) {
       this.createItemUseCase = createItemUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputCreateItemControllerDto>
    ): Promise<OutputControllerDto<OutputCreateItemControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { name, description, categoryId, userId } = input.data;
 
          const item = await this.createItemUseCase.execute({

@@ -13,13 +13,16 @@ import UpdateItemUseCase from '@core/usecases/item/update/update.usecase';
 import DeleteItemUseCase from '@core/usecases/item/delete/delete.usecase';
 import ListItemUsecase from '@core/usecases/item/list/list.usecase';
 import { authMiddleware } from '../middlewares/authMiddleware';
+import ZodValidator from '@infrastructure/validation/zod.validator';
+import { ITEM_CONTROLLER_SCHEMAS } from '../schemas/item';
 
 const route = Router();
 
 route.post('/api/item', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const createItemUseCase = new CreateItemUseCase(mongoDbItemRepository);
-   const controller = new CreateItemController(createItemUseCase);
+   const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.CREATE);
+   const controller = new CreateItemController(createItemUseCase, validator);
    const { code, ...data } = await controller.handle({
       data: {
          ...req.body,
@@ -35,7 +38,8 @@ route.get(
    async (req: Request, res: Response) => {
       const mongoDbItemRepository = new MongoDbItemRepository();
       const findItemUseCase = new FindItemUseCase(mongoDbItemRepository);
-      const controller = new FindItemController(findItemUseCase);
+      const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.FIND);
+      const controller = new FindItemController(findItemUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
       });
@@ -49,7 +53,8 @@ route.put(
    async (req: Request, res: Response) => {
       const mongoDbItemRepository = new MongoDbItemRepository();
       const updateItemUseCase = new UpdateItemUseCase(mongoDbItemRepository);
-      const controller = new UpdateItemController(updateItemUseCase);
+      const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.UPDATE);
+      const controller = new UpdateItemController(updateItemUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: {
             ...req.body,
@@ -63,7 +68,8 @@ route.put(
 route.get('/api/items', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbItemRepository = new MongoDbItemRepository();
    const listItemUseCase = new ListItemUsecase(mongoDbItemRepository);
-   const controller = new ListItemController(listItemUseCase);
+   const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.LIST);
+   const controller = new ListItemController(listItemUseCase, validator);
    const { code, ...data } = await controller.handle({
       data: { userId: req.userId as string },
    });
@@ -76,7 +82,8 @@ route.delete(
    async (req: Request, res: Response) => {
       const mongoDbItemRepository = new MongoDbItemRepository();
       const deleteItemUseCase = new DeleteItemUseCase(mongoDbItemRepository);
-      const controller = new DeleteItemController(deleteItemUseCase);
+      const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.DELETE);
+      const controller = new DeleteItemController(deleteItemUseCase, validator);
       const { code, ...data } = await controller.handle({
          data: { id: req.params.id as string, userId: req.userId as string },
       });

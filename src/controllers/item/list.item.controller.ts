@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputListItemControllerDto {
    userId: string;
@@ -22,13 +23,19 @@ interface OutputListItemControllerDto {
 }
 
 export default class ListItemController {
-   constructor(private readonly listItemUseCase: ListItemUsecase) {
+   constructor(
+      private readonly listItemUseCase: ListItemUsecase,
+      private readonly validator: Validator
+   ) {
       this.listItemUseCase = listItemUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputListItemControllerDto>
    ): Promise<OutputControllerDto<OutputListItemControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const items = await this.listItemUseCase.execute({
             userId: input.data.userId,
          });

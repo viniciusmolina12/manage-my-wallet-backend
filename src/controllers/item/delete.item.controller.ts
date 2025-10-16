@@ -5,6 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
+import { Validator } from '@core/domain/interfaces/validator.interface';
 
 interface InputDeleteItemControllerDto {
    id: string;
@@ -14,13 +15,19 @@ interface InputDeleteItemControllerDto {
 interface OutputDeleteItemControllerDto {}
 
 export default class DeleteItemController {
-   constructor(private readonly deleteItemUseCase: DeleteItemUseCase) {
+   constructor(
+      private readonly deleteItemUseCase: DeleteItemUseCase,
+      private readonly validator: Validator
+   ) {
       this.deleteItemUseCase = deleteItemUseCase;
+      this.validator = validator;
    }
    public async handle(
       input: InputControllerDto<InputDeleteItemControllerDto>
    ): Promise<OutputControllerDto<OutputDeleteItemControllerDto>> {
       try {
+         const { success, errors } = this.validator.validate(input.data);
+         if (!success) return response(400, errors.join(', '));
          const { id, userId } = input.data;
          await this.deleteItemUseCase.execute({ id, userId });
          return response<OutputDeleteItemControllerDto>(
