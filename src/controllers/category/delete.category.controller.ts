@@ -27,7 +27,7 @@ export default class DeleteCategoryController {
    ): Promise<OutputControllerDto<OutputDeleteCategoryControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, userId } = input.data;
          await this.deleteCategoryUseCase.execute({ id, userId });
          return response<OutputDeleteCategoryControllerDto>(

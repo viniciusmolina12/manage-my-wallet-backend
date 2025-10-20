@@ -26,7 +26,7 @@ export default class DeleteVendorController {
    ): Promise<OutputControllerDto<OutputDeleteVendorControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, userId } = input.data;
          await this.deleteVendorUseCase.execute({
             id,

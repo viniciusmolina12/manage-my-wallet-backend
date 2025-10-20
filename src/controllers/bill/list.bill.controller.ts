@@ -47,7 +47,7 @@ export default class ListBillController {
    ): Promise<OutputControllerDto<OutputListBillControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const filter = new Filter(
             input.data.page,
             input.data.perPage,

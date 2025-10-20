@@ -48,7 +48,7 @@ export default class SummaryBillController {
    ): Promise<OutputControllerDto<OutputSummaryBillControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const summary = await this.summaryBillUseCase.execute(input.data);
          return response<OutputSummaryBillControllerDto>(
             200,

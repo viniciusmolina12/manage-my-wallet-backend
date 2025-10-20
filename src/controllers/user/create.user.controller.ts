@@ -23,7 +23,7 @@ export default class CreateUserController {
    ): Promise<OutputControllerDto<OutputCreateUserDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const output = await this.createUserUseCase.execute(input.data);
          return response<OutputCreateUserDto>(
             201,

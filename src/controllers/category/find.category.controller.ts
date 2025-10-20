@@ -33,7 +33,7 @@ export default class FindCategoryController {
    ): Promise<OutputControllerDto<OutputFindCategoryControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, userId } = input.data;
          const category = await this.findCategoryUseCase.execute({
             id,

@@ -27,7 +27,7 @@ export default class DeleteBillController {
    ): Promise<OutputControllerDto<OutputDeleteBillControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          await this.deleteBillUseCase.execute({
             id: input.data.id,
             userId: input.data.userId,

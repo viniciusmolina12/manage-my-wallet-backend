@@ -35,7 +35,7 @@ export default class ListItemController {
    ): Promise<OutputControllerDto<OutputListItemControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const items = await this.listItemUseCase.execute({
             userId: input.data.userId,
          });

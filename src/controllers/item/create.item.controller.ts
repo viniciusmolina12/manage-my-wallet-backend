@@ -36,7 +36,7 @@ export default class CreateItemController {
    ): Promise<OutputControllerDto<OutputCreateItemControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { name, description, categoryId, userId } = input.data;
 
          const item = await this.createItemUseCase.execute({

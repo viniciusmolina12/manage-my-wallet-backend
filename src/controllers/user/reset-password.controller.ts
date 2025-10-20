@@ -24,7 +24,7 @@ export default class ResetPasswordUserController {
    ): Promise<OutputControllerDto<OutputResetPasswordUserDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const output = await this.resetPasswordUseCase.execute(input.data);
          return response<OutputResetPasswordUserDto>(
             200,

@@ -45,7 +45,7 @@ export default class FindBillController {
    ): Promise<OutputControllerDto<OutputFindBillControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, userId } = input.data;
          const bill = await this.findBillUseCase.execute({ id, userId });
          const output = {

@@ -34,7 +34,7 @@ export default class CreateCategoryController {
    ): Promise<OutputControllerDto<OutputCreateCategoryControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { name, description, userId } = input.data;
          const category = await this.createCategoryUseCase.execute({
             name,

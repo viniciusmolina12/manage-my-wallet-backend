@@ -34,11 +34,7 @@ export default class ListCategoryController {
    ): Promise<OutputControllerDto<OutputListCategoryControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
-         const { userId } = input.data;
-         const categories = await this.listCategoryUseCase.execute({
-            userId,
-         });
+         if (!success) return response(400, errors);
          const output = {
             categories: categories.categories.map((category) => ({
                id: category.id,

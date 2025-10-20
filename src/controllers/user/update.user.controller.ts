@@ -24,7 +24,7 @@ export default class UpdateUserController {
    ): Promise<OutputControllerDto<OutputUpdateUserDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const output = await this.updateUserUseCase.execute(input.data);
          return response<OutputUpdateUserDto>(
             200,

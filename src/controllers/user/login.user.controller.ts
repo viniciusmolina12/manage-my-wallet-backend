@@ -23,7 +23,7 @@ export default class LoginUserController {
    ): Promise<OutputControllerDto<OutputLoginUserDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const output = await this.loginUserUseCase.execute(input.data);
          return response<OutputLoginUserDto>(
             200,

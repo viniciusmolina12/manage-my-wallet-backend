@@ -32,7 +32,7 @@ export default class ListVendorController {
    ): Promise<OutputControllerDto<OutputListVendorControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { userId } = input.data;
          const vendor = await this.listVendorUseCase.execute({
             userId,

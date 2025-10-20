@@ -35,7 +35,7 @@ export default class UpdateCategoryController {
    ): Promise<OutputControllerDto<OutputUpdateCategoryControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, name, description, userId } = input.data;
          const category = await this.updateCategoryUseCase.execute({
             id,

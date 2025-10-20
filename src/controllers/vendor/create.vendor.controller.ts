@@ -31,7 +31,7 @@ export default class CreateVendorController {
    ): Promise<OutputControllerDto<OutputCreateVendorControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { name, userId } = input.data;
          const vendor = await this.createVendorUseCase.execute({
             name,

@@ -31,7 +31,7 @@ export default class UpdateVendorController {
    ): Promise<OutputControllerDto<OutputUpdateVendorControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, name, userId } = input.data;
          const vendor = await this.updateVendorUseCase.execute({
             id,

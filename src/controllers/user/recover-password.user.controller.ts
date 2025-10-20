@@ -23,7 +23,7 @@ export default class RecoverPasswordUserController {
    ): Promise<OutputControllerDto<OutputRecoverPasswordUserDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const output = await this.recoverPasswordUserUseCase.execute(
             input.data
          );

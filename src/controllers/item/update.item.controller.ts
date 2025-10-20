@@ -35,7 +35,7 @@ export default class UpdateItemController {
    ): Promise<OutputControllerDto<OutputUpdateItemControllerDto>> {
       try {
          const { success, errors } = this.validator.validate(input.data);
-         if (!success) return response(400, errors.join(', '));
+         if (!success) return response(400, errors);
          const { id, name, categoryId, description, userId } = input.data;
          const item = await this.updateItemUseCase.execute({
             id,

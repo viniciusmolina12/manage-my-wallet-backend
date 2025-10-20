@@ -5,7 +5,7 @@ import {
 
 export function response<T>(
    code: ControllerStatusCode,
-   message?: string,
+   message?: string | string[],
    data?: T
 ): OutputControllerDto<T> {
    return {
