@@ -6,7 +6,7 @@ import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { UserId } from '@core/domain/user/entity/user.entity';
 export class BillMapper {
    static toDomain(model: any): Bill {
-      return new Bill(
+      const bill = new Bill(
          new BillId(model._id.toString()),
          model.name,
          model.date,
@@ -18,6 +18,9 @@ export class BillMapper {
          new UserId(model.userId),
          model.description
       );
+      bill.createdAt = model.createdAt;
+      bill.updatedAt = model.updatedAt;
+      return bill;
    }
 
    static toDomainList(model: any[]): Bill[] {
