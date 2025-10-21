@@ -7,7 +7,7 @@ export const updateCategoryControllerSchema = z.object({
       .uuid({ message: ERROR_MESSAGES.ID_INVALID }),
    name: z
       .string({ message: ERROR_MESSAGES.NAME_REQUIRED })
-      .min(1, { message: ERROR_MESSAGES.NAME_MIN_LENGTH }),
+      .min(1, { message: ERROR_MESSAGES.NAME_INVALID }),
    description: z
       .string({ message: ERROR_MESSAGES.DESCRIPTION_INVALID })
       .optional(),
