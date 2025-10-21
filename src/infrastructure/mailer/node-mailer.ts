@@ -1,5 +1,5 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import Mailer from '@core/domain/interfaces/mailer.interface';
+import Mailer from '@core/interfaces/mailer.interface';
 
 export class NodeMailerMailer implements Mailer {
    private readonly transporter: Transporter;

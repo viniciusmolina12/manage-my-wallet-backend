@@ -1,6 +1,6 @@
-import Encrypt from '@core/domain/interfaces/encrypt.interface';
+import Encrypt from '@core/interfaces/encrypt.interface';
 import CreateUserUseCase from '../create.usecase';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 import User, { UserId } from '@core/domain/user/entity/user.entity';
 import mockRepository from '../../__mocks__/repository.user.mock';
 import { EncryptStub, JwtGeneratorStub } from '../../__mocks__/stubs.user.mock';

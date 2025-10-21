@@ -1,5 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 
 export class JsonWebTokenJwtGenerator implements JwtGenerator {
    generateJwt(data: any, secret: string, expiresIn?: string): string {

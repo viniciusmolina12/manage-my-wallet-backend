@@ -1,7 +1,7 @@
 import {
    Validator,
    ValidatorResult,
-} from '@core/domain/interfaces/validator.interface';
+} from '@core/interfaces/validator.interface';
 import { z } from 'zod';
 
 export class ZodValidator implements Validator {

@@ -1,5 +1,5 @@
-import Encrypt from '@core/domain/interfaces/encrypt.interface';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import Encrypt from '@core/interfaces/encrypt.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 import LoginUserUseCase from '../login.usecase';
 import User, { UserId } from '@core/domain/user/entity/user.entity';
 import EntityError from '@core/domain/@shared/error/entity.error';

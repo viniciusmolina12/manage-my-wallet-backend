@@ -1,4 +1,4 @@
-import Encrypt from '@core/domain/interfaces/encrypt.interface';
+import Encrypt from '@core/interfaces/encrypt.interface';
 import { UserRepository } from '@core/domain/user/repository/user.repository';
 import {
    InputResetPasswordUserDto,

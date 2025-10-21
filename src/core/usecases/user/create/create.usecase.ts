@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import User, { UserId } from '@core/domain/user/entity/user.entity';
-import Encrypt from '@core/domain/interfaces/encrypt.interface';
+import Encrypt from '@core/interfaces/encrypt.interface';
 import CONSTANTS from '@config/constants';
 import { UserRepository } from '@core/domain/user/repository/user.repository';
 import { InputCreateUserDto, OutputCreateUserDto } from './create.user.dto';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import ENV from '@config/env';
 import { Email } from '@core/domain/@shared/value-object/email.vo';

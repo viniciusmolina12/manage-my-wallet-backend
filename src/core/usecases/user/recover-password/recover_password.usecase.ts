@@ -4,9 +4,9 @@ import {
    OutputRecoverPasswordUserDto,
 } from './recover_password.user.dto';
 import EntityError from '@core/domain/@shared/error/entity.error';
-import Mailer from '@core/domain/interfaces/mailer.interface';
+import Mailer from '@core/interfaces/mailer.interface';
 import ENV from '@config/env';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 
 export default class RecoverPasswordUserUseCase {
    constructor(

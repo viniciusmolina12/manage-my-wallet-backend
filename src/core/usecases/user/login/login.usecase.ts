@@ -1,7 +1,7 @@
 import { UserRepository } from '@core/domain/user/repository/user.repository';
 import { InputLoginUserDto, OutputLoginUserDto } from './login.user.dto';
-import Encrypt from '@core/domain/interfaces/encrypt.interface';
-import JwtGenerator from '@core/domain/interfaces/jwtGenerator.interface';
+import Encrypt from '@core/interfaces/encrypt.interface';
+import JwtGenerator from '@core/interfaces/jwtGenerator.interface';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import ENV from '@config/env';
 
