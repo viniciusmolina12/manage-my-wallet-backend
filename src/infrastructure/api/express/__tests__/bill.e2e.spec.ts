@@ -126,9 +126,22 @@ describe('Bill e2e tests', () => {
 
    it('should return an error when try update a non-existent bill', async () => {
       const response = await request(app)
-         .put('/api/bill/any_hash_id')
+         .put('/api/bill/123e4567-e89b-12d3-a456-426614174000')
          .set('Authorization', 'Bearer ' + token)
-         .send({ name: 'other_hash_id' });
+         .send({
+            id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'any_bill_name',
+            description: 'any_bill_description',
+            vendorId: '123e4567-e89b-12d3-a456-426614174000',
+            date: new Date('2021-01-02T00:00:00.000Z'),
+            items: [
+               {
+                  quantity: 10,
+                  price: 100,
+                  itemId: '123e4567-e89b-12d3-a456-426614174000',
+               },
+            ],
+         });
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('message', 'Bill not exists');
       expect(response.body).not.toHaveProperty('data');
@@ -145,13 +158,12 @@ describe('Bill e2e tests', () => {
          .put(`/api/bill/${bill.id}`)
          .set('Authorization', 'Bearer ' + token)
          .send({
+            id: bill.id,
             vendorId: '123e4567-e89b-12d3-a456-426614174000',
          });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'bill: Name is required, bill: Items is required, '
-      );
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Name is required');
       expect(response.body).not.toHaveProperty('data');
    });
 
@@ -358,7 +370,7 @@ describe('Bill e2e tests', () => {
 
    it('should return an error when try delete a non-existent bill', async () => {
       const response = await request(app)
-         .delete(`/api/bill/non-existent-id`)
+         .delete(`/api/bill/123e4567-e89b-12d3-a456-426614174000`)
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Bill not found');
@@ -378,7 +390,14 @@ describe('Bill e2e tests', () => {
             name: 'any_bill_name',
             description: 'any_bill_description',
             vendorId: '123e4567-e89b-12d3-a456-426614174000',
-            items: [{ itemId: 'non-existent-id', price: 10, quantity: 1 }],
+            date: new Date('2021-01-01T00:00:00.000Z'),
+            items: [
+               {
+                  itemId: '123e4567-e89b-12d3-a456-426614174001',
+                  price: 10,
+                  quantity: 1,
+               },
+            ],
          });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
@@ -475,6 +494,414 @@ describe('Bill e2e tests', () => {
          .set('Authorization', 'Bearer ' + token)
          .query({ period: 'invalid_period' });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('message', 'Invalid period');
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Period must be a valid period');
+   });
+
+   describe('Schema validation tests', () => {
+      describe('POST /api/bill - Create Bill Schema Validation', () => {
+         it('should return validation error when name is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+
+         it('should return validation error when name is empty', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: '',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name must be a string');
+         });
+
+         it('should return validation error when vendorId is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('VendorId is required');
+         });
+
+         it('should return validation error when vendorId is invalid UUID', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: 'invalid-uuid',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'VendorId must be a valid UUID'
+            );
+         });
+
+         it('should return validation error when date is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Invalid date');
+         });
+
+         it('should return validation error when items array is empty', async () => {
+            await vendorModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'any_vendor_name',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+            });
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Items is required');
+         });
+
+         it('should return validation error when item quantity is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Quantity is required');
+         });
+
+         it('should return validation error when item quantity is negative', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: -1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'Quantity must be a positive number'
+            );
+         });
+
+         it('should return validation error when item price is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Price is required');
+         });
+
+         it('should return validation error when item price is negative', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: -10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'Price must be a positive number'
+            );
+         });
+
+         it('should return validation error when itemId is missing', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [{ quantity: 1, price: 10 }],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('ItemId is required');
+         });
+
+         it('should return validation error when itemId is invalid UUID', async () => {
+            const response = await request(app)
+               .post('/api/bill')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [{ quantity: 1, price: 10, itemId: 'invalid-uuid' }],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'ItemId must be a valid UUID'
+            );
+         });
+      });
+
+      describe('PUT /api/bill/:id - Update Bill Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .put('/api/bill/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  id: 'invalid-uuid',
+                  name: 'any_name',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+
+         it('should return validation error when name is missing in update', async () => {
+            const response = await request(app)
+               .put('/api/bill/123e4567-e89b-12d3-a456-426614174000')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  id: '123e4567-e89b-12d3-a456-426614174000',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [
+                     {
+                        quantity: 1,
+                        price: 10,
+                        itemId: '123e4567-e89b-12d3-a456-426614174000',
+                     },
+                  ],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+
+         it('should return validation error when items array is empty in update', async () => {
+            await vendorModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'any_vendor_name',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+            });
+            const bill = await new BillBuilder().buildAndCreateModel();
+            const response = await request(app)
+               .put(`/api/bill/${bill.id}`)
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  id: bill.id,
+                  name: 'any_name',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  date: new Date('2021-01-01T00:00:00.000Z'),
+                  items: [],
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Items is required');
+         });
+      });
+
+      describe('GET /api/bill/:id - Find Bill Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .get('/api/bill/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
+
+      describe('DELETE /api/bill/:id - Delete Bill Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .delete('/api/bill/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
+
+      describe('GET /api/bill/summary - Summary Bill Schema Validation', () => {
+         it('should return validation error when period is missing', async () => {
+            const response = await request(app)
+               .get('/api/bill/summary')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Period is required');
+         });
+
+         it('should return validation error when period is not a valid enum value', async () => {
+            const response = await request(app)
+               .get('/api/bill/summary')
+               .set('Authorization', 'Bearer ' + token)
+               .query({ period: 'invalid_period' });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'Period must be a valid period'
+            );
+         });
+
+         it('should accept valid period values', async () => {
+            const response = await request(app)
+               .get('/api/bill/summary')
+               .set('Authorization', 'Bearer ' + token)
+               .query({ period: PeriodType.MONTH });
+            expect(response.status).toBe(200);
+         });
+      });
+
+      describe('GET /api/bills - List Bills Schema Validation', () => {
+         it('should accept valid query parameters', async () => {
+            const response = await request(app)
+               .get('/api/bills')
+               .set('Authorization', 'Bearer ' + token)
+               .query({
+                  name: 'test',
+                  vendorId: '123e4567-e89b-12d3-a456-426614174000',
+                  startDate: '2021-01-01',
+                  endDate: '2021-12-31',
+                  page: '1',
+                  perPage: '10',
+                  order: 'asc',
+               });
+            expect(response.status).toBe(200);
+         });
+
+         it('should handle invalid date format gracefully', async () => {
+            const response = await request(app)
+               .get('/api/bills')
+               .set('Authorization', 'Bearer ' + token)
+               .query({
+                  startDate: 'invalid-date',
+                  endDate: 'invalid-date',
+               });
+            expect(response.status).toBe(400);
+         });
+      });
    });
 });
