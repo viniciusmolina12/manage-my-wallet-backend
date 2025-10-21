@@ -9,7 +9,7 @@ import {
    InputResetPasswordUserDto,
    OutputResetPasswordUserDto,
 } from '@core/usecases/user/reset-password/reset_password.user.dto';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 export default class ResetPasswordUserController {
    constructor(

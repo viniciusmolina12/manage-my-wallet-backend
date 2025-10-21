@@ -3,7 +3,7 @@ import { CreateVendorUseCase } from '@core/usecases/vendor/create/create.usecase
 import { InputControllerDto } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputCreateVendorControllerDto {
    name: string;

@@ -9,7 +9,7 @@ import {
    OutputCreateUserDto,
 } from '@core/usecases/user/create/create.user.dto';
 import { response } from '@controllers/@shared/protocols';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 export default class CreateUserController {
    constructor(
       private readonly createUserUseCase: CreateUserUseCase,

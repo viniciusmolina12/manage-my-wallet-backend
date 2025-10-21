@@ -9,7 +9,7 @@ import {
    OutputLoginUserDto,
 } from '@core/usecases/user/login/login.user.dto';
 import LoginUserUseCase from '@core/usecases/user/login/login.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 export default class LoginUserController {
    constructor(
       private readonly loginUserUseCase: LoginUserUseCase,

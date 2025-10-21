@@ -3,7 +3,7 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import DeleteVendorUseCase from '@core/usecases/vendor/delete/delete.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputDeleteVendorControllerDto {
    id: string;

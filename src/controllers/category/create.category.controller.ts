@@ -5,7 +5,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import CreateCategoryUseCase from '@core/usecases/category/create/create.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputCreateCategoryControllerDto {
    name: string;

@@ -5,7 +5,7 @@ import {
    InputControllerDto,
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputCreateItemControllerDto {
    name: string;

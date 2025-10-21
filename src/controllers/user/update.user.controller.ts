@@ -9,7 +9,7 @@ import {
    InputUpdateUserDto,
    OutputUpdateUserDto,
 } from '@core/usecases/user/update/update.user.dto';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 export default class UpdateUserController {
    constructor(

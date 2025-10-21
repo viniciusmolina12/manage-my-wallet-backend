@@ -3,7 +3,7 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { FindVendorUseCase } from '@core/usecases/vendor/find/find.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputFindVendorControllerDto {
    id: string;

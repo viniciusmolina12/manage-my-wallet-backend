@@ -9,7 +9,7 @@ import {
    OutputRecoverPasswordUserDto,
 } from '@core/usecases/user/recover-password/recover_password.user.dto';
 import RecoverPasswordUserUseCase from '@core/usecases/user/recover-password/recover_password.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 export default class RecoverPasswordUserController {
    constructor(
       private readonly recoverPasswordUserUseCase: RecoverPasswordUserUseCase,
