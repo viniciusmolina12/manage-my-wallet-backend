@@ -6,7 +6,7 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import FindBillUseCase from '@core/usecases/bill/find/find.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputCreateBillControllerDto {
    name: string;

@@ -7,7 +7,7 @@ import { response } from '@controllers/@shared/protocols';
 import ListBillUseCase from '@core/usecases/bill/list/list.usecase';
 import { Filter } from '@core/domain/@shared/filter/filter';
 import { SearchBill } from '@core/domain/bill/repository/bill.repository';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 interface InputListBillControllerDto {
    userId: string;
    page: number;

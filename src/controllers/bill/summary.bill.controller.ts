@@ -6,7 +6,7 @@ import { response } from '@controllers/@shared/protocols/response';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import SummaryBillUseCase from '@core/usecases/bill/summary/summary.usecase';
-import { Validator } from '@core/domain/interfaces/validator.interface';
+import { Validator } from '@core/interfaces/validator.interface';
 
 interface InputSummaryBillControllerDto {
    userId: string;
