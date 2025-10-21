@@ -50,10 +50,9 @@ describe('Item e2e tests', () => {
          .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'Item: Name is required, '
-      );
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Name is required');
+      expect(response.body.message).toContain('CategoryId is required');
       expect(response.body).not.toHaveProperty('data');
    });
 
@@ -114,9 +113,13 @@ describe('Item e2e tests', () => {
 
    it('should return an error when try update a non-existent item', async () => {
       const response = await request(app)
-         .put('/api/item/any_hash_id')
+         .put('/api/item/123e4567-e89b-12d3-a456-426614174000')
          .set('Authorization', 'Bearer ' + token)
-         .send({});
+         .send({
+            name: 'any_item_name',
+            description: 'any_item_description',
+            categoryId: '123e4567-e89b-12d3-a456-426614174000',
+         });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');
@@ -135,10 +138,9 @@ describe('Item e2e tests', () => {
          .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'Item: Name is required, '
-      );
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Name is required');
+      expect(response.body.message).toContain('CategoryId is required');
       expect(response.body).not.toHaveProperty('data');
    });
 
@@ -244,10 +246,148 @@ describe('Item e2e tests', () => {
 
    it('should return an error when try delete a non-existent item', async () => {
       const response = await request(app)
-         .delete(`/api/item/non-existent-id`)
+         .delete(`/api/item/123e4567-e89b-12d3-a456-426614174000`)
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Item not found');
       expect(response.body).not.toHaveProperty('data');
+   });
+
+   describe('Schema validation tests', () => {
+      describe('POST /api/item - Create Item Schema Validation', () => {
+         it('should return validation error when name is missing', async () => {
+            const response = await request(app)
+               .post('/api/item')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  description: 'any_description',
+                  categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+
+         it('should return validation error when name is empty', async () => {
+            const response = await request(app)
+               .post('/api/item')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: '',
+                  description: 'any_description',
+                  categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name must be a string');
+         });
+
+         it('should return validation error when categoryId is missing', async () => {
+            const response = await request(app)
+               .post('/api/item')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('CategoryId is required');
+         });
+
+         it('should return validation error when categoryId is invalid UUID', async () => {
+            const response = await request(app)
+               .post('/api/item')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  categoryId: 'invalid-uuid',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain(
+               'CategoryId must be a valid UUID'
+            );
+         });
+      });
+
+      describe('PUT /api/item/:id - Update Item Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .put('/api/item/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+                  categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+
+         it('should return validation error when name is missing in update', async () => {
+            const item = await ItemModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'Item 1',
+               description: 'Description 1',
+               categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+            });
+            const response = await request(app)
+               .put(`/api/item/${item.id}`)
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  description: 'any_description',
+                  categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+
+         it('should return validation error when categoryId is missing in update', async () => {
+            const item = await ItemModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'Item 1',
+               description: 'Description 1',
+               categoryId: '123e4567-e89b-12d3-a456-426614174000',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+            });
+            const response = await request(app)
+               .put(`/api/item/${item.id}`)
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('CategoryId is required');
+         });
+      });
+
+      describe('GET /api/item/:id - Find Item Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .get('/api/item/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
+
+      describe('DELETE /api/item/:id - Delete Item Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .delete('/api/item/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
    });
 });
