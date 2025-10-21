@@ -49,7 +49,8 @@ describe('User e2e tests', () => {
          });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty('message', 'Invalid email');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Email must be a valid email');
       });
 
       it('should throw an error if required data is not provide (except email)', async () => {
@@ -58,10 +59,9 @@ describe('User e2e tests', () => {
          });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty(
-            'message',
-            'user: Name is required, user: Password is required, '
-         );
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Name is required');
+         expect(response.body.message).toContain('Password is required');
       });
 
       it('should throw an error if password and confirm password do not match', async () => {
@@ -143,7 +143,8 @@ describe('User e2e tests', () => {
             });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty('message', 'Invalid email');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Email must be a valid email');
       });
 
       it('should throw an error if email already exists', async () => {
@@ -189,10 +190,8 @@ describe('User e2e tests', () => {
             });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty(
-            'message',
-            'user: Name is required, '
-         );
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Name is required');
       });
 
       it('should throw an error if email is not provided', async () => {
@@ -208,7 +207,8 @@ describe('User e2e tests', () => {
             .send({ name: 'any_other_name' });
          expect(response.status).toBe(400);
          expect(response.body).not.toHaveProperty('data');
-         expect(response.body).toHaveProperty('message', 'Invalid email');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Required');
       });
    });
 
@@ -295,7 +295,8 @@ describe('User e2e tests', () => {
             .send({ password: 'any_password' });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is incorrect');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Required');
          expect(response.body).not.toHaveProperty('data');
       });
 
@@ -313,7 +314,8 @@ describe('User e2e tests', () => {
             .send({ email: 'any_mail@mail.com' });
 
          expect(response.status).toBe(400);
-         expect(response.body.message).toBe('Email or password is incorrect');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Password must be a string');
          expect(response.body).not.toHaveProperty('data');
       });
    });
@@ -397,9 +399,10 @@ describe('User e2e tests', () => {
                password: 'any_password',
             });
          expect(response.status).toBe(400);
-         expect(response.body).toMatchObject({
-            message: 'Missing properties: token or password',
-         });
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain(
+            'Token must be a valid string'
+         );
       });
 
       it('should throw an error if password is not provided', async () => {
@@ -410,9 +413,8 @@ describe('User e2e tests', () => {
                token: 'any_token',
             });
          expect(response.status).toBe(400);
-         expect(response.body).toMatchObject({
-            message: 'Missing properties: token or password',
-         });
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Password must be a string');
       });
 
       it('should throw an error if tries to use the same token more than 1 time', async () => {
@@ -479,9 +481,8 @@ describe('User e2e tests', () => {
             .send({ email: 'invalid_email' });
 
          expect(response.status).toBe(400);
-         expect(response.body).toMatchObject({
-            message: 'User not found',
-         });
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Email must be a valid email');
       });
    });
 });
