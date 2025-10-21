@@ -1,6 +1,11 @@
+import { ERROR_MESSAGES } from '@controllers/@shared/error-messages';
 import { z } from 'zod';
 
 export const summaryBillControllerSchema = z.object({
-   userId: z.string().min(1),
-   period: z.string().min(1),
+   userId: z
+      .string({ message: ERROR_MESSAGES.USER_ID_REQUIRED })
+      .uuid({ message: ERROR_MESSAGES.USER_ID_INVALID }),
+   period: z
+      .string({ message: ERROR_MESSAGES.PERIOD_REQUIRED })
+      .uuid({ message: ERROR_MESSAGES.PERIOD_INVALID }),
 });
