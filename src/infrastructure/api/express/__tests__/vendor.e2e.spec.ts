@@ -84,10 +84,11 @@ describe('Vendor e2e tests', () => {
 
       it('should return an error when vendor is not found', async () => {
          const response = await request(app)
-            .get('/api/vendor/any_hash_id')
+            .get('/api/vendor/123e4567-e89b-12d3-a456-426614174000')
             .set('Authorization', 'Bearer ' + token);
          expect(response.status).toBe(400);
-         expect(response.body).toHaveProperty('message', 'Vendor not found');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Vendor not found');
       });
    });
 
@@ -158,7 +159,8 @@ describe('Vendor e2e tests', () => {
             .delete('/api/vendor/any_hash_id')
             .set('Authorization', 'Bearer ' + token);
          expect(response.status).toBe(400);
-         expect(response.body).toHaveProperty('message', 'Vendor not found');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Id must be a valid UUID');
       });
    });
 
@@ -193,7 +195,8 @@ describe('Vendor e2e tests', () => {
             .set('Authorization', 'Bearer ' + token)
             .send({ name: 'Vendor 2' });
          expect(response.status).toBe(400);
-         expect(response.body).toHaveProperty('message', 'Vendor not found');
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Id must be a valid UUID');
       });
 
       it('should return an error when vendor name already exists', async () => {
@@ -211,6 +214,76 @@ describe('Vendor e2e tests', () => {
             'message',
             'Vendor name already exists'
          );
+      });
+   });
+
+   describe('Schema validation tests', () => {
+      describe('POST /api/vendor - Create Vendor Schema Validation', () => {
+         it('should return validation error when name is missing', async () => {
+            const response = await request(app)
+               .post('/api/vendor')
+               .set('Authorization', 'Bearer ' + token)
+               .send({});
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name must be a string');
+         });
+
+         it('should return validation error when name is empty', async () => {
+            const response = await request(app)
+               .post('/api/vendor')
+               .set('Authorization', 'Bearer ' + token)
+               .send({ name: '' });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+      });
+
+      describe('PUT /api/vendor/:id - Update Vendor Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .put('/api/vendor/123e4567-e89b-12d3-a456-426614174000')
+               .set('Authorization', 'Bearer ' + token)
+               .send({ name: 'any_name' });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message', 'Vendor not found');
+         });
+
+         it('should return validation error when name is missing in update', async () => {
+            await vendorModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'Vendor 1',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+            });
+            const response = await request(app)
+               .put('/api/vendor/123e4567-e89b-12d3-a456-426614174000')
+               .set('Authorization', 'Bearer ' + token)
+               .send({});
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+      });
+
+      describe('GET /api/vendor/:id - Find Vendor Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .get('/api/vendor/123e4567-e89b-12d3-a456-426614174000')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message', 'Vendor not found');
+         });
+      });
+
+      describe('DELETE /api/vendor/:id - Delete Vendor Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .delete('/api/vendor/123e4567-e89b-12d3-a456-426614174000')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message', 'Vendor not found');
+         });
       });
    });
 });
