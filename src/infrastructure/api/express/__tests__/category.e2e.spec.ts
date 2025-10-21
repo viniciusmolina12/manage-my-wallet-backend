@@ -45,10 +45,8 @@ describe('Category e2e tests', () => {
          .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'category: Name is required, '
-      );
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Name is required');
    });
 
    it('should update an category', async () => {
@@ -102,10 +100,8 @@ describe('Category e2e tests', () => {
          .set('Authorization', 'Bearer ' + token)
          .send({});
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty(
-         'message',
-         'category: Name is required, '
-      );
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain('Name is required');
       expect(response.body).not.toHaveProperty('data');
    });
 
@@ -161,34 +157,24 @@ describe('Category e2e tests', () => {
          'Categories listed succesfully'
       );
       expect(response.body.data.categories).toHaveLength(2);
-      expect(response.body.data.categories[0]).toHaveProperty(
-         'id',
-         category1._id
+      expect(response.body.data.categories).toEqual(
+         expect.arrayContaining([
+            expect.objectContaining({
+               id: category1._id,
+               name: category1.name,
+               description: category1.description,
+               createdAt: expect.any(String),
+               updatedAt: expect.any(String),
+            }),
+            expect.objectContaining({
+               id: category2._id,
+               name: category2.name,
+               description: category2.description,
+               createdAt: expect.any(String),
+               updatedAt: expect.any(String),
+            }),
+         ])
       );
-      expect(response.body.data.categories[0]).toHaveProperty(
-         'name',
-         category1.name
-      );
-      expect(response.body.data.categories[0]).toHaveProperty(
-         'description',
-         category1.description
-      );
-      expect(response.body.data.categories[0]).toHaveProperty('createdAt');
-      expect(response.body.data.categories[0]).toHaveProperty('updatedAt');
-      expect(response.body.data.categories[1]).toHaveProperty(
-         'id',
-         category2._id
-      );
-      expect(response.body.data.categories[1]).toHaveProperty(
-         'name',
-         category2.name
-      );
-      expect(response.body.data.categories[1]).toHaveProperty(
-         'description',
-         category2.description
-      );
-      expect(response.body.data.categories[1]).toHaveProperty('createdAt');
-      expect(response.body.data.categories[1]).toHaveProperty('updatedAt');
    });
 
    it('should delete a category', async () => {
@@ -215,10 +201,94 @@ describe('Category e2e tests', () => {
 
    it('should return an error when try delete a non-existent category', async () => {
       const response = await request(app)
-         .delete(`/api/category/non-existent-id`)
+         .delete(`/api/category/123e4567-e89b-12d3-a456-426614174000`)
          .set('Authorization', 'Bearer ' + token);
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Category not found');
       expect(response.body).not.toHaveProperty('data');
+   });
+
+   describe('Schema validation tests', () => {
+      describe('POST /api/category - Create Category Schema Validation', () => {
+         it('should return validation error when name is missing', async () => {
+            const response = await request(app)
+               .post('/api/category')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+
+         it('should return validation error when name is empty', async () => {
+            const response = await request(app)
+               .post('/api/category')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: '',
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name must be a string');
+         });
+      });
+
+      describe('PUT /api/category/:id - Update Category Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .put('/api/category/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  name: 'any_name',
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+
+         it('should return validation error when name is missing in update', async () => {
+            const category = await CategoryModel.create({
+               _id: '123e4567-e89b-12d3-a456-426614174000',
+               name: 'Category 1',
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+               description: 'Description 1',
+            });
+            const response = await request(app)
+               .put(`/api/category/${category.id}`)
+               .set('Authorization', 'Bearer ' + token)
+               .send({
+                  description: 'any_description',
+               });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Name is required');
+         });
+      });
+
+      describe('GET /api/category/:id - Find Category Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .get('/api/category/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
+
+      describe('DELETE /api/category/:id - Delete Category Schema Validation', () => {
+         it('should return validation error when id is invalid UUID', async () => {
+            const response = await request(app)
+               .delete('/api/category/invalid-uuid')
+               .set('Authorization', 'Bearer ' + token);
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toContain('Id must be a valid UUID');
+         });
+      });
    });
 });
