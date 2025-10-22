@@ -21,4 +21,5 @@ export interface BillRepository extends RepositoryInterface<Bill> {
       userId: string,
       filter: Filter<SearchBill>
    ): Promise<Pagination<Bill>>;
+   getTotalByUser(userId: string, search: SearchBill): Promise<number>;
 }

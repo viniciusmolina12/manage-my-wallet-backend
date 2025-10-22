@@ -17,6 +17,10 @@ export default class ListBillUseCase {
    ): Promise<OutputListBillDto> {
       const { userId } = input;
       const result = await this.billRepository.findAllByUser(userId, filter);
+      const total = await this.billRepository.getTotalByUser(
+         userId,
+         filter.search
+      );
       const { data, ...meta } = result;
       const output = data.map((bill) => ({
          id: bill.id,
@@ -33,6 +37,6 @@ export default class ListBillUseCase {
             quantity: item.quantity,
          })),
       }));
-      return { bills: output, meta };
+      return { bills: output, meta: { ...meta }, total };
    }
 }

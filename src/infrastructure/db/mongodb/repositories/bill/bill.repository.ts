@@ -127,6 +127,48 @@ export default class MongoDbBillRepository implements BillRepository {
       return new Pagination(filter.page, filter.limit, total, hasNext, bills);
    }
 
+   async getTotalByUser(userId: string, search: SearchBill): Promise<number> {
+      const queryFilter = {
+         userId,
+         ...(search.name && {
+            name: { $regex: search.name, $options: 'i' },
+         }),
+         ...(search.startDate && {
+            date: {
+               $gte: search.startDate,
+            },
+         }),
+         ...(search.endDate && {
+            date: {
+               $lte: search.endDate,
+            },
+         }),
+         ...(search.startDate &&
+            search.endDate && {
+               date: {
+                  $gte: search.startDate,
+                  $lte: search.endDate,
+               },
+            }),
+         ...(search.vendorId && {
+            vendorId: search.vendorId,
+         }),
+      };
+      const totalValueFromAllBillItems = await BillModel.aggregate([
+         { $match: queryFilter },
+         { $unwind: '$items' },
+         {
+            $group: {
+               _id: null,
+               total: {
+                  $sum: { $multiply: ['$items.price', '$items.quantity'] },
+               },
+            },
+         },
+      ]);
+      return totalValueFromAllBillItems[0]?.total || 0;
+   }
+
    async deleteByUser(id: string, userId: string): Promise<void> {
       await BillModel.findByIdAndDelete({ _id: id, userId });
    }

@@ -3,6 +3,7 @@ export interface InputListBillDto {
 }
 
 export interface OutputListBillDto {
+   total: number;
    bills: {
       id: string;
       description?: string;
