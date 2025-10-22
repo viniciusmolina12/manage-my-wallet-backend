@@ -126,7 +126,15 @@ route.put(
 );
 route.get('/api/bills', authMiddleware, async (req: Request, res: Response) => {
    const mongoDbBillRepository = new MongoDbBillRepository();
-   const listBillUseCase = new ListBillUseCase(mongoDbBillRepository);
+   const mongoDbVendorRepository = new MongoDbVendorRepository();
+   const mongoDbItemRepository = new MongoDbItemRepository();
+   const mongoDbCategoryRepository = new MongoDbCategoryRepository();
+   const listBillUseCase = new ListBillUseCase(
+      mongoDbBillRepository,
+      mongoDbVendorRepository,
+      mongoDbItemRepository,
+      mongoDbCategoryRepository
+   );
    const validator = new ZodValidator(BILL_CONTROLLER_SCHEMAS.LIST);
    const controller = new ListBillController(listBillUseCase, validator);
    const search = {

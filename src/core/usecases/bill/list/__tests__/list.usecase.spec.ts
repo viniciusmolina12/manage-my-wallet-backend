@@ -1,9 +1,32 @@
 import ListBillUseCase from '../list.usecase';
 import mockRepository from '../../__mocks__/repository.bill.mock';
 import { Filter, Pagination } from '@core/domain/@shared/filter/filter';
+import mockVendorRepository from '../../../vendor/__mocks__/repository.vendor.mock';
+import mockItemRepository from '../../../item/__mocks__/repository.item.mock';
+import mockCategoryRepository from '../../../category/__mocks__/repository.category.mock';
 
 describe('List bill usecase', () => {
    it('should list all bills', async () => {
+      mockItemRepository.findItemsByIds.mockReturnValueOnce([
+         {
+            id: 'any_item_id',
+            name: 'any_item_name',
+            description: 'any_item_description',
+            categoryId: 'any_category_id',
+         },
+      ]);
+      mockCategoryRepository.findCategoriesByIds.mockReturnValueOnce([
+         {
+            id: 'any_category_id',
+            name: 'any_category_name',
+         },
+      ]);
+      mockVendorRepository.findVendorsByIds.mockReturnValueOnce([
+         {
+            id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'any_vendor_name',
+         },
+      ]);
       mockRepository.findAllByUser.mockReturnValueOnce(
          new Pagination(1, 10, 2, true, [
             {
@@ -20,12 +43,20 @@ describe('List bill usecase', () => {
                   {
                      id: '123e4567-e89b-12d3-a456-426614174000',
                      itemId: 'any_other_item_id',
+                     name: 'any_item_name',
+                     categoryId: 'any_category_id',
+                     categoryName: 'any_category_name',
+                     description: 'any_item_description',
                      price: 10,
                      quantity: 2,
                   },
                   {
                      id: '123e4567-e89b-12d3-a456-426614174001',
                      itemId: 'any_other_item_id_2',
+                     name: 'any_item_name_2',
+                     categoryId: 'any_category_id_2',
+                     categoryName: 'any_category_name_2',
+                     description: 'any_item_description_2',
                      price: 12,
                      quantity: 3,
                   },
@@ -52,7 +83,12 @@ describe('List bill usecase', () => {
             },
          ])
       );
-      const sut = new ListBillUseCase(mockRepository);
+      const sut = new ListBillUseCase(
+         mockRepository,
+         mockVendorRepository,
+         mockItemRepository,
+         mockCategoryRepository
+      );
       const filter = new Filter(1, 10, 'asc', {
          name: 'any_name',
          vendorId: '123e4567-e89b-12d3-a456-426614174000',

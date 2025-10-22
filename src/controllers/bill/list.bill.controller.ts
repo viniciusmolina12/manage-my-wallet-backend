@@ -31,6 +31,9 @@ interface OutputListBillControllerDto {
          quantity: number;
          price: number;
          itemId: string;
+         categoryId: string;
+         categoryName: string;
+         description?: string;
       }[];
    }[];
 }
@@ -68,9 +71,13 @@ export default class ListBillController {
                createdAt: bill.createdAt,
                updatedAt: bill.updatedAt,
                items: bill.items.map((item) => ({
+                  name: item.name,
                   quantity: item.quantity,
                   price: item.price,
                   itemId: item.itemId,
+                  categoryId: item.categoryId,
+                  categoryName: item.categoryName,
+                  description: item.description,
                })),
             })),
             meta: {

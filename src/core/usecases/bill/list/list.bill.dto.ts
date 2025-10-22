@@ -6,17 +6,22 @@ export interface OutputListBillDto {
    total: number;
    bills: {
       id: string;
-      description?: string;
       name: string;
-      vendorId: string;
+      description?: string;
       total: number;
+      vendorId: string;
+      vendorName: string;
+      date: Date;
       createdAt: Date;
       updatedAt: Date;
-      date: Date;
       items: {
-         itemId: string;
-         price: number;
          quantity: number;
+         price: number;
+         categoryId: string;
+         categoryName: string;
+         itemId: string;
+         name: string;
+         description?: string;
       }[];
    }[];
    meta: {
