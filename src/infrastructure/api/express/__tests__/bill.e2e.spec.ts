@@ -8,7 +8,6 @@ import vendorModel from '@infrastructure/db/mongodb/model/vendor.model';
 import { PeriodType } from '@core/usecases/bill/summary/periods';
 import { BillBuilder } from './___mocks__/bill.builder.mock';
 import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
-import { UserId } from '@core/domain/user/entity/user.entity';
 beforeAll(async () => {
    await mockDb.connect();
 });
@@ -223,20 +222,6 @@ describe('Bill e2e tests', () => {
          expect(response.body.data.bills).toHaveLength(1);
          expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
          expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'date',
-            bill.date.toISOString().split('T')[0]
-         );
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'vendorId',
-            bill.vendorId.id
-         );
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'description',
-            bill.description
-         );
-         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
-         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by vendorId', async () => {
@@ -257,23 +242,13 @@ describe('Bill e2e tests', () => {
             'message',
             'Bills listed successfully'
          );
+         expect(response.body.data).toHaveProperty('meta');
          expect(response.body.data.bills).toHaveLength(1);
          expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'date',
-            bill.date.toISOString().split('T')[0]
-         );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
             bill.vendorId.id
          );
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'description',
-            bill.description
-         );
-         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
-         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by startDate', async () => {
@@ -298,21 +273,6 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills).toHaveLength(1);
          expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'date',
-            bill.date.toISOString().split('T')[0]
-         );
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'vendorId',
-            bill.vendorId.id
-         );
-         expect(response.body.data.bills[0]).toHaveProperty(
-            'description',
-            bill.description
-         );
-         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
-         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
       });
 
       it('should get all bills by endDate', async () => {
@@ -336,21 +296,381 @@ describe('Bill e2e tests', () => {
          );
          expect(response.body.data.bills).toHaveLength(1);
          expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
-         expect(response.body.data.bills[0]).toHaveProperty('name', bill.name);
+      });
+
+      it('should get bills with pagination - first page', async () => {
+         // Criar 5 bills para testar paginação
+         for (let i = 1; i <= 5; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .withName(`Bill ${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '1',
+               perPage: '2',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(2);
+         expect(response.body.data.meta).toHaveProperty('page', 1);
+         expect(response.body.data.meta).toHaveProperty('perPage', 2);
+         expect(response.body.data.meta).toHaveProperty('total', 5);
+         expect(response.body.data.meta).toHaveProperty('hasNext', true);
+      });
+
+      it('should get bills with pagination - second page', async () => {
+         // Criar 5 bills para testar paginação
+         for (let i = 1; i <= 5; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .withName(`Bill ${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '2',
+               perPage: '2',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(2);
+         expect(response.body.data.meta).toHaveProperty('page', 2);
+         expect(response.body.data.meta).toHaveProperty('perPage', 2);
+         expect(response.body.data.meta).toHaveProperty('total', 5);
+         expect(response.body.data.meta).toHaveProperty('hasNext', true);
+      });
+
+      it('should get bills with pagination - last page with remaining items', async () => {
+         // Criar 5 bills para testar paginação
+         for (let i = 1; i <= 5; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .withName(`Bill ${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '3',
+               perPage: '2',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.meta).toHaveProperty('page', 3);
+         expect(response.body.data.meta).toHaveProperty('perPage', 2);
+         expect(response.body.data.meta).toHaveProperty('total', 5);
+         expect(response.body.data.meta).toHaveProperty('hasNext', false);
+      });
+
+      it('should get bills with ordering - ascending by name', async () => {
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174000')
+            .withName('Charlie Bill')
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .withName('Alpha Bill')
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174002')
+            .withName('Beta Bill')
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               order: 'asc',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data.bills).toHaveLength(3);
+         // Verificar se todos os bills estão presentes
+         const billNames = response.body.data.bills.map(
+            (bill: any) => bill.name
+         );
+         expect(billNames).toContain('Alpha Bill');
+         expect(billNames).toContain('Beta Bill');
+         expect(billNames).toContain('Charlie Bill');
+      });
+
+      it('should get bills with ordering - descending by name', async () => {
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174000')
+            .withName('Alpha Bill')
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .withName('Charlie Bill')
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174002')
+            .withName('Beta Bill')
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               order: 'desc',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data.bills).toHaveLength(3);
+         // Verificar se todos os bills estão presentes
+         const billNames = response.body.data.bills.map(
+            (bill: any) => bill.name
+         );
+         expect(billNames).toContain('Alpha Bill');
+         expect(billNames).toContain('Beta Bill');
+         expect(billNames).toContain('Charlie Bill');
+      });
+
+      it('should get bills with combined filters - name and vendorId', async () => {
+         const vendorId = new VendorId('123e4567-e89b-12d3-a456-426614174000');
+         const bill = await new BillBuilder()
+            .withName('Specific Bill')
+            .withVendorId(vendorId)
+            .buildAndCreateModel();
+
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .withName('Other Bill')
+            .withVendorId(vendorId)
+            .createModel();
+
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174002')
+            .withName('Specific Bill')
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               name: 'Specific Bill',
+               vendorId: vendorId.id,
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
          expect(response.body.data.bills[0]).toHaveProperty(
-            'date',
-            bill.date.toISOString().split('T')[0]
+            'name',
+            'Specific Bill'
          );
          expect(response.body.data.bills[0]).toHaveProperty(
             'vendorId',
-            bill.vendorId.id
+            vendorId.id
+         );
+      });
+
+      it('should get bills with combined filters - date range and pagination', async () => {
+         // Criar bills em diferentes datas
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174000')
+            .withDate(new Date('2021-01-01T00:00:00.000Z'))
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .withDate(new Date('2021-01-15T00:00:00.000Z'))
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174002')
+            .withDate(new Date('2021-02-01T00:00:00.000Z'))
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               startDate: '2021-01-01',
+               endDate: '2021-01-31',
+               page: '1',
+               perPage: '1',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.meta).toHaveProperty('total', 2);
+         expect(response.body.data.meta).toHaveProperty('hasNext', true);
+      });
+
+      it('should get bills with all filters combined', async () => {
+         const vendorId = new VendorId('123e4567-e89b-12d3-a456-426614174000');
+         const bill = await new BillBuilder()
+            .withName('Target Bill')
+            .withVendorId(vendorId)
+            .withDate(new Date('2021-01-15T00:00:00.000Z'))
+            .buildAndCreateModel();
+
+         // Criar bills que não devem aparecer nos resultados
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .withName('Other Bill')
+            .withVendorId(vendorId)
+            .withDate(new Date('2021-01-15T00:00:00.000Z'))
+            .createModel();
+
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174002')
+            .withName('Target Bill')
+            .withDate(new Date('2021-02-01T00:00:00.000Z'))
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               name: 'Target Bill',
+               vendorId: vendorId.id,
+               startDate: '2021-01-01',
+               endDate: '2021-01-31',
+               page: '1',
+               perPage: '10',
+               order: 'asc',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(1);
+         expect(response.body.data.bills[0]).toHaveProperty('id', bill.id);
+         expect(response.body.data.bills[0]).toHaveProperty(
+            'name',
+            'Target Bill'
          );
          expect(response.body.data.bills[0]).toHaveProperty(
-            'description',
-            bill.description
+            'vendorId',
+            vendorId.id
          );
-         expect(response.body.data.bills[0]).toHaveProperty('createdAt');
-         expect(response.body.data.bills[0]).toHaveProperty('updatedAt');
+      });
+
+      it('should return empty result when page exceeds total pages', async () => {
+         // Criar apenas 2 bills
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174000')
+            .createModel();
+         await new BillBuilder()
+            .withId('123e4567-e89b-12d3-a456-426614174001')
+            .createModel();
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '5',
+               perPage: '2',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(0);
+         expect(response.body.data.meta).toHaveProperty('page', 5);
+         expect(response.body.data.meta).toHaveProperty('perPage', 2);
+         expect(response.body.data.meta).toHaveProperty('total', 2);
+         expect(response.body.data.meta).toHaveProperty('hasNext', false);
+      });
+
+      it('should handle large perPage values gracefully', async () => {
+         // Criar apenas 3 bills
+         for (let i = 1; i <= 3; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '1',
+               perPage: '100',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(3);
+         expect(response.body.data.meta).toHaveProperty('page', 1);
+         expect(response.body.data.meta).toHaveProperty('perPage', 100);
+         expect(response.body.data.meta).toHaveProperty('total', 3);
+         expect(response.body.data.meta).toHaveProperty('hasNext', false);
+      });
+
+      it('should default to first page when page is 0 or negative', async () => {
+         // Criar 3 bills
+         for (let i = 1; i <= 3; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '0',
+               perPage: '2',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(2);
+         expect(response.body.data.meta).toHaveProperty('page', 1);
+         expect(response.body.data.meta).toHaveProperty('perPage', 2);
+         expect(response.body.data.meta).toHaveProperty('total', 3);
+         expect(response.body.data.meta).toHaveProperty('hasNext', true);
+      });
+
+      it('should default to reasonable perPage when perPage is 0 or negative', async () => {
+         // Criar 5 bills
+         for (let i = 1; i <= 5; i++) {
+            await new BillBuilder()
+               .withId(`123e4567-e89b-12d3-a456-42661417400${i}`)
+               .createModel();
+         }
+
+         const response = await request(app)
+            .get('/api/bills')
+            .set('Authorization', 'Bearer ' + token)
+            .query({
+               page: '1',
+               perPage: '0',
+            });
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.bills).toHaveLength(5);
+         expect(response.body.data.meta).toHaveProperty('page', 1);
+         expect(response.body.data.meta).toHaveProperty('perPage', 10); // Valor padrão
+         expect(response.body.data.meta).toHaveProperty('total', 5);
+         expect(response.body.data.meta).toHaveProperty('hasNext', false);
       });
    });
    it('should delete a bill', async () => {

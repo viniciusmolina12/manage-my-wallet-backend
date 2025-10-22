@@ -9,6 +9,7 @@ import { ItemId } from '@core/domain/item/entity/item.entity';
 import { Filter } from '@core/domain/@shared/filter/filter';
 import { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { UserId } from '@core/domain/user/entity/user.entity';
+import { SearchBill } from '@core/domain/bill/repository/bill.repository';
 
 class BillModelBuilder {
    static async create(bill: Bill): Promise<any> {
@@ -388,5 +389,44 @@ describe('MongoDB Item Repository tests', () => {
       );
       expect(billsFound).toHaveLength(1);
       expect(billsFound[0].id).toBe(billId.id);
+   });
+
+   it('should get total by user', async () => {
+      const sut = new MongoDbBillRepository();
+      const userId = new UserId();
+      const billId = new BillId();
+      const bill = Bill.fake()
+         .withId(billId)
+         .withName('any_name')
+         .withDate(new Date('2021-01-01T00:00:00.000Z'))
+         .withMakeItems({ price: 10, quantity: 2 })
+         .withVendorId()
+         .withUserId(userId)
+         .build();
+      await BillModelBuilder.create(bill);
+      bill['_id'] = new BillId();
+      bill.changeDate(new Date('2021-01-03T00:00:00.000Z'));
+      await BillModelBuilder.create(bill);
+      bill['_id'] = new BillId();
+      bill.changeDate(new Date('2021-01-05T00:00:00.000Z'));
+      await BillModelBuilder.create(bill);
+      bill['_id'] = new BillId();
+      bill.changeDate(new Date('2021-01-07T00:00:00.000Z'));
+      await BillModelBuilder.create(bill);
+
+      // another bill with different date
+      bill['_id'] = new BillId();
+      bill.changeDate(new Date('2021-01-11T00:00:00.000Z'));
+      await BillModelBuilder.create(bill);
+      bill['_id'] = new BillId();
+      bill.changeDate(new Date('2021-01-13T00:00:00.000Z'));
+      await BillModelBuilder.create(bill);
+
+      const search: SearchBill = {
+         startDate: new Date('2021-01-01T00:00:00.000Z'),
+         endDate: new Date('2021-01-10T00:00:00.000Z'),
+      };
+      const total = await sut.getTotalByUser(userId.id, search);
+      expect(total).toBe(80);
    });
 });
