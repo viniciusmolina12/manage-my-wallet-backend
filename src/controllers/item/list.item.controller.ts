@@ -6,9 +6,15 @@ import {
 } from '@controllers/@shared/interfaces/controller.dto';
 import { response } from '@controllers/@shared/protocols';
 import { Validator } from '@core/interfaces/validator.interface';
+import { SearchItem } from '@core/domain/item/repository/item.repository';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 interface InputListItemControllerDto {
    userId: string;
+   page: number;
+   perPage: number;
+   order: string;
+   search: SearchItem;
 }
 
 interface OutputListItemControllerDto {
@@ -36,11 +42,14 @@ export default class ListItemController {
       try {
          const { success, errors } = this.validator.validate(input.data);
          if (!success) return response(400, errors);
-         const items = await this.listItemUseCase.execute({
-            userId: input.data.userId,
-         });
+         const { userId, page, perPage, order, search } = input.data;
+         const filter = new Filter(page, perPage, order, search);
+         const { items, meta } = await this.listItemUseCase.execute(
+            { userId },
+            filter
+         );
          const output = {
-            items: items.items.map((item) => ({
+            items: items.map((item) => ({
                id: item.id,
                name: item.name,
                description: item.description,
@@ -48,6 +57,7 @@ export default class ListItemController {
                createdAt: item.createdAt,
                updatedAt: item.updatedAt,
             })),
+            meta,
          };
          return response<OutputListItemControllerDto>(
             200,

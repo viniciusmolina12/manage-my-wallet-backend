@@ -15,6 +15,8 @@ import ListItemUsecase from '@core/usecases/item/list/list.usecase';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import ZodValidator from '@infrastructure/validation/zod.validator';
 import { ITEM_CONTROLLER_SCHEMAS } from '../schemas/item';
+import { SearchItem } from '@core/domain/item/repository/item.repository';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 const route = Router();
 
@@ -70,8 +72,20 @@ route.get('/api/items', authMiddleware, async (req: Request, res: Response) => {
    const listItemUseCase = new ListItemUsecase(mongoDbItemRepository);
    const validator = new ZodValidator(ITEM_CONTROLLER_SCHEMAS.LIST);
    const controller = new ListItemController(listItemUseCase, validator);
+   const filter = new Filter(
+      parseInt(req.query.page as string) || 1,
+      parseInt(req.query.perPage as string) || 10,
+      req.query.order as string,
+      req.query.search as SearchItem
+   );
    const { code, ...data } = await controller.handle({
-      data: { userId: req.userId as string },
+      data: {
+         userId: req.userId as string,
+         page: parseInt(req.query.page as string) || 1,
+         perPage: parseInt(req.query.perPage as string) || 10,
+         order: req.query.order as string,
+         search: { name: req.query.name as string },
+      },
    });
    res.status(code).send(data);
 });

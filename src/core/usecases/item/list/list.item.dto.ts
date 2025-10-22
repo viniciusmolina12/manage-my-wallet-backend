@@ -1,3 +1,5 @@
+import { Pagination } from '@core/domain/@shared/filter/filter';
+
 export interface OutputListItemDto {
    items: {
       id: string;
@@ -7,4 +9,5 @@ export interface OutputListItemDto {
       createdAt: Date;
       updatedAt: Date;
    }[];
+   meta: Omit<Pagination<any>, 'data'>;
 }
