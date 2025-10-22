@@ -1,5 +1,7 @@
 import ListItemUsecase from '../list.usecase';
 import mockRepository from '../../__mocks__/repository.item.mock';
+import { Filter } from '@core/domain/@shared/filter/filter';
+
 const mockItemList = [
    {
       id: 'any_id',
@@ -20,11 +22,21 @@ const mockItemList = [
       updatedAt: new Date(),
    },
 ];
+
+const mockPagination = {
+   page: 1,
+   perPage: 10,
+   total: 2,
+   hasNext: false,
+   data: mockItemList,
+};
+
 describe('Item List usecase test', () => {
    it('should list items', async () => {
       const sut = new ListItemUsecase(mockRepository);
-      mockRepository.findAllByUserId.mockReturnValue(mockItemList);
-      const output = await sut.execute({ userId: 'any_user_id' });
+      mockRepository.findAllByUser.mockReturnValue(mockPagination);
+      const filter = new Filter(1, 10, 'asc', { name: 'test' });
+      const output = await sut.execute({ userId: 'any_user_id' }, filter);
       expect(output.items).toHaveLength(2);
       expect(output.items[0].id).toBe('any_id');
       expect(output.items[0].name).toBe('Item 2');
@@ -34,5 +46,6 @@ describe('Item List usecase test', () => {
       expect(output.items[1].name).toBe('Item 1');
       expect(output.items[1].description).toBe('other_description');
       expect(output.items[1].categoryId).toBe('other_category_id_hash');
+      expect(output.meta).toEqual(mockPagination);
    });
 });

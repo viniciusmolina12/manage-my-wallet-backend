@@ -197,30 +197,29 @@ describe('Item e2e tests', () => {
          'Items listed succesfully'
       );
       expect(response.body.data.items).toHaveLength(2);
-      expect(response.body.data.items[0]).toHaveProperty('id', item1._id);
-      expect(response.body.data.items[0]).toHaveProperty('name', item1.name);
-      expect(response.body.data.items[0]).toHaveProperty(
-         'description',
-         item1.description
+      expect(response.body.data).toHaveProperty('meta');
+      expect(response.body.data.meta).toHaveProperty('page', 1);
+      expect(response.body.data.meta).toHaveProperty('perPage', 10);
+      expect(response.body.data.meta).toHaveProperty('total', 2);
+      expect(response.body.data.meta).toHaveProperty('hasNext', false);
+
+      // Items are now ordered alphabetically by name
+      const sortedItems = response.body.data.items.sort((a: any, b: any) =>
+         a.name.localeCompare(b.name)
       );
-      expect(response.body.data.items[0]).toHaveProperty(
-         'categoryId',
-         item1.categoryId
-      );
-      expect(response.body.data.items[0]).toHaveProperty('createdAt');
-      expect(response.body.data.items[0]).toHaveProperty('updatedAt');
-      expect(response.body.data.items[1]).toHaveProperty('id', item2._id);
-      expect(response.body.data.items[1]).toHaveProperty('name', item2.name);
-      expect(response.body.data.items[1]).toHaveProperty(
-         'description',
-         item2.description
-      );
-      expect(response.body.data.items[1]).toHaveProperty(
-         'categoryId',
-         item2.categoryId
-      );
-      expect(response.body.data.items[1]).toHaveProperty('createdAt');
-      expect(response.body.data.items[1]).toHaveProperty('updatedAt');
+      expect(sortedItems[0]).toHaveProperty('id', item1._id);
+      expect(sortedItems[0]).toHaveProperty('name', item1.name);
+      expect(sortedItems[0]).toHaveProperty('description', item1.description);
+      expect(sortedItems[0]).toHaveProperty('categoryId', item1.categoryId);
+      expect(sortedItems[0]).toHaveProperty('createdAt');
+      expect(sortedItems[0]).toHaveProperty('updatedAt');
+
+      expect(sortedItems[1]).toHaveProperty('id', item2._id);
+      expect(sortedItems[1]).toHaveProperty('name', item2.name);
+      expect(sortedItems[1]).toHaveProperty('description', item2.description);
+      expect(sortedItems[1]).toHaveProperty('categoryId', item2.categoryId);
+      expect(sortedItems[1]).toHaveProperty('createdAt');
+      expect(sortedItems[1]).toHaveProperty('updatedAt');
    });
 
    it('should delete an item', async () => {
