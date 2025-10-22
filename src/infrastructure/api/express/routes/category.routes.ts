@@ -14,6 +14,8 @@ import DeleteCategoryController from '@controllers/category/delete.category.cont
 import { authMiddleware } from '../middlewares/authMiddleware';
 import ZodValidator from '@infrastructure/validation/zod.validator';
 import { CATEGORY_CONTROLLER_SCHEMAS } from '@infrastructure/api/express/schemas/category';
+import { SearchCategory } from '@core/domain/category/repository/category.repository';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 const route = Router();
 route.post(
@@ -92,8 +94,20 @@ route.get(
          listCategoryUseCase,
          validator
       );
+      const filter = new Filter(
+         parseInt(req.query.page as string) || 1,
+         parseInt(req.query.perPage as string) || 10,
+         req.query.order as string,
+         req.query.search as SearchCategory
+      );
       const { code, ...data } = await controller.handle({
-         data: { userId: req.userId as string },
+         data: {
+            userId: req.userId as string,
+            page: parseInt(req.query.page as string) || 1,
+            perPage: parseInt(req.query.perPage as string) || 10,
+            order: req.query.order as string,
+            search: { name: req.query.name as string },
+         },
       });
       res.status(code).send(data);
    }

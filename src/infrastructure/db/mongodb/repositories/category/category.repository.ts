@@ -1,9 +1,13 @@
 import Category, {
    CategoryId,
 } from '@core/domain/category/entity/category.entity';
-import { CategoryRepository } from '@core/domain/category/repository/category.repository';
+import {
+   CategoryRepository,
+   SearchCategory,
+} from '@core/domain/category/repository/category.repository';
 import CategoryModel from '../../model/category.model';
 import { UserId } from '@core/domain/user/entity/user.entity';
+import { Filter, Pagination } from '@core/domain/@shared/filter/filter';
 
 export default class MongoDbCategoryRepository implements CategoryRepository {
    async create(entity: Category): Promise<void> {
@@ -68,9 +72,21 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
       });
    }
 
-   async findAllByUser(userId: string): Promise<Category[]> {
-      const result = await CategoryModel.find({ userId });
-      return result.map((c) => {
+   async findAllByUser(
+      userId: string,
+      filter: Filter<SearchCategory>
+   ): Promise<Pagination<Category>> {
+      const queryFilter = {
+         userId,
+         ...(filter.search.name && {
+            name: { $regex: filter.search.name, $options: 'i' },
+         }),
+      };
+      const result = await CategoryModel.find(queryFilter)
+         .sort({ name: filter.order === 'asc' ? 1 : -1 })
+         .skip(filter.skip)
+         .limit(filter.limit);
+      const categories = result.map((c) => {
          const category = new Category(
             new CategoryId(c.id),
             c.name,
@@ -81,6 +97,15 @@ export default class MongoDbCategoryRepository implements CategoryRepository {
          category.updatedAt = c.updatedAt;
          return category;
       });
+      const total = await CategoryModel.countDocuments({ userId });
+      const hasNext = total > filter.skip + filter.limit;
+      return new Pagination(
+         filter.page,
+         filter.limit,
+         total,
+         hasNext,
+         categories
+      );
    }
 
    async findCategoriesByIds(
