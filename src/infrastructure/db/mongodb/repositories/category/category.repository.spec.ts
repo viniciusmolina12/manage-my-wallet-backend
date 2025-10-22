@@ -5,6 +5,7 @@ import mockDb from '../__mocks__/mockDb';
 import CategoryModel from '../../model/category.model';
 import MongoDbCategoryRepository from './category.repository';
 import { UserId } from '@core/domain/user/entity/user.entity';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -216,5 +217,105 @@ describe('MongoDB Item Repository tests', () => {
       );
       expect(categories[1].name).toBe('Category 2');
       expect(categories[1].description).toBe('Description 2');
+   });
+   it('should filter categories by name', async () => {
+      const sut = new MongoDbCategoryRepository();
+      const category1 = new Category(
+         new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
+         'Category 1',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
+         'Description 1'
+      );
+      await CategoryModel.create({
+         _id: category1.id.toString(),
+         name: category1.name,
+         description: category1.description,
+         userId: category1.userId,
+      });
+      const categoriesFound = await sut.findAllByUser(
+         category1.userId,
+         new Filter(1, 10, 'asc', {
+            name: 'Category 1',
+         })
+      );
+      expect(categoriesFound.data).toHaveLength(1);
+      expect(categoriesFound.data[0].id).toEqual(category1.id);
+      expect(categoriesFound.data[0].name).toBe(category1.name);
+      expect(categoriesFound.data[0].description).toBe(category1.description);
+   });
+   it('should paginate categories', async () => {
+      const sut = new MongoDbCategoryRepository();
+      const category1 = new Category(
+         new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
+         'Category 1',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
+         'Description 1'
+      );
+      const category2 = new Category(
+         new CategoryId('123e4567-e89b-12d3-a456-426614174001'),
+         'Category 2',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
+         'Description 2'
+      );
+      await CategoryModel.create({
+         _id: category1.id.toString(),
+         name: category1.name,
+         description: category1.description,
+         userId: category1.userId,
+      });
+      await CategoryModel.create({
+         _id: category2.id.toString(),
+         name: category2.name,
+         description: category2.description,
+         userId: category2.userId,
+      });
+      const categoriesFound = await sut.findAllByUser(
+         category1.userId,
+         new Filter(2, 1, 'asc', {})
+      );
+      expect(categoriesFound.data).toHaveLength(1);
+      expect(categoriesFound.data[0].id).toEqual(category2.id);
+      expect(categoriesFound.data[0].name).toBe(category2.name);
+      expect(categoriesFound.data[0].description).toBe(category2.description);
+   });
+
+   it('should order categories by name', async () => {
+      const sut = new MongoDbCategoryRepository();
+      const category1 = new Category(
+         new CategoryId('123e4567-e89b-12d3-a456-426614174000'),
+         'Category B',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
+         'Description 1'
+      );
+
+      const category2 = new Category(
+         new CategoryId('123e4567-e89b-12d3-a456-426614174001'),
+         'Category A',
+         new UserId('123e4567-e89b-12d3-a456-426614174000'),
+         'Description 2'
+      );
+      await CategoryModel.create({
+         _id: category1.id.toString(),
+         name: category1.name,
+         description: category1.description,
+         userId: category1.userId,
+      });
+      await CategoryModel.create({
+         _id: category2.id.toString(),
+         name: category2.name,
+         description: category2.description,
+         userId: category2.userId,
+      });
+      const categoriesFound = await sut.findAllByUser(
+         category1.userId,
+         new Filter(1, 10, 'desc', {})
+      );
+      expect(categoriesFound.data).toHaveLength(2);
+      expect(categoriesFound.data[0].id).toEqual(category1.id);
+      expect(categoriesFound.data[0].name).toBe(category1.name);
+      expect(categoriesFound.data[0].description).toBe(category1.description);
+      expect(categoriesFound.data[1].id).toEqual(category2.id);
+      expect(categoriesFound.data[1].name).toBe(category2.name);
+      expect(categoriesFound.data[1].description).toBe(category2.description);
    });
 });
