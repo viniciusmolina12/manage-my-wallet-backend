@@ -208,6 +208,305 @@ describe('Category e2e tests', () => {
       expect(response.body).not.toHaveProperty('data');
    });
 
+   describe('List filters tests', () => {
+      it('should filter categories by name', async () => {
+         // Criar categorias com nomes diferentes
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'Categoria Alimentação',
+            description: 'Categoria para alimentação',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174001',
+            name: 'Categoria Transporte',
+            description: 'Categoria para transporte',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174002',
+            name: 'Alimentação Saudável',
+            description: 'Categoria para alimentação saudável',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ name: 'Alimentação' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body).toHaveProperty('data');
+         expect(response.body).toHaveProperty(
+            'message',
+            'Categories listed succesfully'
+         );
+         expect(response.body.data.categories).toHaveLength(2);
+         expect(response.body.data.categories).toEqual(
+            expect.arrayContaining([
+               expect.objectContaining({
+                  name: 'Categoria Alimentação',
+               }),
+               expect.objectContaining({
+                  name: 'Alimentação Saudável',
+               }),
+            ])
+         );
+      });
+
+      it('should return empty list when no categories match name filter', async () => {
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'Categoria Alimentação',
+            description: 'Categoria para alimentação',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ name: 'Inexistente' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body.data.categories).toHaveLength(0);
+         expect(response.body.data.meta.total).toBe(0);
+      });
+
+      it('should paginate categories correctly', async () => {
+         for (let i = 1; i <= 5; i++) {
+            await CategoryModel.create({
+               _id: `123e4567-e89b-12d3-a456-42661417400${i}`,
+               name: `Categoria ${i}`,
+               description: `Descrição ${i}`,
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+               createdAt: new Date(),
+               updatedAt: new Date(),
+            });
+         }
+
+         const responsePage1 = await request(app)
+            .get('/api/categories')
+            .query({ page: 1, perPage: 2 })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(responsePage1.status).toBe(200);
+         expect(responsePage1.body.data.categories).toHaveLength(2);
+         expect(responsePage1.body.data.meta.page).toBe(1);
+         expect(responsePage1.body.data.meta.perPage).toBe(2);
+         expect(responsePage1.body.data.meta.total).toBe(5);
+         expect(responsePage1.body.data.meta.hasNext).toBe(true);
+
+         // Testar segunda página
+         const responsePage2 = await request(app)
+            .get('/api/categories')
+            .query({ page: 2, perPage: 2 })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(responsePage2.status).toBe(200);
+         expect(responsePage2.body.data.categories).toHaveLength(2);
+         expect(responsePage2.body.data.meta.page).toBe(2);
+         expect(responsePage2.body.data.meta.hasNext).toBe(true);
+
+         // Testar terceira página (última)
+         const responsePage3 = await request(app)
+            .get('/api/categories')
+            .query({ page: 3, perPage: 2 })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(responsePage3.status).toBe(200);
+         expect(responsePage3.body.data.categories).toHaveLength(1);
+         expect(responsePage3.body.data.meta.page).toBe(3);
+         expect(responsePage3.body.data.meta.hasNext).toBe(false);
+      });
+
+      it('should use default pagination values when not provided', async () => {
+         // Criar algumas categorias
+         for (let i = 1; i <= 3; i++) {
+            await CategoryModel.create({
+               _id: `123e4567-e89b-12d3-a456-42661417400${i}`,
+               name: `Categoria ${i}`,
+               description: `Descrição ${i}`,
+               userId: '123e4567-e89b-12d3-a456-426614174000',
+               createdAt: new Date(),
+               updatedAt: new Date(),
+            });
+         }
+
+         const response = await request(app)
+            .get('/api/categories')
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body.data.meta.page).toBe(1);
+         expect(response.body.data.meta.perPage).toBe(10);
+      });
+
+      it('should order categories by name ascending', async () => {
+         // Criar categorias com nomes em ordem específica
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'Zebra',
+            description: 'Categoria Z',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174001',
+            name: 'Alface',
+            description: 'Categoria A',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174002',
+            name: 'Banana',
+            description: 'Categoria B',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ order: 'asc' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body.data.categories).toHaveLength(3);
+         expect(response.body.data.categories[0].name).toBe('Alface');
+         expect(response.body.data.categories[1].name).toBe('Banana');
+         expect(response.body.data.categories[2].name).toBe('Zebra');
+      });
+
+      it('should order categories by name descending', async () => {
+         // Criar categorias com nomes em ordem específica
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'Alface',
+            description: 'Categoria A',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174001',
+            name: 'Banana',
+            description: 'Categoria B',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174002',
+            name: 'Zebra',
+            description: 'Categoria Z',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ order: 'desc' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body.data.categories).toHaveLength(3);
+         expect(response.body.data.categories[0].name).toBe('Zebra');
+         expect(response.body.data.categories[1].name).toBe('Banana');
+         expect(response.body.data.categories[2].name).toBe('Alface');
+      });
+
+      it('should combine filters correctly', async () => {
+         // Criar categorias para testar combinação de filtros
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174000',
+            name: 'Alimentação A',
+            description: 'Primeira categoria de alimentação',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174001',
+            name: 'Alimentação B',
+            description: 'Segunda categoria de alimentação',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+         await CategoryModel.create({
+            _id: '123e4567-e89b-12d3-a456-426614174002',
+            name: 'Transporte A',
+            description: 'Primeira categoria de transporte',
+            userId: '123e4567-e89b-12d3-a456-426614174000',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+         });
+
+         const response = await request(app)
+            .get('/api/categories')
+            .query({
+               name: 'Alimentação',
+               page: 1,
+               perPage: 1,
+               order: 'asc',
+            })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(200);
+         expect(response.body.data.categories).toHaveLength(1);
+         expect(response.body.data.categories[0].name).toBe('Alimentação A');
+         expect(response.body.data.meta.total).toBe(2);
+         expect(response.body.data.meta.hasNext).toBe(true);
+      });
+
+      it('should return validation error for invalid page parameter', async () => {
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ page: 'invalid' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Page must be a number');
+      });
+
+      it('should return validation error for invalid perPage parameter', async () => {
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ perPage: 'invalid' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain('Per page must be a number');
+      });
+
+      it('should return validation error for invalid order parameter', async () => {
+         const response = await request(app)
+            .get('/api/categories')
+            .query({ order: 'invalid_order' })
+            .set('Authorization', 'Bearer ' + token);
+
+         expect(response.status).toBe(400);
+         expect(response.body).toHaveProperty('message');
+         expect(response.body.message).toContain(
+            'Order must be a valid string'
+         );
+      });
+   });
+
    describe('Schema validation tests', () => {
       describe('POST /api/category - Create Category Schema Validation', () => {
          it('should return validation error when name is missing', async () => {
