@@ -13,6 +13,8 @@ import UpdateVendorController from '@controllers/vendor/update.vendor.controller
 import { UpdateVendorUseCase } from '@core/usecases/vendor/update/update.usecase';
 import ZodValidator from '@infrastructure/validation/zod.validator';
 import { VENDOR_CONTROLLER_SCHEMAS } from '@infrastructure/api/express/schemas/vendor';
+import { SearchVendor } from '@core/domain/vendor/repository/vendor.repository';
+import { Filter } from '@core/domain/@shared/filter/filter';
 const route = Router();
 
 route.post(
@@ -58,8 +60,20 @@ route.get(
       const listVendorUseCase = new ListVendorUseCase(mongoDbVendorRepository);
       const validator = new ZodValidator(VENDOR_CONTROLLER_SCHEMAS.LIST);
       const controller = new ListVendorController(listVendorUseCase, validator);
+      const filter = new Filter(
+         parseInt(req.query.page as string) || 1,
+         parseInt(req.query.perPage as string) || 10,
+         req.query.order as string,
+         req.query.search as SearchVendor
+      );
       const { code, ...data } = await controller.handle({
-         data: { userId: req.userId as string },
+         data: {
+            userId: req.userId as string,
+            page: parseInt(req.query.page as string) || 1,
+            perPage: parseInt(req.query.perPage as string) || 10,
+            order: req.query.order as string,
+            search: { name: req.query.name as string },
+         },
       });
       res.status(code).send(data);
    }

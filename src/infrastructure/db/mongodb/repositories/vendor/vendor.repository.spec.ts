@@ -3,6 +3,7 @@ import VendorModel from '../../model/vendor.model';
 import MongoDbVendorRepository from './vendor.repository';
 import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
 import { UserId } from '@core/domain/user/entity/user.entity';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 beforeAll(async () => {
    await mockDb.connect();
@@ -98,13 +99,14 @@ describe('MongoDB Vendor Repository tests', () => {
       const sut = new MongoDbVendorRepository();
       const vendor = new Vendor(new VendorId(), 'Vendor 1', new UserId());
       await sut.create(vendor);
-      const vendors = await sut.findAllByUser(vendor.userId);
-      expect(vendors).toBeTruthy();
-      expect(vendors.length).toBe(1);
-      expect(vendors[0].id).toBe(vendor.id);
-      expect(vendors[0].name).toBe(vendor.name);
-      expect(vendors[0].createdAt).toBeDefined();
-      expect(vendors[0].updatedAt).toBeDefined();
+      const filter = new Filter(1, 10, 'asc', {});
+      const pagination = await sut.findAllByUser(vendor.userId, filter);
+      expect(pagination).toBeTruthy();
+      expect(pagination.data.length).toBe(1);
+      expect(pagination.data[0].id).toBe(vendor.id);
+      expect(pagination.data[0].name).toBe(vendor.name);
+      expect(pagination.data[0].createdAt).toBeDefined();
+      expect(pagination.data[0].updatedAt).toBeDefined();
    });
 
    it('should delete a vendor', async () => {

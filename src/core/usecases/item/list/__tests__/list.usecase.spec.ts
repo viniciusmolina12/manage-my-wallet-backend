@@ -46,6 +46,11 @@ describe('Item List usecase test', () => {
       expect(output.items[1].name).toBe('Item 1');
       expect(output.items[1].description).toBe('other_description');
       expect(output.items[1].categoryId).toBe('other_category_id_hash');
-      expect(output.meta).toEqual(mockPagination);
+      expect(output.meta).toEqual({
+         page: 1,
+         perPage: 10,
+         total: 2,
+         hasNext: false,
+      });
    });
 });

@@ -1,7 +1,11 @@
 import VendorModel from '../../model/vendor.model';
 import Vendor, { VendorId } from '@core/domain/vendor/entity/vendor.entity';
-import { VendorRepository } from '@core/domain/vendor/repository/vendor.repository';
+import {
+   VendorRepository,
+   SearchVendor,
+} from '@core/domain/vendor/repository/vendor.repository';
 import { UserId } from '@core/domain/user/entity/user.entity';
+import { Filter, Pagination } from '@core/domain/@shared/filter/filter';
 
 export default class MongoDbVendorRepository implements VendorRepository {
    async create(entity: Vendor): Promise<void> {
@@ -62,9 +66,21 @@ export default class MongoDbVendorRepository implements VendorRepository {
       });
    }
 
-   async findAllByUser(userId: string): Promise<Vendor[]> {
-      const result = await VendorModel.find({ userId });
-      return result.map((v) => {
+   async findAllByUser(
+      userId: string,
+      filter: Filter<SearchVendor>
+   ): Promise<Pagination<Vendor>> {
+      const queryFilter = {
+         userId,
+         ...(filter.search.name && {
+            name: { $regex: filter.search.name, $options: 'i' },
+         }),
+      };
+      const result = await VendorModel.find(queryFilter)
+         .sort({ name: filter.order === 'asc' ? 1 : -1 })
+         .skip(filter.skip)
+         .limit(filter.limit);
+      const vendors = result.map((v) => {
          const vendor = new Vendor(
             new VendorId(v._id),
             v.name,
@@ -74,6 +90,9 @@ export default class MongoDbVendorRepository implements VendorRepository {
          vendor.updatedAt = v.updatedAt;
          return vendor;
       });
+      const total = await VendorModel.countDocuments({ userId });
+      const hasNext = total > filter.skip + filter.limit;
+      return new Pagination(filter.page, filter.limit, total, hasNext, vendors);
    }
    async findVendorsByIds(ids: string[], userId: string): Promise<Vendor[]> {
       const result = await VendorModel.find({ _id: { $in: ids }, userId });

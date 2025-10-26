@@ -114,18 +114,31 @@ describe('Vendor e2e tests', () => {
             'Vendors listed successfully'
          );
          expect(response.body.data.vendors).toHaveLength(2);
-         expect(response.body.data.vendors[0].id).toBe(
+         expect(response.body.data).toHaveProperty('meta');
+         expect(response.body.data.meta).toHaveProperty('page', 1);
+         expect(response.body.data.meta).toHaveProperty('perPage', 10);
+         expect(response.body.data.meta).toHaveProperty('total', 2);
+         expect(response.body.data.meta).toHaveProperty('hasNext', false);
+
+         // Vendors are now ordered alphabetically by name
+         const sortedVendors = response.body.data.vendors.sort(
+            (a: any, b: any) => a.name.localeCompare(b.name)
+         );
+         expect(sortedVendors[0]).toHaveProperty(
+            'id',
             '123e4567-e89b-12d3-a456-426614174000'
          );
-         expect(response.body.data.vendors[0].name).toBe('Vendor 1');
-         expect(response.body.data.vendors[0].createdAt).toBeDefined();
-         expect(response.body.data.vendors[0].updatedAt).toBeDefined();
-         expect(response.body.data.vendors[1].id).toBe(
+         expect(sortedVendors[0]).toHaveProperty('name', 'Vendor 1');
+         expect(sortedVendors[0]).toHaveProperty('createdAt');
+         expect(sortedVendors[0]).toHaveProperty('updatedAt');
+
+         expect(sortedVendors[1]).toHaveProperty(
+            'id',
             '123e4567-e89b-12d3-a456-426614174001'
          );
-         expect(response.body.data.vendors[1].name).toBe('Vendor 2');
-         expect(response.body.data.vendors[1].createdAt).toBeDefined();
-         expect(response.body.data.vendors[1].updatedAt).toBeDefined();
+         expect(sortedVendors[1]).toHaveProperty('name', 'Vendor 2');
+         expect(sortedVendors[1]).toHaveProperty('createdAt');
+         expect(sortedVendors[1]).toHaveProperty('updatedAt');
       });
 
       it('should return an empty array when user has no vendors', async () => {

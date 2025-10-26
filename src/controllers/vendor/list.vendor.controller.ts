@@ -4,9 +4,15 @@ import { InputControllerDto } from '@controllers/@shared/interfaces/controller.d
 import { response } from '@controllers/@shared/protocols';
 import EntityError from '@core/domain/@shared/error/entity.error';
 import { Validator } from '@core/interfaces/validator.interface';
+import { SearchVendor } from '@core/domain/vendor/repository/vendor.repository';
+import { Filter } from '@core/domain/@shared/filter/filter';
 
 interface InputListVendorControllerDto {
    userId: string;
+   page: number;
+   perPage: number;
+   order: string;
+   search: SearchVendor;
 }
 
 interface OutputListVendorControllerDto {
@@ -33,17 +39,20 @@ export default class ListVendorController {
       try {
          const { success, errors } = this.validator.validate(input.data);
          if (!success) return response(400, errors);
-         const { userId } = input.data;
-         const vendor = await this.listVendorUseCase.execute({
-            userId,
-         });
+         const { userId, page, perPage, order, search } = input.data;
+         const filter = new Filter(page, perPage, order, search);
+         const { vendors, meta } = await this.listVendorUseCase.execute(
+            { userId },
+            filter
+         );
          const output = {
-            vendors: vendor.vendors.map((vendor) => ({
+            vendors: vendors.map((vendor) => ({
                id: vendor.id,
                name: vendor.name,
                createdAt: vendor.createdAt,
                updatedAt: vendor.updatedAt,
             })),
+            meta,
          };
          return response<OutputListVendorControllerDto>(
             200,
