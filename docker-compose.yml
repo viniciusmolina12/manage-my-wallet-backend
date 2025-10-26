@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+   app:
+      build:
+         context: .
+         dockerfile: Dockerfile
+      container_name: manage-my-wallet-api
+      restart: unless-stopped
+      ports:
+         - '3000:3000'
+      environment:
+         - NODE_ENV=production
+         - PORT=3000
+         - MONGO_URL=mongodb://mongo:27017/manage-my-wallet
+         - SECRET_KEY=${SECRET_KEY}
+         - FROM_EMAIL=${FROM_EMAIL}
+         - RESET_PASSWORD_URL=${RESET_PASSWORD_URL}
+         - MAILER_HOST=${MAILER_HOST}
+         - MAILER_PORT=${MAILER_PORT}
+         - MAILER_AUTH_USER=${MAILER_AUTH_USER}
+         - MAILER_AUTH_PASSWORD=${MAILER_AUTH_PASSWORD}
+      depends_on:
+         - mongo
+      networks:
+         - app-network
+
+   mongo:
+      image: mongo:7
+      container_name: manage-my-wallet-mongo
+      restart: unless-stopped
+      ports:
+         - '27017:27017'
+      volumes:
+         - mongo-data:/data/db
+      networks:
+         - app-network
+
+networks:
+   app-network:
+      driver: bridge
+
+volumes:
+   mongo-data:
