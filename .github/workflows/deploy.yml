@@ -9,7 +9,7 @@ jobs:
    deploy:
       runs-on: ubuntu-latest
       name: Build, Push, and Deploy
-
+      environment: STAGING
       permissions:
          id-token: write
          contents: read
