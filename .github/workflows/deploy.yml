@@ -21,7 +21,7 @@ jobs:
          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
          ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-         TASK_DEFINITION: ecs-task-definition.json
+         TASK_DEFINITION: .github/ecs/ecs-task-definition.json
 
       steps:
          # 1️⃣ Checkout
