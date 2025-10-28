@@ -27,12 +27,6 @@
             { "name": "MAILER_AUTH_USER", "value": "your-email@example.com" },
             { "name": "MAILER_AUTH_PASSWORD", "value": "your-app-password" }
          ],
-         "secrets": [
-            {
-               "name": "DATABASE_URL",
-               "valueFrom": "/my-node-app/prod/DATABASE_URL"
-            }
-         ],
          "essential": true
       }
    ]
