@@ -54,7 +54,7 @@ jobs:
          # 5️⃣ Atualiza task definition
          - name: Render ECS task definition
            id: render-task
-           uses: aws-actions/amazon-ecs-render-task-definition@v2
+           uses: aws-actions/amazon-ecs-render-task-definition@v1
            with:
               task-definition: ${{ env.TASK_DEFINITION }}
               container-name: manage-my-wallet-container
@@ -62,7 +62,7 @@ jobs:
 
          # 6️⃣ Faz o deploy
          - name: Deploy to ECS service
-           uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+           uses: aws-actions/amazon-ecs-deploy-task-definition@v1
            with:
               task-definition: ${{ steps.render-task.outputs.task-definition }}
               service: ${{ env.ECS_SERVICE }}
