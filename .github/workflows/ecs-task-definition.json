@@ -1,0 +1,39 @@
+{
+   "family": "manage-my-wallet-task",
+   "networkMode": "awsvpc",
+   "requiresCompatibilities": ["FARGATE"],
+   "cpu": "256",
+   "memory": "512",
+   "executionRoleArn": "arn:aws:iam::002419999135:role/ecsTaskExecutionRole",
+   "containerDefinitions": [
+      {
+         "name": "manage-my-wallet-container",
+         "image": "placeholder",
+         "portMappings": [{ "containerPort": 3000, "protocol": "tcp" }],
+         "environment": [
+            { "name": "NODE_ENV", "value": "production" },
+            {
+               "name": "MONGO_URL",
+               "value": "mongodb://mongo:27017/manage-my-wallet"
+            },
+            { "name": "SECRET_KEY", "value": "your-secret-key-here" },
+            { "name": "FROM_EMAIL", "value": "your-email@example.com" },
+            {
+               "name": "RESET_PASSWORD_URL",
+               "value": "http://localhost:3000/reset-password"
+            },
+            { "name": "MAILER_HOST", "value": "smtp.gmail.com" },
+            { "name": "MAILER_PORT", "value": "587" },
+            { "name": "MAILER_AUTH_USER", "value": "your-email@example.com" },
+            { "name": "MAILER_AUTH_PASSWORD", "value": "your-app-password" }
+         ],
+         "secrets": [
+            {
+               "name": "DATABASE_URL",
+               "valueFrom": "/my-node-app/prod/DATABASE_URL"
+            }
+         ],
+         "essential": true
+      }
+   ]
+}
